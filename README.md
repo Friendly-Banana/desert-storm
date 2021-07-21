@@ -1,4 +1,4 @@
 # Minecraft Mod
-anew Boss, Sandstorms and Stuff
+a new Boss, Sandstorms and Stuff
 ## Dependencies
 Fabric
