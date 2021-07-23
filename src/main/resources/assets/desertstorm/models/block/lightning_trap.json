@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "desertstorm:block/lightning_trap"
+    }
+}

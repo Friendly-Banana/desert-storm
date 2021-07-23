@@ -1,0 +1,9 @@
+{
+    "item.desertstorm.sandstar": "Sandstar",
+    "item.desertstorm.sandstar.tooltip": "Like a Netherstar",
+    "item.desertstorm.sandblaster": "Sandblaster",
+    "item.desertstorm.sandblaster.tooltip": "Deadly Weapon",
+    "item.desertstorm.lightning_trap": "Lightning Trap",
+    "item.desertstorm.lightning_trap.tooltip": "Fry your enemies (and everything else)",
+    "itemGroup.desertstorm.items": "Desertstorm Mod"
+}
