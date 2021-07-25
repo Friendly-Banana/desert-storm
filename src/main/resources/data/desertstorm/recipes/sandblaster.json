@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "SSS",
+        "SD ",
+        "   "
+    ],
+    "key": {
+        "S": {
+            "tag": "minecraft:sand"
+        },
+        "D": {
+            "item": "minecraft:dispenser"
+        }
+    },
+    "result": {
+        "item": "desertstorm:sandblaster",
+        "count": 1
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "DAD",
+        "ABA",
+        "DCD"
+    ],
+    "key": {
+        "A": {
+            "item": "minecraft:stone"
+        },
+        "B": {
+            "item": "desertstorm:sandstar"
+        },
+        "C": {
+            "item": "minecraft:redstone"
+        },
+        "D": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "desertstorm:lightning_trap",
+        "count": 1
+    }
+}

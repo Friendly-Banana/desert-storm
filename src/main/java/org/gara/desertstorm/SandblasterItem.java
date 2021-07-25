@@ -1,34 +1,35 @@
 package org.gara.desertstorm;
 
-import java.util.List;
+import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.*;
-import net.minecraft.world.World;
-
-public class SandblasterItem extends SwordItem {
-
-    public SandblasterItem(ToolMaterial toolMaterial, int attackDamage, float attackSpeed, Settings settings) {
-        super(toolMaterial, attackDamage, attackSpeed, new Item.Settings().group(ItemGroup.COMBAT));
+public class SandblasterItem extends CustomTool {
+    public SandblasterItem(Properties properties) {
+        super("sandblaster", SandblasterMaterial.INSTANCE, properties);
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity playerEntity, Hand hand) {
-        playerEntity.playSound(SoundEvents.BLOCK_WOOL_BREAK, 1.0F, 1.0F);
-        return TypedActionResult.success(playerEntity.getStackInHand(hand));
+    public void onAttack(Player player, InteractionHand hand) {
+        Level level = player.level;
+        if (!level.isClientSide) {
+            FallingBlockEntity sandEntity = FabricEntityType.FALLING_BLOCK.create(level);
+            sandEntity.setPos(player.getEyePosition());
+            level.addFreshEntity(sandEntity);
+            sandEntity.time = 1;
+            sandEntity.setDeltaMovement(player.getLookAngle());
+            player.getCooldowns().addCooldown(this, 10);
+        }
+
+        player.awardStat(Stats.ITEM_USED.get(this));
     }
 
     @Override
-    public void appendTooltip(ItemStack itemStack, World world, List<Text> tooltip, TooltipContext tooltipContext) {
-
-        // default white text
-        tooltip.add(Utils.GetTooltip("sandblaster"));
-
-        // formatted red text
-        tooltip.add(Utils.GetTooltip("sandblaster").formatted(Formatting.RED));
+    public boolean isFoil(ItemStack itemStack) {
+        return true;
     }
 }

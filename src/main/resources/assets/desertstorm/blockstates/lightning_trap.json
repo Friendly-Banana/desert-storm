@@ -1,18 +1,9 @@
 {
     "variants": {
-        "charged=0": {
+        "charged=false": {
             "model": "desertstorm:block/lightning_trap"
         },
-        "charged=1": {
-            "model": "desertstorm:block/lightning_trap_charged"
-        },
-        "charged=2": {
-            "model": "desertstorm:block/lightning_trap_charged"
-        },
-        "charged=3": {
-            "model": "desertstorm:block/lightning_trap_charged"
-        },
-        "charged=4": {
+        "charged=true": {
             "model": "desertstorm:block/lightning_trap_charged"
         }
     }
