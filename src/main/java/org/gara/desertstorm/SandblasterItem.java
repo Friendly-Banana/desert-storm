@@ -3,6 +3,7 @@ package org.gara.desertstorm;
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -14,8 +15,7 @@ public class SandblasterItem extends CustomTool {
     }
 
     @Override
-    public void onAttack(Player player, InteractionHand hand) {
-        Level level = player.level;
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         if (!level.isClientSide) {
             FallingBlockEntity sandEntity = FabricEntityType.FALLING_BLOCK.create(level);
             sandEntity.setPos(player.getEyePosition());
@@ -26,6 +26,7 @@ public class SandblasterItem extends CustomTool {
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(interactionHand), level.isClientSide());
     }
 
     @Override

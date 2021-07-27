@@ -24,6 +24,7 @@
     "server": [
     ],
     "client": [
+      "org.gara.desertstorm.client.DesertStormClient"
     ]
   },
   "mixins": [

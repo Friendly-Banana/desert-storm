@@ -5,7 +5,9 @@
     "item.desertstorm.sandblaster.tooltip": "Deadly Weapon",
     "item.desertstorm.battery": "Battery",
     "item.desertstorm.battery.tooltip": "Store energy",
+    "item.desertstorm.sand_wither_spawn_egg": "Sand Wither Spawn Egg",
     "itemGroup.desertstorm.items": "Desertstorm Mod",
     "block.desertstorm.lightning_trap": "Lightning Trap",
-    "block.desertstorm.lightning_trap.tooltip": "Fry your enemies (and everything else)"
+    "block.desertstorm.lightning_trap.tooltip": "Fry your enemies (and everything else)",
+    "entity.desertstorm.sand_wither": "Sand Wither"
 }

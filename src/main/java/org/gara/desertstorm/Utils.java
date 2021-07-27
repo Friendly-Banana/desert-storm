@@ -18,8 +18,6 @@ public class Utils {
 		}
 	}
 
-	public static boolean IsCreative(Player player) {return player.getAbilities().instabuild;}
-
 	public static TranslatableComponent GetTooltip(String itemName) {
 		return new TranslatableComponent("item." + MOD_ID + "." + itemName + ".tooltip");
 	}
@@ -27,4 +25,8 @@ public class Utils {
 	public static ResourceLocation NewIdentifier(String name) {
 		return new ResourceLocation(MOD_ID, name);
 	}
+
+    public static boolean IsSurvival(Player player) {
+        return !player.isCreative() && !player.isSpectator();
+    }
 }

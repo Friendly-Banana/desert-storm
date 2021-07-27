@@ -2,8 +2,8 @@
     "type": "minecraft:crafting_shaped",
     "pattern": [
         "SSS",
-        "SD ",
-        "   "
+        "SDT",
+        "SSS"
     ],
     "key": {
         "S": {
@@ -11,6 +11,9 @@
         },
         "D": {
             "item": "minecraft:dispenser"
+        },
+        "T": {
+            "item": "desertstorm:sandstar"
         }
     },
     "result": {
