@@ -9,5 +9,9 @@
     "itemGroup.desertstorm.items": "Desertstorm Mod",
     "block.desertstorm.lightning_trap": "Lightning Trap",
     "block.desertstorm.lightning_trap.tooltip": "Fry your enemies (and everything else)",
-    "entity.desertstorm.sand_wither": "Sand Wither"
+    "entity.desertstorm.sand_wither": "Sand Wither",
+    "entity.desertstorm.sandstorm": "Sandstorm",
+    "entity.desertstorm.tornado": "Tornado",
+    "death.desertstom.sandstorm": "%1$s got lost in a Sandstorm",
+    "death.desertstom.tornado": "%1$s was blown away by a Tornado"
 }

@@ -1,19 +1,16 @@
 package org.gara.desertstorm.client;
 
 import org.gara.desertstorm.DesertStorm;
-import org.gara.desertstorm.Utils;
 import org.gara.desertstorm.entities.SandWitherRenderer;
+import org.gara.desertstorm.entities.TornadoRenderer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 
 @Environment(EnvType.CLIENT)
 public class DesertStormClient implements ClientModInitializer {
-	public static final ModelLayerLocation MODEL_CUBE_LAYER = new ModelLayerLocation(Utils.NewIdentifier("cube"),
-			"main");
 
 	@Override
 	public void onInitializeClient() {
@@ -26,6 +23,9 @@ public class DesertStormClient implements ClientModInitializer {
 		 */
 		EntityRendererRegistry.INSTANCE.register(DesertStorm.SAND_WITHER, (context) -> {
 			return new SandWitherRenderer(context);
+		});
+		EntityRendererRegistry.INSTANCE.register(DesertStorm.TORNADO, (context) -> {
+			return new TornadoRenderer(context);
 		});
 	}
 }

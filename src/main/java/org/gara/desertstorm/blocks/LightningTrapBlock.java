@@ -4,7 +4,6 @@ import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.Utils;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -13,7 +12,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -40,27 +40,23 @@ public class LightningTrapBlock extends Block implements EntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player,
             InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if (!level.isClientSide && !blockState.getValue(CHARGED) && player.isHolding(DesertStorm.BATTERY_ITEM)) {
+        if (!blockState.getValue(CHARGED)
+                && (player.isHolding(DesertStorm.BATTERY_ITEM) || player.isHolding(Items.TRIDENT)
+                        && EnchantmentHelper.hasChanneling(player.getItemInHand(interactionHand)))) {
             player.playSound(SoundEvents.RESPAWN_ANCHOR_CHARGE, 1, 1);
             level.setBlockAndUpdate(blockPos, blockState.setValue(CHARGED, true));
-            // Set Owner
-            level.getBlockEntity(blockPos, DesertStorm.TRAP_BLOCK_ENTITY)
-                    .ifPresent((LightningTrapBlockEntity blockEntity) -> {
-                        blockEntity.SetOwner(player.getGameProfile());
-                    });
+            if (Utils.IsSurvival(player)) {
+                player.getItemInHand(interactionHand).shrink(1);
+            }
+            player.awardStat(Stats.ITEM_USED.get(DesertStorm.LIGHTNING_TRAP_ITEM));
+            return InteractionResult.CONSUME;
         }
-
-        player.awardStat(Stats.ITEM_USED.get(Item.byBlock(this)));
-        if (Utils.IsSurvival(player)) {
-            player.getItemInHand(interactionHand).shrink(1);
-        }
-        return InteractionResult.CONSUME;
+        return InteractionResult.PASS;
     }
 
     @Override
     public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
-        if (!level.isClientSide && blockState.getValue(CHARGED)) {
-            LightningTrapBlockEntity blockEntity = level.getBlockEntity(blockPos, DesertStorm.TRAP_BLOCK_ENTITY).get();
+        if (blockState.getValue(CHARGED)) {
             // Only react for survival
             if (entity instanceof Player) {
                 if (!Utils.IsSurvival((Player) entity))
@@ -69,7 +65,6 @@ public class LightningTrapBlock extends Block implements EntityBlock {
             // Summoning the Lighting Bolt at the block
             LightningBolt lightningBolt = (LightningBolt) EntityType.LIGHTNING_BOLT.create(level);
             lightningBolt.moveTo(entity.getPosition(0));
-            lightningBolt.setCause((ServerPlayer) level.getPlayerByUUID(blockEntity.GetOwner().getId()));
             level.addFreshEntity(lightningBolt);
             level.setBlockAndUpdate(blockPos, blockState.setValue(CHARGED, false));
         }

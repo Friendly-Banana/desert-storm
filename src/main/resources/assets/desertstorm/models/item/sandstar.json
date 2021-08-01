@@ -1,7 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "item/nether_star",
   "textures": {
-    "layer0": "desertstorm:item/sandstar",
-    "layer1": "minecraft:item/nether_star"
+    "layer0": "desertstorm:item/sandstar"
   }
 }

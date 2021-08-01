@@ -3,6 +3,8 @@ package org.gara.desertstorm;
 import org.gara.desertstorm.blocks.LightningTrapBlock;
 import org.gara.desertstorm.blocks.LightningTrapBlockEntity;
 import org.gara.desertstorm.entities.SandWither;
+import org.gara.desertstorm.entities.Sandstorm;
+import org.gara.desertstorm.entities.Tornado;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -43,11 +45,19 @@ public class DesertStorm implements ModInitializer {
 
 	public static final EntityType<SandWither> SAND_WITHER = Registry.register(Registry.ENTITY_TYPE,
 			Utils.NewIdentifier("sand_wither"), FabricEntityTypeBuilder.create(MobCategory.CREATURE, SandWither::new)
-					.dimensions(EntityDimensions.fixed(0.9f, 3.5f)).build());
+					.dimensions(EntityDimensions.fixed(1f, 3.5f)).build());
 
 	// #FFE900, #000000
 	public static final Item SAND_WITHER_SPAWN_EGG = new SpawnEggItem(SAND_WITHER, 16771328, 0,
 			new FabricItemSettings().group(CreativeModeTab.TAB_MISC));
+
+	public static final EntityType<Sandstorm> SANDSTORM = Registry.register(Registry.ENTITY_TYPE,
+			Utils.NewIdentifier("sandstorm"), FabricEntityTypeBuilder.create(MobCategory.MISC, Sandstorm::new)
+					.dimensions(EntityDimensions.fixed(1, 1)).fireImmune().build());
+
+	public static final EntityType<Tornado> TORNADO = Registry.register(Registry.ENTITY_TYPE,
+			Utils.NewIdentifier("tornado"), FabricEntityTypeBuilder.create(MobCategory.MISC, Tornado::new)
+					.dimensions(EntityDimensions.fixed(3, 5)).fireImmune().build());
 
 	public static final CreativeModeTab ITEM_TAB = FabricItemGroupBuilder.create(Utils.NewIdentifier("items"))
 			.icon(() -> new ItemStack(Items.SAND)).appendItems(stacks -> {
@@ -67,15 +77,16 @@ public class DesertStorm implements ModInitializer {
 
 		// Items
 		Registry.register(Registry.ITEM, Utils.NewIdentifier("sandblaster"), SANDBLASTER_ITEM);
-		Registry.register(Registry.ITEM, Utils.NewIdentifier("sandstar"), SANDSTAR_ITEM);
-		Registry.register(Registry.ITEM, Utils.NewIdentifier("battery"), BATTERY_ITEM);
+		Registry.register(Registry.ITEM, Utils.NewIdentifier(SANDSTAR_ITEM.identifier), SANDSTAR_ITEM);
+		Registry.register(Registry.ITEM, Utils.NewIdentifier(BATTERY_ITEM.identifier), BATTERY_ITEM);
 		Registry.register(Registry.ITEM, Utils.NewIdentifier("sand_wither_spawn_egg"), SAND_WITHER_SPAWN_EGG);
 
 		// Blocks
 		Registry.register(Registry.BLOCK, Utils.NewIdentifier("lightning_trap"), LIGHTNING_TRAP_BLOCK);
 		Registry.register(Registry.ITEM, Utils.NewIdentifier("lightning_trap"), LIGHTNING_TRAP_ITEM);
-		TRAP_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, "desertstorm:lightning_trap_block_entity", FabricBlockEntityTypeBuilder.create(LightningTrapBlockEntity::new, LIGHTNING_TRAP_BLOCK).build(null));
+		TRAP_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, "desertstorm:lightning_trap_block_entity",
+				FabricBlockEntityTypeBuilder.create(LightningTrapBlockEntity::new, LIGHTNING_TRAP_BLOCK).build(null));
 
-		FabricDefaultAttributeRegistry.register(SAND_WITHER, SandWither.createMobAttributes());
+		FabricDefaultAttributeRegistry.register(SAND_WITHER, SandWither.createAttributes());
 	}
 }
