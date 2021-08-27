@@ -1,4 +1,4 @@
-package org.gara.desertstorm;
+package org.gara.desertstorm.items;
 
 public class BatteryItem extends CustomItem {
 

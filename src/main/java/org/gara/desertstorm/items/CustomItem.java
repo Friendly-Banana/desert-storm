@@ -1,16 +1,19 @@
-package org.gara.desertstorm;
+package org.gara.desertstorm.items;
 
 import java.util.List;
 
+import org.gara.desertstorm.Utils;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 public class CustomItem extends Item {
-    public String identifier;
+    public final String identifier;
 
     public CustomItem(String id, Properties properties) {
         super(properties);
@@ -20,6 +23,9 @@ public class CustomItem extends Item {
     @Override
     public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
         // default white text
-        list.add((Utils.GetTooltip(identifier)).withStyle(ChatFormatting.WHITE));
+        TranslatableComponent tip = Utils.GetTooltip(this.identifier);
+        if (!tip.getString().isEmpty()) {
+            list.add(tip.withStyle(ChatFormatting.WHITE));
+        }
     }
 }

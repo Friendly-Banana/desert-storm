@@ -1,4 +1,4 @@
-package org.gara.desertstorm;
+package org.gara.desertstorm.items;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 import net.minecraft.stats.Stats;
@@ -26,15 +26,16 @@ public class SandblasterItem extends CustomTool {
             sandEntity.setPos(player.getEyePosition());
             level.addFreshEntity(sandEntity);
             sandEntity.time = 1;
-            sandEntity.push(player.getLookAngle().add(0, 1, 0));
+            sandEntity.setDeltaMovement(player.getLookAngle().add(0, 1, 0));
             player.getCooldowns().addCooldown(this, 10);
             if (!(player.isCreative() || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS,
                     player.getItemInHand(interactionHand)) >= 0)) {
                 player.getInventory().getItem(slot).shrink(1);
             }
+            
+            player.awardStat(Stats.ITEM_USED.get(this));
         }
 
-        player.awardStat(Stats.ITEM_USED.get(this));
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(interactionHand), level.isClientSide());
     }
 }

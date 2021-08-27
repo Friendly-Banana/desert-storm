@@ -1,4 +1,6 @@
-package org.gara.desertstorm;
+package org.gara.desertstorm.items;
+
+import org.gara.desertstorm.DesertStorm;
 
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;

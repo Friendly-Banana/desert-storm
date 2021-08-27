@@ -1,4 +1,4 @@
-package org.gara.desertstorm;
+package org.gara.desertstorm.items;
 
 import net.minecraft.world.item.ItemStack;
 
@@ -9,6 +9,7 @@ public class SandstarItem extends CustomItem {
     }
 
     @Override
+    // make shiny
     public boolean isFoil(ItemStack itemStack) {
         return true;
     }

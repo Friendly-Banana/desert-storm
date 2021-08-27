@@ -23,7 +23,7 @@ public class TornadoRenderer extends EntityRenderer<Tornado> {
     @Override
     public void render(Tornado entity, float f, float g, PoseStack poseStack, MultiBufferSource multiBufferSource,
             int i) {
-        // TODO Auto-generated method stub
+        // do nothing
         super.render(entity, f, g, poseStack, multiBufferSource, i);
     }
 
