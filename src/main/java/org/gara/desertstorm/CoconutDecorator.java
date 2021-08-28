@@ -1,4 +1,4 @@
-package org.gara.desertstorm.mixin;
+package org.gara.desertstorm;
 
 import java.util.List;
 import java.util.Random;
@@ -6,8 +6,7 @@ import java.util.function.BiConsumer;
 
 import com.mojang.serialization.Codec;
 
-import org.gara.desertstorm.DesertStorm;
-import org.gara.desertstorm.Utils;
+import org.gara.desertstorm.mixin.PublicTreeDecoratorType;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelSimulatedReader;
@@ -31,7 +30,7 @@ public class CoconutDecorator extends TreeDecorator {
         Utils.Log(list);
         list.forEach((blockPos) -> {
             if (random.nextInt(3) == 0) {
-                Utils.Log("COCONut: " + blockPos.toString());
+                Utils.Log("Coconut: " + blockPos.toString());
                 if (Feature.isAir(levelSimulatedReader, blockPos)) {
                     biConsumer.accept(blockPos, DesertStorm.COCONUT_BLOCK.defaultBlockState());
                 }

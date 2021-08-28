@@ -4,7 +4,8 @@
   "package": "org.gara.desertstorm.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "ExampleMixin"
+    "ExampleMixin",
+    "CoconutTrees"
   ],
   "injectors": {
     "defaultRequire": 1

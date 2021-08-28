@@ -6,10 +6,7 @@ import org.gara.desertstorm.blocks.LightningTrapBlockEntity;
 import org.gara.desertstorm.entities.SandWither;
 import org.gara.desertstorm.entities.Sandstorm;
 import org.gara.desertstorm.entities.Tornado;
-import org.gara.desertstorm.items.BananaItem;
-import org.gara.desertstorm.items.BatteryItem;
-import org.gara.desertstorm.items.SandblasterItem;
-import org.gara.desertstorm.items.SandstarItem;
+import org.gara.desertstorm.items.*;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -20,6 +17,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.core.Registry;
+import net.minecraft.data.worldgen.Features;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -42,6 +40,10 @@ public class DesertStorm implements ModInitializer {
 
 	public static final BananaItem BANANA_ITEM = new BananaItem(
 			new FabricItemSettings().group(CreativeModeTab.TAB_MISC).food(BananaItem.FOOD_PROPERTIES));
+	
+	// Cocktails
+	public static final Cocktail RADIOACTIVE = new Cocktail("radioactive",
+			new FabricItemSettings().group(CreativeModeTab.TAB_BREWING));
 
 	// Blocks
 	public static final CoconutBlock COCONUT_BLOCK = new CoconutBlock(
@@ -94,6 +96,7 @@ public class DesertStorm implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		Utils.Log(Features.JUNGLE_TREE);
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
