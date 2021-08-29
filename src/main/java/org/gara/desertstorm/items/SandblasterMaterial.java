@@ -1,41 +1,40 @@
 package org.gara.desertstorm.items;
 
+import net.minecraft.item.ToolMaterial;
+import net.minecraft.recipe.Ingredient;
 import org.gara.desertstorm.DesertStorm;
 
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.crafting.Ingredient;
-
-public class SandblasterMaterial implements Tier {
+public class SandblasterMaterial implements ToolMaterial {
 
     public static final SandblasterMaterial INSTANCE = new SandblasterMaterial();
 
     @Override
-    public int getUses() {
+    public int getDurability() {
         return 1000;
     }
 
     @Override
-    public float getSpeed() {
+    public float getMiningSpeedMultiplier() {
         return 5;
     }
 
     @Override
-    public float getAttackDamageBonus() {
+    public float getAttackDamage() {
         return 0;
     }
 
     @Override
-    public int getLevel() {
+    public int getMiningLevel() {
         return 2;
     }
 
     @Override
-    public int getEnchantmentValue() {
+    public int getEnchantability() {
         return 15;
     }
 
     @Override
     public Ingredient getRepairIngredient() {
-        return Ingredient.of(DesertStorm.SANDSTAR_ITEM);
+        return Ingredient.ofItems(DesertStorm.SANDSTAR_ITEM);
     }
 }

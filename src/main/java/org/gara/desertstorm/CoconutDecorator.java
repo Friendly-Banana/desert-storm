@@ -3,36 +3,35 @@ package org.gara.desertstorm;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BiConsumer;
-
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.TestableWorld;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.treedecorator.TreeDecorator;
+import net.minecraft.world.gen.treedecorator.TreeDecoratorType;
 import com.mojang.serialization.Codec;
 
 import org.gara.desertstorm.mixin.PublicTreeDecoratorType;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelSimulatedReader;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecorator;
-import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
 
 public class CoconutDecorator extends TreeDecorator {
     public static final CoconutDecorator INSTANCE = new CoconutDecorator();
     public static final Codec<CoconutDecorator> CODEC = Codec.unit(() -> {
         return INSTANCE;
     });
+    public static final TreeDecoratorType<CoconutDecorator> DECORATOR_TYPE = PublicTreeDecoratorType
+            .invokeRegister("coconut", CODEC);
 
-    protected TreeDecoratorType<?> type() {
-        return PublicTreeDecoratorType.invokeRegister("coconut", CODEC);
+    protected TreeDecoratorType<?> getType() {
+        return DECORATOR_TYPE;
     }
 
-    public void place(LevelSimulatedReader levelSimulatedReader, BiConsumer<BlockPos, BlockState> biConsumer,
-            Random random, List<BlockPos> list, List<BlockPos> list2) {
-        Utils.Log(list);
-        list.forEach((blockPos) -> {
-            if (random.nextInt(3) == 0) {
-                Utils.Log("Coconut: " + blockPos.toString());
-                if (Feature.isAir(levelSimulatedReader, blockPos)) {
-                    biConsumer.accept(blockPos, DesertStorm.COCONUT_BLOCK.defaultBlockState());
+    public void generate(TestableWorld world, BiConsumer<BlockPos, BlockState> replacer, Random random,
+            List<BlockPos> logPositions, List<BlockPos> leavesPositions) {
+        leavesPositions.forEach((blockPos) -> {
+            if (random.nextInt(10) == 0) {
+                blockPos = blockPos.down();
+                if (Feature.isAir(world, blockPos)) {
+                    replacer.accept(blockPos, DesertStorm.COCONUT_BLOCK.getDefaultState());
                 }
             }
         });

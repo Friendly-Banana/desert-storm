@@ -7,42 +7,43 @@ import org.gara.desertstorm.Utils;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.BossEvent;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.level.Level;
+import net.minecraft.entity.AreaEffectCloudEntity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.FallingBlockEntity;
+import net.minecraft.entity.boss.BossBar;
+import net.minecraft.entity.boss.ServerBossBar;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.world.World;
 
-public class Sandstorm extends AreaEffectCloud {
-    private final ServerBossEvent bossEvent;
+public class Sandstorm extends AreaEffectCloudEntity {
+    private final ServerBossBar bossEvent;
     List<FallingBlockEntity> flyingBlocks;
 
-    public Sandstorm(EntityType<? extends Sandstorm> entityType, Level level) {
+    public Sandstorm(EntityType<? extends Sandstorm> entityType, World level) {
         super(entityType, level);
-        this.bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.YELLOW,
-                BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
+        this.bossEvent = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.YELLOW,
+                BossBar.Style.PROGRESS)).setDarkenSky(true);
         
         this.setDuration(3 * 60 * 20);
         this.setRadius(5.0F);
-        this.setParticle(ParticleTypes.DRAGON_BREATH);
-        this.setFixedColor(Utils.SAND_COLOR);
-        this.addEffect(new MobEffectInstance(MobEffects.HARM, 3, 1));
+        this.setParticleType(ParticleTypes.DRAGON_BREATH);
+        this.setColor(Utils.SAND_COLOR);
+        this.addEffect(new StatusEffectInstance(StatusEffects.INSTANT_DAMAGE, 1, 1));
+        this.addEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 10));
 
         flyingBlocks = new ArrayList<FallingBlockEntity>();
         for (int i = 0; i < 3; i++) {
             FallingBlockEntity sandEntity = FabricEntityType.FALLING_BLOCK.create(level);
-            sandEntity.time = 1;
-            sandEntity.setPos(this.getPosition(0.1F));
+            sandEntity.timeFalling = 1;
+            sandEntity.setPosition(this.getLerpedPos(0.1F));
             sandEntity.setNoGravity(true);
             sandEntity.startRiding(this);
-            level.addFreshEntity(sandEntity);
+            level.spawnEntity(sandEntity);
             flyingBlocks.add(sandEntity);
         }
     }
@@ -50,12 +51,12 @@ public class Sandstorm extends AreaEffectCloud {
     @Override
     public void tick() {
         super.tick();
-        this.bossEvent.setProgress(1 - (float) tickCount / this.getDuration());
+        this.bossEvent.setPercent(1 - (float) age / this.getDuration());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
+    public void readCustomDataFromNbt(NbtCompound compoundTag) {
+        super.readCustomDataFromNbt(compoundTag);
         if (this.getDuration() <= 0) {
             setDuration((random.nextInt(150) + 30) * 20);
         }
@@ -65,20 +66,20 @@ public class Sandstorm extends AreaEffectCloud {
     }
 
     @Override
-    public void setCustomName(@Nullable Component component) {
+    public void setCustomName(@Nullable Text component) {
         super.setCustomName(component);
         this.bossEvent.setName(this.getDisplayName());
     }
 
     @Override
-    public void startSeenByPlayer(ServerPlayer serverPlayer) {
-        super.startSeenByPlayer(serverPlayer);
+    public void onStartedTrackingBy(ServerPlayerEntity serverPlayer) {
+        super.onStartedTrackingBy(serverPlayer);
         this.bossEvent.addPlayer(serverPlayer);
     }
 
     @Override
-    public void stopSeenByPlayer(ServerPlayer serverPlayer) {
-        super.stopSeenByPlayer(serverPlayer);
+    public void onStoppedTrackingBy(ServerPlayerEntity serverPlayer) {
+        super.onStoppedTrackingBy(serverPlayer);
         this.bossEvent.removePlayer(serverPlayer);
     }
 }

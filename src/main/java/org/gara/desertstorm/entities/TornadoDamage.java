@@ -1,18 +1,18 @@
 package org.gara.desertstorm.entities;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 public class TornadoDamage extends DamageSource {
     protected TornadoDamage() {
         super("sandstorm");
-        this.setScalesWithDifficulty();
+        this.setScaledWithDifficulty();
     }
 
-    public Component getLocalizedDeathMessage(LivingEntity livingEntity) {
-        return new TranslatableComponent("death.desertstom.tornado",
+    public Text getDeathMessage(LivingEntity livingEntity) {
+        return new TranslatableText("death.desertstom.tornado",
                 new Object[] { livingEntity.getDisplayName() });
     }
 }

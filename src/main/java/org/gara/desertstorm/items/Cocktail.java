@@ -1,30 +1,28 @@
 package org.gara.desertstorm.items;
 
 import java.util.List;
-
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.PotionItem;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
+import net.minecraft.world.World;
 import org.gara.desertstorm.Utils;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 public class Cocktail extends PotionItem {
     public final String identifier;
-    public Cocktail(String id, Properties properties) {
+    public Cocktail(String id, Settings properties) {
         super(properties);
         identifier = id;
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, Level level, List<Component> list, TooltipFlag tooltipFlag) {
+    public void appendTooltip(ItemStack itemStack, World level, List<Text> list, TooltipContext tooltipFlag) {
         // default white text
-        TranslatableComponent tip = Utils.GetTooltip(this.identifier);
+        TranslatableText tip = Utils.GetTooltip(this.identifier);
         if (!tip.getString().isEmpty()) {
-            list.add(tip.withStyle(ChatFormatting.WHITE));
+            list.add(tip.formatted(Formatting.WHITE));
         }
     }
 }

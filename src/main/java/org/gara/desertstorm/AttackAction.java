@@ -1,8 +1,8 @@
 package org.gara.desertstorm;
 
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
 
 public interface AttackAction {
-    void OnLeftClick(Player player, InteractionHand hand);
+    void OnLeftClick(PlayerEntity player, Hand hand);
 }

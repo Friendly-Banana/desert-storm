@@ -1,14 +1,14 @@
 package org.gara.desertstorm.items;
 
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.food.FoodProperties;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.FoodComponent;
 
 public class BananaItem extends CustomItem {
-    public static final FoodProperties FOOD_PROPERTIES = (new FoodProperties.Builder()).nutrition(3).saturationMod(2.5F)
-            .effect(new MobEffectInstance(MobEffects.ABSORPTION, 30 * 20, 0), 1.0F).alwaysEat().build();
+    public static final FoodComponent FOOD_PROPERTIES = (new FoodComponent.Builder()).hunger(3).saturationModifier(2.5F)
+            .statusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 30 * 20, 0), 1.0F).alwaysEdible().build();
 
-    public BananaItem(Properties properties) {
+    public BananaItem(Settings properties) {
         super("banana", properties);
     }
 }

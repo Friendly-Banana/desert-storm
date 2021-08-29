@@ -2,71 +2,69 @@ package org.gara.desertstorm.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.FallingBlockEntity;
+import net.minecraft.entity.boss.BossBar;
+import net.minecraft.entity.boss.ServerBossBar;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.gara.desertstorm.DesertStorm;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
-import net.minecraft.world.BossEvent;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 
 public class Tornado extends Entity {
     public static final EntityDimensions dimensions = EntityDimensions.fixed(3, 5);
-    private static final ParticleOptions particleOptions = new BlockParticleOption(ParticleTypes.FALLING_DUST,
-            Blocks.SAND.defaultBlockState());
+    private static final ParticleEffect particleOptions = new BlockStateParticleEffect(ParticleTypes.FALLING_DUST,
+            Blocks.SAND.getDefaultState());
     private static final TornadoDamage damageSource = new TornadoDamage();
-    private final ServerBossEvent bossEvent;
+    private final ServerBossBar bossEvent;
     private List<FallingBlockEntity> flyingBlocks;
     private int duration;
 
-    public Tornado(EntityType<? extends Tornado> entityType, Level level) {
+    public Tornado(EntityType<? extends Tornado> entityType, World level) {
         super(entityType, level);
         // new BossEvent.BossBarColor("gold", ChatFormatting.GOLD)
-        this.bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.YELLOW,
-                BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
+        this.bossEvent = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.YELLOW,
+                BossBar.Style.PROGRESS)).setDarkenSky(true);
 
         flyingBlocks = new ArrayList<FallingBlockEntity>();
     }
 
-    public Tornado(Level level, Vec3 pos) {
+    public Tornado(World level, Vec3d pos) {
         this(DesertStorm.TORNADO, level);
-        this.setPos(pos);
+        this.setPosition(pos);
     }
 
     private void NewFlyingBlock() {
-        BlockPos currentPos = this.getOnPos();
+        BlockPos currentPos = this.getLandingPos();
         BlockPos randomPos;
         BlockState blockState;
         for (int i = 0; i < 3; i++) {
             // pick up random block
             do {
-                randomPos = currentPos.offset(random.nextInt(7) - 3, 0, random.nextInt(7) - 3);
-                blockState = this.level.getBlockState(randomPos);
+                randomPos = currentPos.add(random.nextInt(7) - 3, 0, random.nextInt(7) - 3);
+                blockState = this.world.getBlockState(randomPos);
             } while (blockState.isAir() || blockState.hasBlockEntity()
-                    || blockState.getBlock().getExplosionResistance() > 30);
-            this.level.removeBlock(randomPos, false);
-            FallingBlockEntity fallingBlock = new FallingBlockEntity(this.level, this.getX(), this.getEyeY(),
+                    || blockState.getBlock().getBlastResistance() > 30);
+            this.world.removeBlock(randomPos, false);
+            FallingBlockEntity fallingBlock = new FallingBlockEntity(this.world, this.getX(), this.getEyeY(),
                     this.getZ(), blockState);
-            fallingBlock.time = 1;
+            fallingBlock.timeFalling = 1;
             fallingBlock.startRiding(this);
-            this.level.addFreshEntity(fallingBlock);
+            this.world.spawnEntity(fallingBlock);
             flyingBlocks.add(fallingBlock);
         }
     }
@@ -74,55 +72,55 @@ public class Tornado extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (this.level.isClientSide) {
+        if (this.world.isClient) {
             float radius = dimensions.width;
-            int area = Mth.ceil(3.1415927F * radius);// * radius);
+            int area = MathHelper.ceil(3.1415927F * radius);// * radius);
             float h = radius;
 
             for (int i = 0; i < area; ++i) {
                 float l = this.random.nextFloat() * 6.2831855F;
-                float m = Mth.sqrt(this.random.nextFloat()) * h;
-                double xPos = this.getX() + (double) (Mth.cos(l) * m);
+                float m = MathHelper.sqrt(this.random.nextFloat()) * h;
+                double xPos = this.getX() + (double) (MathHelper.cos(l) * m);
                 double yPos = this.getY() + random.nextDouble() * dimensions.height;
-                double zPos = this.getZ() + (double) (Mth.sin(l) * m);
+                double zPos = this.getZ() + (double) (MathHelper.sin(l) * m);
                 double xRange = (0.5D - this.random.nextDouble()) * 0.15D;
                 double yRange = dimensions.height;
                 double zRange = (0.5D - this.random.nextDouble()) * 0.15D;
 
                 if (this.random.nextInt(3) == 0) {
-                    this.level.addAlwaysVisibleParticle(particleOptions, xPos, yPos, zPos, xRange, yRange, zRange);
+                    this.world.addImportantParticle(particleOptions, xPos, yPos, zPos, xRange, yRange, zRange);
                 } else {
-                    this.level.addParticle(particleOptions, xPos, yPos, zPos, xRange, yRange, zRange);
+                    this.world.addParticle(particleOptions, xPos, yPos, zPos, xRange, yRange, zRange);
                 }
             }
         } else {
-            if (tickCount >= duration) {
+            if (age >= duration) {
                 this.discard();
             }
-            this.bossEvent.setProgress(1 - (float) tickCount / duration);
+            this.bossEvent.setPercent(1 - (float) age / duration);
             // 20 Ticks per Second
-            if (tickCount % (10 * 20) == 0) {
+            if (age % (10 * 20) == 0) {
                 NewFlyingBlock();
             }
         }
     }
 
     @Override
-    public void playerTouch(Player player) {
-        super.playerTouch(player);
-        player.hurt(damageSource, 1.5f);
+    public void onPlayerCollision(PlayerEntity player) {
+        super.onPlayerCollision(player);
+        player.damage(damageSource, 1.5f);
     }
 
     @Override
-    public void push(Entity entity) {
+    public void pushAwayFrom(Entity entity) {
         if (entity.isAttackable()) {
-            entity.setDeltaMovement(entity.getDeltaMovement().add(0, 4, 0));
+            entity.setVelocity(entity.getVelocity().add(0, 4, 0));
         }
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
-        compoundTag.putInt("Age", this.tickCount);
+    protected void writeCustomDataToNbt(NbtCompound compoundTag) {
+        compoundTag.putInt("Age", this.age);
         compoundTag.putInt("Duration", this.duration);
         /*
          * for (FallingBlockEntity fallingBlockEntity : flyingBlocks) {
@@ -131,8 +129,8 @@ public class Tornado extends Entity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
-        this.tickCount = compoundTag.getInt("Age");
+    public void readCustomDataFromNbt(NbtCompound compoundTag) {
+        this.age = compoundTag.getInt("Age");
         this.duration = compoundTag.getInt("Duration");
         if (duration <= 0) {
             duration = (random.nextInt(30) + 90) * 20;
@@ -140,7 +138,7 @@ public class Tornado extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void initDataTracker() {
     }
 
     @Override
@@ -149,25 +147,25 @@ public class Tornado extends Entity {
     }
 
     @Override
-    public void setCustomName(Component component) {
+    public void setCustomName(Text component) {
         super.setCustomName(component);
         this.bossEvent.setName(this.getDisplayName());
     }
 
     @Override
-    public void startSeenByPlayer(ServerPlayer serverPlayer) {
-        super.startSeenByPlayer(serverPlayer);
+    public void onStartedTrackingBy(ServerPlayerEntity serverPlayer) {
+        super.onStartedTrackingBy(serverPlayer);
         this.bossEvent.addPlayer(serverPlayer);
     }
 
     @Override
-    public void stopSeenByPlayer(ServerPlayer serverPlayer) {
-        super.stopSeenByPlayer(serverPlayer);
+    public void onStoppedTrackingBy(ServerPlayerEntity serverPlayer) {
+        super.onStoppedTrackingBy(serverPlayer);
         this.bossEvent.removePlayer(serverPlayer);
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
-        return new ClientboundAddEntityPacket(this);
+    public Packet<?> createSpawnPacket() {
+        return new EntitySpawnS2CPacket(this);
     }
 }

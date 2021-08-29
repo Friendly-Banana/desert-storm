@@ -1,34 +1,32 @@
 package org.gara.desertstorm.entities;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRendererFactory.Context;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 
 /*
  * A renderer is used to provide an entity model, shadow size, and texture.
  */
 @Environment(EnvType.CLIENT)
 public class TornadoRenderer extends EntityRenderer<Tornado> {
-    private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation("textures/entity/tornado.png");
+    private static final Identifier TEXTURE_LOCATION = new Identifier("textures/entity/tornado.png");
 
     public TornadoRenderer(Context context) {
         super(context);
     }
 
     @Override
-    public void render(Tornado entity, float f, float g, PoseStack poseStack, MultiBufferSource multiBufferSource,
-            int i) {
+    public void render(Tornado entity, float f, float g, MatrixStack poseStack,
+            VertexConsumerProvider multiBufferSource, int i) {
         // do nothing
-        super.render(entity, f, g, poseStack, multiBufferSource, i);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Tornado entity) {
+    public Identifier getTexture(Tornado entity) {
         return TEXTURE_LOCATION;
     }
 

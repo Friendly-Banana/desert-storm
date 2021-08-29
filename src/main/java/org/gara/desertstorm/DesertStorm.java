@@ -16,68 +16,69 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.core.Registry;
-import net.minecraft.data.worldgen.Features;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.block.Material;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
+import net.minecraft.item.*;
+import net.minecraft.potion.PotionUtil;
+import net.minecraft.potion.Potions;
+import net.minecraft.util.Rarity;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.feature.ConfiguredFeatures;
 
 public class DesertStorm implements ModInitializer {
 	// Items
 	public static final SandblasterItem SANDBLASTER_ITEM = new SandblasterItem(
-			new FabricItemSettings().group(CreativeModeTab.TAB_COMBAT));
+			new FabricItemSettings().group(ItemGroup.COMBAT));
 
 	public static final SandstarItem SANDSTAR_ITEM = new SandstarItem(
-			new FabricItemSettings().group(CreativeModeTab.TAB_MISC).fireproof().rarity(Rarity.UNCOMMON));
+			new FabricItemSettings().group(ItemGroup.MISC).fireproof().rarity(Rarity.UNCOMMON));
 
 	public static final BatteryItem BATTERY_ITEM = new BatteryItem(
-			new FabricItemSettings().group(CreativeModeTab.TAB_MISC));
+			new FabricItemSettings().group(ItemGroup.MISC));
 
 	public static final BananaItem BANANA_ITEM = new BananaItem(
-			new FabricItemSettings().group(CreativeModeTab.TAB_MISC).food(BananaItem.FOOD_PROPERTIES));
+			new FabricItemSettings().group(ItemGroup.MISC).food(BananaItem.FOOD_PROPERTIES));
 	
 	// Cocktails
 	public static final Cocktail RADIOACTIVE = new Cocktail("radioactive",
-			new FabricItemSettings().group(CreativeModeTab.TAB_BREWING));
+			new FabricItemSettings().group(ItemGroup.BREWING));
 
 	// Blocks
 	public static final CoconutBlock COCONUT_BLOCK = new CoconutBlock(
 			FabricBlockSettings.of(Material.WOOD).strength(2.0f).breakByTool(FabricToolTags.AXES));
 	public static final BlockItem COCONUT_ITEM = new BlockItem(COCONUT_BLOCK,
-			new FabricItemSettings().group(CreativeModeTab.TAB_COMBAT));
+			new FabricItemSettings().group(ItemGroup.COMBAT));
 
 	public static final LightningTrapBlock LIGHTNING_TRAP_BLOCK = new LightningTrapBlock(
 			FabricBlockSettings.of(Material.STONE).strength(4.0f).breakByTool(FabricToolTags.PICKAXES));
 	public static final BlockItem LIGHTNING_TRAP_ITEM = new BlockItem(LIGHTNING_TRAP_BLOCK,
-			new FabricItemSettings().group(CreativeModeTab.TAB_COMBAT));
+			new FabricItemSettings().group(ItemGroup.COMBAT));
 
 	public static BlockEntityType<LightningTrapBlockEntity> TRAP_BLOCK_ENTITY;
 
 	// Entities
 	public static final EntityType<SandWither> SAND_WITHER = Registry.register(Registry.ENTITY_TYPE,
-			Utils.NewIdentifier("sand_wither"), FabricEntityTypeBuilder.create(MobCategory.CREATURE, SandWither::new)
+			Utils.NewIdentifier("sand_wither"), FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, SandWither::new)
 					.dimensions(EntityDimensions.fixed(1f, 3.5f)).build());
 
 	// #FFE900, #000000
 	public static final SpawnEggItem SAND_WITHER_SPAWN_EGG = new SpawnEggItem(SAND_WITHER, 16771328, 0,
-			new FabricItemSettings().group(CreativeModeTab.TAB_MISC));
+			new FabricItemSettings().group(ItemGroup.MISC));
 
 	public static final EntityType<Sandstorm> SANDSTORM = Registry.register(Registry.ENTITY_TYPE,
-			Utils.NewIdentifier("sandstorm"), FabricEntityTypeBuilder.create(MobCategory.MISC, Sandstorm::new)
+			Utils.NewIdentifier("sandstorm"), FabricEntityTypeBuilder.create(SpawnGroup.MISC, Sandstorm::new)
 					.dimensions(EntityDimensions.fixed(1, 1)).fireImmune().build());
 
 	// fcking Java: can't infer Type T, needs extra line
-	private static FabricEntityTypeBuilder<Tornado> tornadoBuilder = (FabricEntityTypeBuilder.create(MobCategory.MISC,
+	private static FabricEntityTypeBuilder<Tornado> tornadoBuilder = (FabricEntityTypeBuilder.create(SpawnGroup.MISC,
 			Tornado::new));
 	public static final EntityType<Tornado> TORNADO = Registry.register(Registry.ENTITY_TYPE,
 			Utils.NewIdentifier("tornado"), tornadoBuilder.dimensions(Tornado.dimensions).fireImmune().build());
 
-	public static final CreativeModeTab ITEM_TAB = FabricItemGroupBuilder.create(Utils.NewIdentifier("items"))
+	public static final ItemGroup ITEM_TAB = FabricItemGroupBuilder.create(Utils.NewIdentifier("items"))
 			.icon(() -> new ItemStack(Items.SAND)).appendItems(stacks -> {
 				stacks.add(new ItemStack(SANDBLASTER_ITEM));
 				stacks.add(new ItemStack(SANDSTAR_ITEM));
@@ -91,12 +92,12 @@ public class DesertStorm implements ModInitializer {
 				stacks.add(new ItemStack(Items.DEBUG_STICK));
 				stacks.add(new ItemStack(Items.COMMAND_BLOCK));
 				stacks.add(new ItemStack(Items.STRUCTURE_BLOCK));
-				stacks.add(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER));
+				stacks.add(PotionUtil.setPotion(new ItemStack(Items.POTION), Potions.WATER));
 			}).build();
 
 	@Override
 	public void onInitialize() {
-		Utils.Log(Features.JUNGLE_TREE);
+		Utils.Log(ConfiguredFeatures.JUNGLE_TREE);
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
@@ -117,6 +118,6 @@ public class DesertStorm implements ModInitializer {
 		TRAP_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, "desertstorm:lightning_trap_block_entity",
 				FabricBlockEntityTypeBuilder.create(LightningTrapBlockEntity::new, LIGHTNING_TRAP_BLOCK).build());
 
-		FabricDefaultAttributeRegistry.register(SAND_WITHER, SandWither.createAttributes());
+		FabricDefaultAttributeRegistry.register(SAND_WITHER, SandWither.createWitherAttributes());
 	}
 }

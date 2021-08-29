@@ -1,16 +1,16 @@
 package org.gara.desertstorm.items;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemStack;
 
 public class SandstarItem extends CustomItem {
 
-    public SandstarItem(Properties properties) {
+    public SandstarItem(Settings properties) {
         super("sandstar", properties);
     }
 
     @Override
     // make shiny
-    public boolean isFoil(ItemStack itemStack) {
+    public boolean hasGlint(ItemStack itemStack) {
         return true;
     }
 }

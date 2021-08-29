@@ -1,10 +1,9 @@
 package org.gara.desertstorm.blocks;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.util.math.BlockPos;
 import org.gara.desertstorm.DesertStorm;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class LightningTrapBlockEntity extends BlockEntity {
 
