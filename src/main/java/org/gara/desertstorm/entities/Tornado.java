@@ -2,6 +2,9 @@ package org.gara.desertstorm.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.gara.desertstorm.DesertStorm;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -23,7 +26,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.gara.desertstorm.DesertStorm;
 
 public class Tornado extends Entity {
     public static final EntityDimensions dimensions = EntityDimensions.fixed(3, 5);
@@ -49,24 +51,41 @@ public class Tornado extends Entity {
     }
 
     private void NewFlyingBlock() {
-        BlockPos currentPos = this.getLandingPos();
+        BlockPos currentPos = this.getBlockPos();
+        // shouldn't take too long
+        int limit = 0;
         BlockPos randomPos;
         BlockState blockState;
-        for (int i = 0; i < 3; i++) {
-            // pick up random block
-            do {
-                randomPos = currentPos.add(random.nextInt(7) - 3, 0, random.nextInt(7) - 3);
-                blockState = this.world.getBlockState(randomPos);
-            } while (blockState.isAir() || blockState.hasBlockEntity()
-                    || blockState.getBlock().getBlastResistance() > 30);
-            this.world.removeBlock(randomPos, false);
-            FallingBlockEntity fallingBlock = new FallingBlockEntity(this.world, this.getX(), this.getEyeY(),
-                    this.getZ(), blockState);
-            fallingBlock.timeFalling = 1;
-            fallingBlock.startRiding(this);
-            this.world.spawnEntity(fallingBlock);
-            flyingBlocks.add(fallingBlock);
+        // pick up random block
+        do {
+            limit++;
+            if (limit > 10)
+                return;
+            randomPos = currentPos.add(random.nextInt(7) - 3, 0, random.nextInt(7) - 3);
+            blockState = this.world.getBlockState(randomPos);
+        } while (blockState.isAir() || blockState.hasBlockEntity() || blockState.getBlock().getBlastResistance() > 30);
+        this.world.removeBlock(randomPos, false);
+        FallingBlockEntity fallingBlock = new FallingBlockEntity(this.world, this.getX(), this.getEyeY(), this.getZ(),
+                blockState);
+        fallingBlock.timeFalling = 1;
+        fallingBlock.startRiding(this);
+        this.world.spawnEntity(fallingBlock);
+        flyingBlocks.add(fallingBlock);
+        // drop old block
+        if (flyingBlocks.size() > 3) {
+            DropBlock();
         }
+    }
+
+    private void DropBlock() {
+        BlockPos currentPos = this.getBlockPos();
+        BlockPos randomPos;
+        do {
+            randomPos = currentPos.add(random.nextInt(7) - 3, 0, random.nextInt(7) - 3);
+        } while (!this.world.isAir(randomPos));
+        FallingBlockEntity blockEntity = flyingBlocks.remove(0);
+        this.world.setBlockState(randomPos, blockEntity.getBlockState());
+        blockEntity.discard();
     }
 
     @Override
@@ -75,11 +94,10 @@ public class Tornado extends Entity {
         if (this.world.isClient) {
             float radius = dimensions.width;
             int area = MathHelper.ceil(3.1415927F * radius);// * radius);
-            float h = radius;
 
             for (int i = 0; i < area; ++i) {
                 float l = this.random.nextFloat() * 6.2831855F;
-                float m = MathHelper.sqrt(this.random.nextFloat()) * h;
+                float m = MathHelper.sqrt(this.random.nextFloat()) * radius;
                 double xPos = this.getX() + (double) (MathHelper.cos(l) * m);
                 double yPos = this.getY() + random.nextDouble() * dimensions.height;
                 double zPos = this.getZ() + (double) (MathHelper.sin(l) * m);
@@ -87,14 +105,18 @@ public class Tornado extends Entity {
                 double yRange = dimensions.height;
                 double zRange = (0.5D - this.random.nextDouble()) * 0.15D;
 
-                if (this.random.nextInt(3) == 0) {
+                if (this.random.nextBoolean()) {
                     this.world.addImportantParticle(particleOptions, xPos, yPos, zPos, xRange, yRange, zRange);
                 } else {
                     this.world.addParticle(particleOptions, xPos, yPos, zPos, xRange, yRange, zRange);
                 }
             }
+        // Server
         } else {
             if (age >= duration) {
+                for (int i = 0; i < flyingBlocks.size(); i++) {
+                    DropBlock();
+                }
                 this.discard();
             }
             this.bossEvent.setPercent(1 - (float) age / duration);

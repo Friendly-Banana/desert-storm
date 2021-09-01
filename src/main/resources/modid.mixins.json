@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "PublicTreeDecoratorType",
+    "VillagerFollowEmeralds",
+    "PotionAccessor",
     "CoconutTrees"
   ],
   "injectors": {

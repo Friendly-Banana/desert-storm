@@ -6,7 +6,8 @@ import net.minecraft.util.Identifier;
 
 public class Utils {
 	public static final String MOD_ID = "desertstorm";
-	public static final int SAND_COLOR = 16769311;
+	public static final int GOLD = 16766720, SAND = 16769311;
+
 	private static int counter = 0;
 
 	public static void Debug() {
