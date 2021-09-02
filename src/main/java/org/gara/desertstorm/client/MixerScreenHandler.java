@@ -1,16 +1,26 @@
 package org.gara.desertstorm.client;
-import org.gara.desertstorm.DesertStorm;
 
+import org.gara.desertstorm.DesertStorm;
+import org.gara.desertstorm.items.cocktails.CocktailRecipeRegistry;
+
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtil;
+import net.minecraft.screen.ArrayPropertyDelegate;
+import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 public class MixerScreenHandler extends ScreenHandler {
     private final Inventory inventory;
+    private final PropertyDelegate propertyDelegate;
 
     // This constructor gets called on the client when the server wants it to open
     // the screenHandler.
@@ -18,7 +28,7 @@ public class MixerScreenHandler extends ScreenHandler {
     // screenHandler will automatically sync this empty inventory with the inventory
     // on the server.
     public MixerScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, new SimpleInventory(9));
+        this(syncId, playerInventory, new SimpleInventory(6), new ArrayPropertyDelegate(2));
     }
 
     // This constructor gets called from the BlockEntity on the server without
@@ -26,25 +36,27 @@ public class MixerScreenHandler extends ScreenHandler {
     // container and can therefore directly provide it as an argument. This
     // inventory will
     // then be synced to the client.
-    public MixerScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {
+    public MixerScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, PropertyDelegate propertyDelegate) {
         super(DesertStorm.MIXER_SCREEN_HANDLER, syncId);
-        checkSize(inventory, 9);
+        checkSize(inventory, 6);
         this.inventory = inventory;
+        this.propertyDelegate = propertyDelegate;
         // some inventories do custom logic when a player opens it.
         inventory.onOpen(playerInventory.player);
 
-        // This will place the slot in the correct locations for a 3x1 Grid. The slots
+        // This will place the slot in the correct locations for a 3x2 Grid. The slots
         // exist on both server and client!
         // This will not render the background of the slots however, this is the
         // Screen's job
         int y;
         int x;
         // Our inventory
-        for (y = 0; y < 3; ++y) {
-            for (x = 0; x < 2; ++x) {
-                this.addSlot(new Slot(inventory, x + y * 3, 62 + x * 18, 17 + y * 50));
+        for (y = 0; y < 2; ++y) {
+            for (x = 0; x < 3; ++x) {
+                this.addSlot(new Slot(inventory, x + y * 2, 55 + x * 24, 12 + y * 48));
             }
         }
+
         // The player's inventory
         for (y = 0; y < 3; ++y) {
             for (x = 0; x < 9; ++x) {
@@ -55,6 +67,11 @@ public class MixerScreenHandler extends ScreenHandler {
         for (y = 0; y < 9; ++y) {
             this.addSlot(new Slot(playerInventory, y, 8 + y * 18, 142));
         }
+    }
+
+    public int getProgress()
+    {
+        return this.propertyDelegate.get(0);
     }
 
     @Override
@@ -86,5 +103,42 @@ public class MixerScreenHandler extends ScreenHandler {
         }
 
         return newStack;
+    }
+
+    static class CocktailSlot extends Slot {
+        public CocktailSlot(Inventory inventory, int index, int x, int y) {
+            super(inventory, index, x, y);
+        }
+
+        public boolean canInsert(ItemStack stack) {
+            return stack.isOf(Items.GLASS_BOTTLE);
+        }
+
+        public int getMaxItemCount() {
+            return 1;
+        }
+
+        public void onTakeItem(PlayerEntity player, ItemStack stack) {
+            Potion cocktail = PotionUtil.getPotion(stack);
+            if (player instanceof ServerPlayerEntity) {
+                Criteria.BREWED_POTION.trigger((ServerPlayerEntity) player, cocktail);
+            }
+
+            super.onTakeItem(player, stack);
+        }
+    }
+
+    static class IngredientSlot extends Slot {
+        public IngredientSlot(Inventory inventory, int index, int x, int y) {
+            super(inventory, index, x, y);
+        }
+
+        public boolean canInsert(ItemStack stack) {
+            return CocktailRecipeRegistry.isValidIngredient(stack);
+        }
+
+        public int getMaxItemCount() {
+            return 64;
+        }
     }
 }

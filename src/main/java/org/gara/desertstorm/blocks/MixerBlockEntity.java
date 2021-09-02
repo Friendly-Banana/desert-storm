@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.gara.desertstorm.DesertStorm;
+import org.gara.desertstorm.Utils;
 import org.gara.desertstorm.client.MixerScreenHandler;
 import org.gara.desertstorm.items.cocktails.CocktailRecipeRegistry;
 
@@ -21,6 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -32,43 +34,60 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
 
 public class MixerBlockEntity extends LockableContainerBlockEntity implements SidedInventory {
-    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(6, ItemStack.EMPTY);
     private static final int[] INPUT_SLOTS = { 0, 1, 2 };
     private static final int[] OUTPUT_SLOTS = new int[] { 3, 4, 5 };
     private Item cocktailMixing;
-    int brewTime;
+    /** Remaining Time till {@link #cocktailMixing} is finished */
+    int mixTime;
     private boolean[] slotsEmptyLastTick;
+    private final DefaultedList<ItemStack> inventory;
+    protected final PropertyDelegate propertyDelegate;
 
     public MixerBlockEntity(BlockPos pos, BlockState state) {
         super(DesertStorm.MIXER_BLOCK_ENTITY, pos, state);
+        this.inventory = DefaultedList.ofSize(6, ItemStack.EMPTY);
+        this.propertyDelegate = new PropertyDelegate() {
+            public int get(int index) {
+                // switch?
+                return MixerBlockEntity.this.mixTime;
+            }
+
+            public void set(int index, int value) {
+                MixerBlockEntity.this.mixTime = value;
+            }
+
+            public int size() {
+                return 1;
+            }
+        };
     }
 
     public DefaultedList<ItemStack> getItems() {
         return inventory;
     }
 
-    // TODO start
+    // TODO tick method
     public static void tick(World world, BlockPos pos, BlockState state, MixerBlockEntity blockEntity) {
-        boolean bl = canCraft(blockEntity.inventory);
-        boolean bl2 = blockEntity.brewTime > 0;
+        boolean weCanCraft = canCraft(blockEntity.inventory);
+        boolean stillMixing = blockEntity.mixTime > 0;
         ItemStack itemStack2 = (ItemStack) blockEntity.inventory.get(3);
-        if (bl2) {
-            --blockEntity.brewTime;
-            boolean bl3 = blockEntity.brewTime == 0;
-            if (bl3 && bl) {
+        if (stillMixing) {
+            --blockEntity.mixTime;
+            boolean finished = blockEntity.mixTime == 0;
+            if (finished && weCanCraft) {
                 craft(world, pos, blockEntity.inventory);
                 markDirty(world, pos, state);
-            } else if (!bl || !itemStack2.isOf(blockEntity.cocktailMixing)) {
-                blockEntity.brewTime = 0;
+            } else if (!weCanCraft || !itemStack2.isOf(blockEntity.cocktailMixing)) {
+                blockEntity.mixTime = 0;
                 markDirty(world, pos, state);
             }
-        } else if (bl) {
-            blockEntity.brewTime = 400;
+        } else if (weCanCraft) {
+            blockEntity.mixTime = 300;
             blockEntity.cocktailMixing = itemStack2.getItem();
             markDirty(world, pos, state);
         }
 
-        boolean[] bls = blockEntity.getSlotsEmpty();
+        boolean[] bls = blockEntity.getGlassBottles();
         if (!Arrays.equals(bls, blockEntity.slotsEmptyLastTick)) {
             blockEntity.slotsEmptyLastTick = bls;
             BlockState blockState = state;
@@ -86,15 +105,15 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
 
     /**
      * Cleans slots up
+     * 
      * @param slots All slots of an inventory
      * @return only Slots containing Items
      */
-    private static List<ItemStack> onlyFilledSlots(DefaultedList<ItemStack> slots)
-    {
+    private static List<ItemStack> onlyFilledSlots(DefaultedList<ItemStack> slots) {
         List<ItemStack> items = new ArrayList<ItemStack>(3);
-        for (int index : INPUT_SLOTS) {
-            if (!ItemStack.EMPTY.isItemEqual(slots.get(index))) {
-                items.add(slots.get(index));
+        for (ItemStack itemStack : slots) {
+            if (!itemStack.isEmpty()) {
+                items.add(itemStack);
             }
         }
         return items;
@@ -134,25 +153,21 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
         world.syncWorldEvent(WorldEvents.BREWING_STAND_BREWS, pos, 0);
     }
 
-    private boolean[] getSlotsEmpty() {
-        boolean[] bls = new boolean[3];
-
-        for (int i = 0; i < 3; ++i) {
-            if (!((ItemStack) this.inventory.get(i)).isEmpty()) {
-                bls[i] = true;
-            }
+    private boolean[] getGlassBottles() {
+        boolean[] bottles = new boolean[3];
+        for (int i = 0; i < 3; i++) {
+            bottles[i] = !this.inventory.get(OUTPUT_SLOTS[i]).isEmpty();
         }
 
-        return bls;
+        return bottles;
     }
-    // TODO end
 
     @Override
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
         // We provide *this* to the screenHandler as our class Implements Inventory
         // Only the Server has the Inventory at the start, this will be synced to the
         // client in the ScreenHandler
-        return new MixerScreenHandler(syncId, playerInventory, this);
+        return new MixerScreenHandler(syncId, playerInventory, this, propertyDelegate);
     }
 
     @Override
@@ -206,7 +221,11 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
 
     @Override
     public ItemStack getStack(int slot) {
-        return inventory.get(slot);
+        if (slot < inventory.size()) {
+            return inventory.get(slot);
+        }
+        Utils.Log("ArrayIndexOutOfBoundsException", slot);
+        return ItemStack.EMPTY;
     }
 
     @Override
