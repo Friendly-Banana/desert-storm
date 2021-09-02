@@ -3,8 +3,6 @@ package org.gara.desertstorm.items.cocktails;
 import java.util.Iterator;
 import java.util.List;
 
-import org.gara.desertstorm.Utils;
-
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -27,8 +25,8 @@ public class CocktailItem extends PotionItem {
 
     @Override
     public void appendTooltip(ItemStack itemStack, World level, List<Text> list, TooltipContext tooltipFlag) {
-        // default white text
-        TranslatableText tip = Utils.GetTooltip(this.identifier);
+        super.appendTooltip(itemStack, level, list, tooltipFlag);
+        TranslatableText tip = new TranslatableText(getTranslationKey(itemStack) + ".tooltip");
         if (!tip.getString().isEmpty()) {
             list.add(tip.formatted(Formatting.WHITE));
         }

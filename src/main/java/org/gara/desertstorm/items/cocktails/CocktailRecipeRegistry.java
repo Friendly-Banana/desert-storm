@@ -68,8 +68,16 @@ public class CocktailRecipeRegistry {
    }
 
    public static void registerDefaults() {
+      registerRecipe(Cocktails.RADIOACTIVE_COCKTAIL, Items.EMERALD, DesertStorm.BANANA_ITEM);
+      registerRecipe(Cocktails.DISLOCATOR, Items.CHORUS_FRUIT);
+      registerRecipe(Cocktails.SUNRISE, Items.GLOW_BERRIES);
+      registerRecipe(Cocktails.SUNSET, Items.SWEET_BERRIES, DesertStorm.BANANA_ITEM);
+      registerRecipe(Cocktails.ICECOLD, Items.SNOWBALL);
+      registerRecipe(Cocktails.HOT_COCOA, Items.COCOA_BEANS);
+      registerRecipe(Cocktails.HEALTHY_SMOOTHIE, Items.WHEAT_SEEDS);
+      registerRecipe(Cocktails.MULTIVITAMINE, Items.APPLE, Items.CARROT, Items.BEETROOT);
+      registerRecipe(Cocktails.MIDAS_SPECIAL, Items.GOLDEN_APPLE, Items.GOLDEN_CARROT, Items.GLISTERING_MELON_SLICE);
       registerRecipe(Cocktails.MOLOTOV, Items.GUNPOWDER, Items.FIRE_CHARGE);
-      registerRecipe(Cocktails.HEALTHY_SMOOTHIE, DesertStorm.BANANA_ITEM, Items.FIRE_CHARGE);
    }
 
    private static void registerRecipe(Cocktail output, Item... items) {

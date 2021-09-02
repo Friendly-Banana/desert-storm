@@ -1,0 +1,6 @@
+{
+    "parent": "desertstorm:block/generated",
+    "textures": {
+      "layer0": "desertstorm:item/mixer"
+    }
+}

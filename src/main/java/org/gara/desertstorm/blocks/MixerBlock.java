@@ -95,6 +95,10 @@ public class MixerBlock extends BlockWithEntity {
         return world.isClient ? null : checkType(type, DesertStorm.MIXER_BLOCK_ENTITY, MixerBlockEntity::tick);
     }
 
+    public static VoxelShape getShape() {
+        return SHAPE;
+    }
+
     @Override
     public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
         return false;
