@@ -2,16 +2,17 @@ package org.gara.desertstorm.client;
 
 import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.Utils;
+import org.gara.desertstorm.client.renderer.SandWitherRenderer;
+import org.gara.desertstorm.client.renderer.TornadoRenderer;
 import org.gara.desertstorm.entities.MonkeyModel;
 import org.gara.desertstorm.entities.MonkeyRenderer;
-import org.gara.desertstorm.entities.SandWitherRenderer;
-import org.gara.desertstorm.entities.TornadoRenderer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.minecraft.client.render.entity.model.EntityModelLayer;	
 
 @Environment(EnvType.CLIENT)
@@ -37,5 +38,6 @@ public class DesertStormClient implements ClientModInitializer {
 		EntityRendererRegistry.register(DesertStorm.TORNADO, (context) -> {
 			return new TornadoRenderer(context);
 		});
+		ScreenRegistry.register(DesertStorm.MIXER_SCREEN_HANDLER, MixerScreen::new);
 	}
 }

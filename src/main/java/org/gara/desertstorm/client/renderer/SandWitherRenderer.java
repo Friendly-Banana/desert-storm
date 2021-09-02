@@ -1,4 +1,4 @@
-package org.gara.desertstorm.entities;
+package org.gara.desertstorm.client.renderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

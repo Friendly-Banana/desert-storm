@@ -32,7 +32,7 @@ public class Sandstorm extends AreaEffectCloudEntity {
         this.setDuration(3 * 60 * 20);
         this.setRadius(5.0F);
         this.setParticleType(ParticleTypes.DRAGON_BREATH);
-        this.setColor(Utils.SAND_COLOR);
+        this.setColor(Utils.SAND);
         this.addEffect(new StatusEffectInstance(StatusEffects.INSTANT_DAMAGE, 1, 1));
         this.addEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 10));
 
