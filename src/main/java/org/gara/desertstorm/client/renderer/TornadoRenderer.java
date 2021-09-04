@@ -1,6 +1,6 @@
 package org.gara.desertstorm.client.renderer;
 
-import org.gara.desertstorm.entities.Tornado;
+import org.gara.desertstorm.entity.Tornado;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

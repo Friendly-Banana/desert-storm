@@ -1,4 +1,4 @@
-package org.gara.desertstorm.items;
+package org.gara.desertstorm.item;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 import net.minecraft.enchantment.EnchantmentHelper;

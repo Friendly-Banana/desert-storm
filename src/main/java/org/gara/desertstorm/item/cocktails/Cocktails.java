@@ -1,4 +1,4 @@
-package org.gara.desertstorm.items.cocktails;
+package org.gara.desertstorm.item.cocktails;
 
 import org.gara.desertstorm.Utils;
 import org.jetbrains.annotations.Nullable;

@@ -1,4 +1,4 @@
-package org.gara.desertstorm.items;
+package org.gara.desertstorm.item;
 
 import java.util.List;
 

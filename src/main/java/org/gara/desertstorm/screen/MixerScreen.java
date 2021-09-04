@@ -1,4 +1,4 @@
-package org.gara.desertstorm.client;
+package org.gara.desertstorm.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 

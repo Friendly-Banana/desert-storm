@@ -1,4 +1,4 @@
-package org.gara.desertstorm.blocks;
+package org.gara.desertstorm.block;
 
 import org.gara.desertstorm.DesertStorm;
 
@@ -26,8 +26,11 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class MixerBlock extends BlockWithEntity {
-    public static final BooleanProperty[] BOTTLE_PROPERTIES;
-    protected static final VoxelShape SHAPE;
+    public static final BooleanProperty[] BOTTLE_PROPERTIES = new BooleanProperty[] { Properties.HAS_BOTTLE_0,
+            Properties.HAS_BOTTLE_1, Properties.HAS_BOTTLE_2 };
+    private static final int offset = 4;
+    private static final VoxelShape SHAPE = Block.createCuboidShape(offset, 0.0D, offset, 16 - offset, 14.0D,
+            16 - offset);
 
     public MixerBlock(Settings settings) {
         super(settings);
@@ -95,10 +98,6 @@ public class MixerBlock extends BlockWithEntity {
         return world.isClient ? null : checkType(type, DesertStorm.MIXER_BLOCK_ENTITY, MixerBlockEntity::tick);
     }
 
-    public static VoxelShape getShape() {
-        return SHAPE;
-    }
-
     @Override
     public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
         return false;
@@ -122,11 +121,5 @@ public class MixerBlock extends BlockWithEntity {
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(BOTTLE_PROPERTIES[0], BOTTLE_PROPERTIES[1], BOTTLE_PROPERTIES[2]);
-    }
-
-    static {
-        BOTTLE_PROPERTIES = new BooleanProperty[] { Properties.HAS_BOTTLE_0, Properties.HAS_BOTTLE_1,
-                Properties.HAS_BOTTLE_2 };
-        SHAPE = Block.createCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 2.0D, 15.0D);
     }
 }

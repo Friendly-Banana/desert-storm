@@ -1,4 +1,4 @@
-package org.gara.desertstorm.entities;
+package org.gara.desertstorm.entity;
 
 import java.util.ArrayList;
 import java.util.List;

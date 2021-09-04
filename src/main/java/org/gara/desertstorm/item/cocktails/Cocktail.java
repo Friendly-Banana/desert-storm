@@ -1,4 +1,4 @@
-package org.gara.desertstorm.items.cocktails;
+package org.gara.desertstorm.item.cocktails;
 
 import org.gara.desertstorm.mixin.PotionAccessor;
 import net.minecraft.entity.effect.StatusEffectInstance;

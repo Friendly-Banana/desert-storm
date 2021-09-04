@@ -1,8 +1,14 @@
-package org.gara.desertstorm.blocks;
+package org.gara.desertstorm.block;
 
+import org.gara.desertstorm.DesertStorm;
+import org.gara.desertstorm.Utils;
+
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -19,15 +25,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.gara.desertstorm.DesertStorm;
-import org.gara.desertstorm.Utils;
 
 public class LightningTrapBlock extends Block implements BlockEntityProvider {
 
     public static final BooleanProperty CHARGED = BooleanProperty.of("charged");
 
-    public LightningTrapBlock(Settings properties) {
-        super(properties);
+    public LightningTrapBlock() {
+        super(FabricBlockSettings.of(Material.STONE).strength(4.0f).breakByTool(FabricToolTags.PICKAXES));
         setDefaultState(getDefaultState().with(CHARGED, false));
     }
 

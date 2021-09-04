@@ -1,6 +1,6 @@
 package org.gara.desertstorm.client.model;
 
-import org.gara.desertstorm.entities.SandWither;
+import org.gara.desertstorm.entity.SandWither;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

@@ -1,7 +1,7 @@
-package org.gara.desertstorm.client;
+package org.gara.desertstorm.screen;
 
 import org.gara.desertstorm.DesertStorm;
-import org.gara.desertstorm.items.cocktails.CocktailRecipeRegistry;
+import org.gara.desertstorm.item.cocktails.CocktailRecipeRegistry;
 
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,7 +36,8 @@ public class MixerScreenHandler extends ScreenHandler {
     // container and can therefore directly provide it as an argument. This
     // inventory will
     // then be synced to the client.
-    public MixerScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, PropertyDelegate propertyDelegate) {
+    public MixerScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory,
+            PropertyDelegate propertyDelegate) {
         super(DesertStorm.MIXER_SCREEN_HANDLER, syncId);
         checkSize(inventory, 6);
         this.inventory = inventory;
@@ -50,10 +51,10 @@ public class MixerScreenHandler extends ScreenHandler {
         // Screen's job
         int y;
         int x;
-        // Our inventory
+        // Our inventory (Input + Output Slots)
         for (y = 0; y < 2; ++y) {
             for (x = 0; x < 3; ++x) {
-                this.addSlot(new Slot(inventory, x + y * 2, 55 + x * 24, 12 + y * 48));
+                this.addSlot(new Slot(inventory, x + y * 3, 56 + x * 24, 13 + y * 48));
             }
         }
 
@@ -67,16 +68,6 @@ public class MixerScreenHandler extends ScreenHandler {
         for (y = 0; y < 9; ++y) {
             this.addSlot(new Slot(playerInventory, y, 8 + y * 18, 142));
         }
-    }
-
-    public int getProgress()
-    {
-        return this.propertyDelegate.get(0);
-    }
-
-    @Override
-    public boolean canUse(PlayerEntity player) {
-        return this.inventory.canPlayerUse(player);
     }
 
     // Shift + Player Inv Slot
@@ -103,6 +94,15 @@ public class MixerScreenHandler extends ScreenHandler {
         }
 
         return newStack;
+    }
+
+    public int getProgress() {
+        return this.propertyDelegate.get(0);
+    }
+
+    @Override
+    public boolean canUse(PlayerEntity player) {
+        return this.inventory.canPlayerUse(player);
     }
 
     static class CocktailSlot extends Slot {

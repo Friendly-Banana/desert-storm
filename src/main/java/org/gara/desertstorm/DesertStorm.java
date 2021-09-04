@@ -1,14 +1,14 @@
 package org.gara.desertstorm;
 
-import org.gara.desertstorm.blocks.*;
-import org.gara.desertstorm.client.MixerScreenHandler;
-import org.gara.desertstorm.entities.SandWither;
-import org.gara.desertstorm.entities.Sandstorm;
-import org.gara.desertstorm.entities.Tornado;
-import org.gara.desertstorm.items.*;
-import org.gara.desertstorm.items.cocktails.CocktailItem;
-import org.gara.desertstorm.items.cocktails.CocktailRecipeRegistry;
-import org.gara.desertstorm.items.cocktails.Cocktails;
+import org.gara.desertstorm.block.*;
+import org.gara.desertstorm.entity.SandWither;
+import org.gara.desertstorm.entity.Sandstorm;
+import org.gara.desertstorm.entity.Tornado;
+import org.gara.desertstorm.item.*;
+import org.gara.desertstorm.item.cocktails.CocktailItem;
+import org.gara.desertstorm.item.cocktails.CocktailRecipeRegistry;
+import org.gara.desertstorm.item.cocktails.Cocktails;
+import org.gara.desertstorm.screen.MixerScreenHandler;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -18,7 +18,6 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
@@ -104,8 +103,7 @@ public class DesertStorm implements ModInitializer {
 
         COCKTAIL = registerItem("cocktail",
                 new CocktailItem("cocktail", new FabricItemSettings().group(ItemGroup.BREWING)));
-        COCONUT_BLOCK = registerBlock("coconut", new CoconutBlock(
-                FabricBlockSettings.of(Material.WOOD).strength(2.0f).breakByTool(FabricToolTags.AXES)));
+        COCONUT_BLOCK = registerBlock("coconut", new CoconutBlock());
         COCONUT_ITEM = registerItem("coconut",
                 new BlockItem(COCONUT_BLOCK, new FabricItemSettings().group(ItemGroup.DECORATIONS)));
 
@@ -116,8 +114,7 @@ public class DesertStorm implements ModInitializer {
         MIXER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, "desertstorm:mixer_block_entity",
                 FabricBlockEntityTypeBuilder.create(MixerBlockEntity::new, MIXER_BLOCK).build());
 
-        LIGHTNING_TRAP_BLOCK = registerBlock("lightning_trap", new LightningTrapBlock(
-                FabricBlockSettings.of(Material.STONE).strength(4.0f).breakByTool(FabricToolTags.PICKAXES)));
+        LIGHTNING_TRAP_BLOCK = registerBlock("lightning_trap", new LightningTrapBlock());
         LIGHTNING_TRAP_ITEM = registerItem("lightning_trap",
                 new BlockItem(LIGHTNING_TRAP_BLOCK, new FabricItemSettings().group(ItemGroup.COMBAT)));
         TRAP_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, "desertstorm:lightning_trap_block_entity",

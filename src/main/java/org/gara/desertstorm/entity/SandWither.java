@@ -1,4 +1,4 @@
-package org.gara.desertstorm.entities;
+package org.gara.desertstorm.entity;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityType;

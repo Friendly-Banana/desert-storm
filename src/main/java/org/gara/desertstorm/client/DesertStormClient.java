@@ -3,12 +3,15 @@ package org.gara.desertstorm.client;
 import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.client.renderer.SandWitherRenderer;
 import org.gara.desertstorm.client.renderer.TornadoRenderer;
+import org.gara.desertstorm.screen.MixerScreen;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry ;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import net.minecraft.client.render.RenderLayer;
 
 @Environment(EnvType.CLIENT)
 public class DesertStormClient implements ClientModInitializer {
@@ -29,5 +32,7 @@ public class DesertStormClient implements ClientModInitializer {
 			return new TornadoRenderer(context);
 		});
 		ScreenRegistry.register(DesertStorm.MIXER_SCREEN_HANDLER, MixerScreen::new);
+        BlockRenderLayerMap.INSTANCE.putBlock(DesertStorm.MIXER_BLOCK, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(DesertStorm.COCONUT_BLOCK, RenderLayer.getCutout());
 	}
 }

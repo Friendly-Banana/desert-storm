@@ -1,4 +1,4 @@
-package org.gara.desertstorm.blocks;
+package org.gara.desertstorm.block;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,8 +8,8 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.Utils;
-import org.gara.desertstorm.client.MixerScreenHandler;
-import org.gara.desertstorm.items.cocktails.CocktailRecipeRegistry;
+import org.gara.desertstorm.item.cocktails.CocktailRecipeRegistry;
+import org.gara.desertstorm.screen.MixerScreenHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -86,34 +86,36 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
             blockEntity.cocktailMixing = itemStack2.getItem();
             markDirty(world, pos, state);
         }
-
-        boolean[] bls = blockEntity.getGlassBottles();
-        if (!Arrays.equals(bls, blockEntity.slotsEmptyLastTick)) {
-            blockEntity.slotsEmptyLastTick = bls;
+        
+        // show bottles
+        boolean[] bottles = blockEntity.getGlassBottles();
+        if (!Arrays.equals(bottles, blockEntity.slotsEmptyLastTick)) {
+            blockEntity.slotsEmptyLastTick = bottles;
             BlockState blockState = state;
             if (!(state.getBlock() instanceof MixerBlock)) {
                 return;
             }
 
             for (int i = 0; i < MixerBlock.BOTTLE_PROPERTIES.length; ++i) {
-                blockState = (BlockState) blockState.with(MixerBlock.BOTTLE_PROPERTIES[i], bls[i]);
+                blockState = (BlockState) blockState.with(MixerBlock.BOTTLE_PROPERTIES[i], bottles[i]);
             }
 
             world.setBlockState(pos, blockState, Block.NOTIFY_LISTENERS);
         }
     }
 
+    
+
     /**
      * Cleans slots up
-     * 
      * @param slots All slots of an inventory
-     * @return only Slots containing Items
+     * @return input slots containing Items
      */
-    private static List<ItemStack> onlyFilledSlots(DefaultedList<ItemStack> slots) {
+    private static List<ItemStack> inputSlots(DefaultedList<ItemStack> slots) {
         List<ItemStack> items = new ArrayList<ItemStack>(3);
-        for (ItemStack itemStack : slots) {
-            if (!itemStack.isEmpty()) {
-                items.add(itemStack);
+        for (int i : INPUT_SLOTS) {
+            if (!slots.get(i).isEmpty()) {
+                items.add(slots.get(i));
             }
         }
         return items;
@@ -123,14 +125,16 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
         if (slots.isEmpty())
             return false;
         else {
-            return CocktailRecipeRegistry.hasRecipe(onlyFilledSlots(slots));
+            return CocktailRecipeRegistry.hasRecipe(inputSlots(slots));
         }
     }
 
     private static void craft(World world, BlockPos pos, DefaultedList<ItemStack> slots) {
-        ItemStack result = CocktailRecipeRegistry.craft(onlyFilledSlots(slots));
+        ItemStack result = CocktailRecipeRegistry.craft(inputSlots(slots));
         for (int i : OUTPUT_SLOTS) {
-            slots.set(i, result);
+            if (slots.get(i).isOf(Items.GLASS_BOTTLE)) {
+                slots.set(i, result);                
+            }
         }
 
         for (int i : INPUT_SLOTS) {
@@ -138,14 +142,14 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
             itemStack.decrement(1);
             // Bottles can remain
             if (itemStack.getItem().hasRecipeRemainder()) {
-                ItemStack itemStack2 = new ItemStack(itemStack.getItem().getRecipeRemainder());
+                ItemStack remainder = new ItemStack(itemStack.getItem().getRecipeRemainder());
                 // Ingredient used up
                 if (itemStack.isEmpty()) {
-                    itemStack = itemStack2;
+                    itemStack = remainder;
                     // drop Item
                 } else {
                     ItemScatterer.spawn(world, (double) pos.getX(), (double) pos.getY(), (double) pos.getZ(),
-                            itemStack2);
+                            remainder);
                 }
             }
         }
@@ -188,7 +192,6 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
         return nbt;
     }
 
-    // SidedInventory
     @Override
     public boolean isValid(int slot, ItemStack stack) {
         if (ArrayUtils.contains(INPUT_SLOTS, slot)) {

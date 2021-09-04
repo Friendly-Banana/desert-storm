@@ -1,4 +1,4 @@
-package org.gara.desertstorm.entities;
+package org.gara.desertstorm.entity;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
