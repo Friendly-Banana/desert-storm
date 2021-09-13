@@ -1,7 +1,5 @@
 package org.gara.desertstorm.block;
 
-import org.gara.desertstorm.DesertStorm;
-
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -24,12 +22,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.gara.desertstorm.DesertStorm;
 
 public class MixerBlock extends BlockWithEntity {
-    public static final BooleanProperty[] BOTTLE_PROPERTIES = new BooleanProperty[] { Properties.HAS_BOTTLE_0,
-            Properties.HAS_BOTTLE_1, Properties.HAS_BOTTLE_2 };
-    private static final int offset = 4;
-    private static final VoxelShape SHAPE = Block.createCuboidShape(offset, 0.0D, offset, 16 - offset, 14.0D,
+    public static final BooleanProperty[] BOTTLE_PROPERTIES = new BooleanProperty[]{Properties.HAS_BOTTLE_0,
+            Properties.HAS_BOTTLE_1, Properties.HAS_BOTTLE_2};
+    private static final int offset = 0;
+    private static final VoxelShape SHAPE = Block.createCuboidShape(offset, 0.0D, offset, 16 - offset, 16.0D,
             16 - offset);
 
     public MixerBlock(Settings settings) {
@@ -38,7 +37,7 @@ public class MixerBlock extends BlockWithEntity {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-            BlockHitResult hit) {
+                              BlockHitResult hit) {
         if (world.isClient) {
             return ActionResult.SUCCESS;
         } else {
@@ -94,7 +93,7 @@ public class MixerBlock extends BlockWithEntity {
     }
 
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state,
-            BlockEntityType<T> type) {
+                                                                  BlockEntityType<T> type) {
         return world.isClient ? null : checkType(type, DesertStorm.MIXER_BLOCK_ENTITY, MixerBlockEntity::tick);
     }
 

@@ -1,10 +1,5 @@
 package org.gara.desertstorm.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gara.desertstorm.DesertStorm;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -26,6 +21,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.gara.desertstorm.DesertStorm;
+import org.gara.desertstorm.damage.TornadoDamage;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static net.minecraft.world.GameRules.DO_MOB_GRIEFING;
 
 public class Tornado extends Entity {
     public static final EntityDimensions dimensions = EntityDimensions.fixed(3, 5);
@@ -33,7 +35,7 @@ public class Tornado extends Entity {
             Blocks.SAND.getDefaultState());
     private static final TornadoDamage damageSource = new TornadoDamage();
     private final ServerBossBar bossEvent;
-    private List<FallingBlockEntity> flyingBlocks;
+    private final List<FallingBlockEntity> flyingBlocks;
     private int duration;
 
     public Tornado(EntityType<? extends Tornado> entityType, World level) {
@@ -42,7 +44,7 @@ public class Tornado extends Entity {
         this.bossEvent = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.YELLOW,
                 BossBar.Style.PROGRESS)).setDarkenSky(true);
 
-        flyingBlocks = new ArrayList<FallingBlockEntity>();
+        flyingBlocks = new ArrayList<>();
     }
 
     public Tornado(World level, Vec3d pos) {
@@ -111,8 +113,9 @@ public class Tornado extends Entity {
                     this.world.addParticle(particleOptions, xPos, yPos, zPos, xRange, yRange, zRange);
                 }
             }
-        // Server
-        } else {
+
+        } // Server
+        else {
             if (age >= duration) {
                 for (int i = 0; i < flyingBlocks.size(); i++) {
                     DropBlock();
@@ -121,7 +124,7 @@ public class Tornado extends Entity {
             }
             this.bossEvent.setPercent(1 - (float) age / duration);
             // 20 Ticks per Second
-            if (age % (10 * 20) == 0) {
+            if (age % (10 * 20) == 0 && this.world.getGameRules().getBoolean(DO_MOB_GRIEFING)) {
                 NewFlyingBlock();
             }
         }
@@ -131,13 +134,6 @@ public class Tornado extends Entity {
     public void onPlayerCollision(PlayerEntity player) {
         super.onPlayerCollision(player);
         player.damage(damageSource, 1.5f);
-    }
-
-    @Override
-    public void pushAwayFrom(Entity entity) {
-        if (entity.isAttackable()) {
-            entity.setVelocity(entity.getVelocity().add(0, 4, 0));
-        }
     }
 
     @Override

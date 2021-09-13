@@ -32,7 +32,7 @@ public class SandblasterItem extends CustomTool {
                     player.getStackInHand(interactionHand)) >= 0)) {
                 player.getInventory().getStack(slot).decrement(1);
             }
-            
+
             player.incrementStat(Stats.USED.getOrCreateStat(this));
         }
 

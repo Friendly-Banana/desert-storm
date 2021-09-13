@@ -1,7 +1,5 @@
 package org.gara.desertstorm.block;
 
-import java.util.Random;
-
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
@@ -13,9 +11,11 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldView;
 
+import java.util.Random;
+
 public class CoconutBlock extends FallingBlock {
     // minX, minY, minZ, maxX, maxY, maxZ
-    private static final VoxelShape SHAPE = Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+    private static final VoxelShape SHAPE = Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 12.0D, 14.0D);
 
     public CoconutBlock() {
         super(FabricBlockSettings.of(Material.WOOD).strength(2.0f).breakByTool(FabricToolTags.AXES).nonOpaque());
@@ -30,7 +30,7 @@ public class CoconutBlock extends FallingBlock {
 
     @Override
     public VoxelShape getOutlineShape(BlockState blockState, BlockView blockGetter, BlockPos blockPos,
-            ShapeContext collisionContext) {
+                                      ShapeContext collisionContext) {
         return SHAPE;
     }
 

@@ -15,9 +15,7 @@ import org.gara.desertstorm.mixin.PublicTreeDecoratorType;
 
 public class CoconutDecorator extends TreeDecorator {
     public static final CoconutDecorator INSTANCE = new CoconutDecorator();
-    public static final Codec<CoconutDecorator> CODEC = Codec.unit(() -> {
-        return INSTANCE;
-    });
+    public static final Codec<CoconutDecorator> CODEC = Codec.unit(() -> INSTANCE);
     public static final TreeDecoratorType<CoconutDecorator> DECORATOR_TYPE = PublicTreeDecoratorType
             .invokeRegister("coconut", CODEC);
 

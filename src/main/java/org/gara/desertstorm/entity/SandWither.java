@@ -21,8 +21,7 @@ public class SandWither extends WitherEntity {
         // drop picked up stuff
         // copied from Mob
         EquipmentSlot[] equipment = EquipmentSlot.values();
-        for (int itemSlot = 0; itemSlot < equipment.length; ++itemSlot) {
-            EquipmentSlot equipmentSlot = equipment[itemSlot];
+        for (EquipmentSlot equipmentSlot : equipment) {
             ItemStack itemStack = this.getEquippedStack(equipmentSlot);
             float f = this.getDropChance(equipmentSlot);
             boolean bl2 = f > 1.0F;

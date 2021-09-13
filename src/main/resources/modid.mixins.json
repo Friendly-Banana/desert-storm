@@ -4,10 +4,10 @@
   "package": "org.gara.desertstorm.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "CoconutTrees",
+    "PublicRegistry",
     "PublicTreeDecoratorType",
-    "VillagerFollow",
-    "PotionAccessor",
-    "CoconutTrees"
+    "VillagerFollow"
   ],
   "injectors": {
     "defaultRequire": 1

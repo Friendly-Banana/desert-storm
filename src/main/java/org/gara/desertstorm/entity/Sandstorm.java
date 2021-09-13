@@ -1,11 +1,5 @@
 package org.gara.desertstorm.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.gara.desertstorm.Utils;
-import org.jetbrains.annotations.Nullable;
-
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.EntityType;
@@ -19,16 +13,20 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
+import org.gara.desertstorm.Utils;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Sandstorm extends AreaEffectCloudEntity {
     private final ServerBossBar bossEvent;
-    List<FallingBlockEntity> flyingBlocks;
+    final List<FallingBlockEntity> flyingBlocks;
 
     public Sandstorm(EntityType<? extends Sandstorm> entityType, World level) {
         super(entityType, level);
         this.bossEvent = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.YELLOW,
                 BossBar.Style.PROGRESS)).setDarkenSky(true);
-        
         this.setDuration(3 * 60 * 20);
         this.setRadius(5.0F);
         this.setParticleType(ParticleTypes.DRAGON_BREATH);
@@ -36,7 +34,7 @@ public class Sandstorm extends AreaEffectCloudEntity {
         this.addEffect(new StatusEffectInstance(StatusEffects.INSTANT_DAMAGE, 1, 1));
         this.addEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 10));
 
-        flyingBlocks = new ArrayList<FallingBlockEntity>();
+        flyingBlocks = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             FallingBlockEntity sandEntity = FabricEntityType.FALLING_BLOCK.create(level);
             sandEntity.timeFalling = 1;

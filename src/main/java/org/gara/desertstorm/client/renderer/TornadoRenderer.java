@@ -1,7 +1,5 @@
 package org.gara.desertstorm.client.renderer;
 
-import org.gara.desertstorm.entity.Tornado;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -9,6 +7,7 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory.Context;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import org.gara.desertstorm.entity.Tornado;
 
 /*
  * A renderer is used to provide an entity model, shadow size, and texture.
@@ -23,7 +22,7 @@ public class TornadoRenderer extends EntityRenderer<Tornado> {
 
     @Override
     public void render(Tornado entity, float f, float g, MatrixStack poseStack,
-            VertexConsumerProvider multiBufferSource, int i) {
+                       VertexConsumerProvider multiBufferSource, int i) {
         // do nothing
     }
 

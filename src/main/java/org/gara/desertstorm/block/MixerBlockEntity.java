@@ -1,16 +1,5 @@
 package org.gara.desertstorm.block;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.gara.desertstorm.DesertStorm;
-import org.gara.desertstorm.Utils;
-import org.gara.desertstorm.item.cocktails.CocktailRecipeRegistry;
-import org.gara.desertstorm.screen.MixerScreenHandler;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
@@ -18,7 +7,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -32,61 +20,56 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
+import org.apache.commons.lang3.ArrayUtils;
+import org.gara.desertstorm.DesertStorm;
+import org.gara.desertstorm.Utils;
+import org.gara.desertstorm.item.cocktail.CocktailRecipeRegistry;
+import org.gara.desertstorm.screen.MixerScreenHandler;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class MixerBlockEntity extends LockableContainerBlockEntity implements SidedInventory {
-    private static final int[] INPUT_SLOTS = { 0, 1, 2 };
-    private static final int[] OUTPUT_SLOTS = new int[] { 3, 4, 5 };
-    private Item cocktailMixing;
-    /** Remaining Time till {@link #cocktailMixing} is finished */
-    int mixTime;
-    private boolean[] slotsEmptyLastTick;
-    private final DefaultedList<ItemStack> inventory;
+    private static final int[] INPUT_SLOTS = {0, 1, 2};
+    private static final int[] OUTPUT_SLOTS = {3, 4, 5};
     protected final PropertyDelegate propertyDelegate;
+    private final DefaultedList<ItemStack> inventory;
+    /**
+     * Remaining Time till cocktail is finished
+     */
+    int mixTime;
+    private ItemStack mixing;
+    private boolean[] slotsEmptyLastTick;
 
     public MixerBlockEntity(BlockPos pos, BlockState state) {
         super(DesertStorm.MIXER_BLOCK_ENTITY, pos, state);
         this.inventory = DefaultedList.ofSize(6, ItemStack.EMPTY);
-        this.propertyDelegate = new PropertyDelegate() {
-            public int get(int index) {
-                // switch?
-                return MixerBlockEntity.this.mixTime;
-            }
-
-            public void set(int index, int value) {
-                MixerBlockEntity.this.mixTime = value;
-            }
-
-            public int size() {
-                return 1;
-            }
-        };
+        this.propertyDelegate = new MyPropertyDelegate(this);
     }
 
-    public DefaultedList<ItemStack> getItems() {
-        return inventory;
-    }
-
-    // TODO tick method
     public static void tick(World world, BlockPos pos, BlockState state, MixerBlockEntity blockEntity) {
         boolean weCanCraft = canCraft(blockEntity.inventory);
         boolean stillMixing = blockEntity.mixTime > 0;
-        ItemStack itemStack2 = (ItemStack) blockEntity.inventory.get(3);
-        if (stillMixing) {
-            --blockEntity.mixTime;
-            boolean finished = blockEntity.mixTime == 0;
-            if (finished && weCanCraft) {
-                craft(world, pos, blockEntity.inventory);
-                markDirty(world, pos, state);
-            } else if (!weCanCraft || !itemStack2.isOf(blockEntity.cocktailMixing)) {
-                blockEntity.mixTime = 0;
+        if (weCanCraft) {
+            if (blockEntity.mixing == null) {
+                blockEntity.mixing = CocktailRecipeRegistry.craft(inputSlots(blockEntity.inventory));
+                blockEntity.mixTime = 300;
+            }
+            if (stillMixing) {
+                --blockEntity.mixTime;
+            }
+            if (blockEntity.mixTime == 0) {
+                craft(world, pos, blockEntity.inventory, blockEntity.mixing);
+                blockEntity.mixing = null;
+                blockEntity.mixTime = 300;
                 markDirty(world, pos, state);
             }
-        } else if (weCanCraft) {
-            blockEntity.mixTime = 300;
-            blockEntity.cocktailMixing = itemStack2.getItem();
-            markDirty(world, pos, state);
+        } else {
+            blockEntity.mixing = null;
         }
-        
+
         // show bottles
         boolean[] bottles = blockEntity.getGlassBottles();
         if (!Arrays.equals(bottles, blockEntity.slotsEmptyLastTick)) {
@@ -97,22 +80,21 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
             }
 
             for (int i = 0; i < MixerBlock.BOTTLE_PROPERTIES.length; ++i) {
-                blockState = (BlockState) blockState.with(MixerBlock.BOTTLE_PROPERTIES[i], bottles[i]);
+                blockState = blockState.with(MixerBlock.BOTTLE_PROPERTIES[i], bottles[i]);
             }
 
             world.setBlockState(pos, blockState, Block.NOTIFY_LISTENERS);
         }
     }
 
-    
-
     /**
      * Cleans slots up
+     *
      * @param slots All slots of an inventory
      * @return input slots containing Items
      */
     private static List<ItemStack> inputSlots(DefaultedList<ItemStack> slots) {
-        List<ItemStack> items = new ArrayList<ItemStack>(3);
+        List<ItemStack> items = new ArrayList<>(3);
         for (int i : INPUT_SLOTS) {
             if (!slots.get(i).isEmpty()) {
                 items.add(slots.get(i));
@@ -122,18 +104,23 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
     }
 
     private static boolean canCraft(DefaultedList<ItemStack> slots) {
-        if (slots.isEmpty())
-            return false;
-        else {
-            return CocktailRecipeRegistry.hasRecipe(inputSlots(slots));
+        if (CocktailRecipeRegistry.hasRecipe(inputSlots(slots))) {
+            // at least one bottle needed
+            for (int i : OUTPUT_SLOTS) {
+                if (slots.get(i).isOf(Items.GLASS_BOTTLE)) {
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
-    private static void craft(World world, BlockPos pos, DefaultedList<ItemStack> slots) {
+    private static void craft(World world, BlockPos pos, DefaultedList<ItemStack> slots, ItemStack expected) {
         ItemStack result = CocktailRecipeRegistry.craft(inputSlots(slots));
+        if (!result.isItemEqual(expected)) return;
         for (int i : OUTPUT_SLOTS) {
             if (slots.get(i).isOf(Items.GLASS_BOTTLE)) {
-                slots.set(i, result);                
+                slots.set(i, result);
             }
         }
 
@@ -145,16 +132,20 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
                 ItemStack remainder = new ItemStack(itemStack.getItem().getRecipeRemainder());
                 // Ingredient used up
                 if (itemStack.isEmpty()) {
-                    itemStack = remainder;
-                    // drop Item
-                } else {
-                    ItemScatterer.spawn(world, (double) pos.getX(), (double) pos.getY(), (double) pos.getZ(),
+                    slots.set(i, remainder);
+                }  // drop Item
+                else {
+                    ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(),
                             remainder);
                 }
             }
         }
 
         world.syncWorldEvent(WorldEvents.BREWING_STAND_BREWS, pos, 0);
+    }
+
+    public DefaultedList<ItemStack> getItems() {
+        return inventory;
     }
 
     private boolean[] getGlassBottles() {
@@ -216,7 +207,7 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
                 return true;
             }
 
-            itemStack = (ItemStack) var1.next();
+            itemStack = var1.next();
         } while (itemStack.isEmpty());
 
         return false;
@@ -275,6 +266,27 @@ public class MixerBlockEntity extends LockableContainerBlockEntity implements Si
 
     @Override
     public boolean canExtract(int slot, ItemStack stack, Direction dir) {
-        return ArrayUtils.contains(OUTPUT_SLOTS, slot) ? stack.isOf(Items.GLASS_BOTTLE) : true;
+        return !ArrayUtils.contains(OUTPUT_SLOTS, slot) || stack.isOf(Items.GLASS_BOTTLE);
+    }
+
+    private record MyPropertyDelegate(
+            MixerBlockEntity mixerBlockEntity) implements PropertyDelegate {
+
+        @Override
+        public int get(int index) {
+            Utils.Debug();
+            Utils.Log(mixerBlockEntity.mixTime);
+            return mixerBlockEntity.mixTime;
+        }
+
+        @Override
+        public void set(int index, int value) {
+            mixerBlockEntity.mixTime = value;
+        }
+
+        @Override
+        public int size() {
+            return 1;
+        }
     }
 }

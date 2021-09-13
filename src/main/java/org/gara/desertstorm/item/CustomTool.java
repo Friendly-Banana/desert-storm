@@ -1,8 +1,5 @@
 package org.gara.desertstorm.item;
 
-import java.util.List;
-
-import org.gara.desertstorm.Utils;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -14,6 +11,9 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import org.gara.desertstorm.Utils;
+
+import java.util.List;
 
 public class CustomTool extends ToolItem implements Vanishable/* , AttackAction */ {
     public final String identifier;
