@@ -133,8 +133,8 @@ public class DesertStorm implements ModInitializer {
                 MONKEY = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("monkey"),
                                 FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, Monkey::new)
                                                 .dimensions(EntityDimensions.fixed(0.75f, 0.75f)).build());
-                MONKEY_SPAWN_EGG = new SpawnEggItem(MONKEY, 10107904, 0,
-                                new FabricItemSettings().group(ItemGroup.MISC));
+                MONKEY_SPAWN_EGG = registerItem("monkey_spawn_egg", new SpawnEggItem(MONKEY, 10107904, 0,
+                                new FabricItemSettings().group(ItemGroup.MISC)));
 
                 SAND_WITHER = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("sand_wither"),
                                 FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, SandWither::new)
@@ -159,7 +159,9 @@ public class DesertStorm implements ModInitializer {
                                         stacks.add(new ItemStack(BATTERY_ITEM));
                                         stacks.add(new ItemStack(BANANA_ITEM));
                                         stacks.add(new ItemStack(COCONUT_BLOCK));
+                                        stacks.add(new ItemStack(MIXER_BLOCK));
                                         stacks.add(new ItemStack(LIGHTNING_TRAP_BLOCK));
+                                        stacks.add(new ItemStack(MONKEY_SPAWN_EGG));
                                         stacks.add(new ItemStack(SAND_WITHER_SPAWN_EGG));
                                         stacks.add(new ItemStack(COCKTAIL));
                                         stacks.add(PotionUtil.setPotion(new ItemStack(Items.POTION),

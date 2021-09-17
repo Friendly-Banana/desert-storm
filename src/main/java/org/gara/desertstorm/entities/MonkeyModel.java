@@ -1,72 +1,30 @@
 package org.gara.desertstorm.entities;
 
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.client.model.ModelData;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.model.ModelPartBuilder;
-import net.minecraft.client.model.ModelPartData;
-import net.minecraft.client.model.ModelTransform;
-import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.model.EntityModelPartNames;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.entity.model.QuadrupedEntityModel;
 
-public class MonkeyModel extends EntityModel<Monkey> {
-     
-    private final ModelPart head;
-    private final ModelPart base;
-    private final ModelPart right_leg;
-    private final ModelPart left_leg;
-    private final ModelPart right_arm;
-    private final ModelPart left_arm;
- 
-    public MonkeyModel(ModelPart modelPart) {
-        this.base = modelPart.getChild(EntityModelPartNames.BODY);
-        this.head = modelPart.getChild(EntityModelPartNames.HEAD);
-        this.right_leg = modelPart.getChild(EntityModelPartNames.RIGHT_LEG);
-        this.left_leg = modelPart.getChild(EntityModelPartNames.LEFT_LEG);
-        this.right_arm = modelPart.getChild(EntityModelPartNames.RIGHT_ARM);
-        this.left_arm = modelPart.getChild(EntityModelPartNames.LEFT_ARM);
+public class MonkeyModel extends QuadrupedEntityModel<Monkey> {
+    protected MonkeyModel(ModelPart root) {
+        super(root, true, 10.0F, 4.0F, 2.0F, 2.0F, 24);
     }
- 
+
+    private static ModelPartData modelPartData;
+
     public static TexturedModelData getTexturedModelData() {
         ModelData modelData = new ModelData();
-        ModelPartData modelPartData = modelData.getRoot();
-        modelPartData.addChild(EntityModelPartNames.HEAD, ModelPartBuilder.create().uv(64, 64).cuboid(-6F, 12F, -5F, 10F, 8F, 10F), ModelTransform.pivot(0F, 0F, 0F));
-        modelPartData.addChild(EntityModelPartNames.BODY, ModelPartBuilder.create().uv(0, 0).cuboid(-6F, 12F, -6F, 12F, 12F, 12F), ModelTransform.pivot(0F, 0F, 0F));
-        modelPartData.addChild(EntityModelPartNames.RIGHT_LEG, ModelPartBuilder.create().uv(0, 0).cuboid(-6F, 116F, -6F, 12F, 10F, 12F), ModelTransform.pivot(0F, 0F, 0F));
-        modelPartData.addChild(EntityModelPartNames.LEFT_LEG, ModelPartBuilder.create().uv(0, 0).cuboid(-6F, 116F, -6F, 12F, 10F, 12F), ModelTransform.pivot(0F, 0F, 0F));
-        modelPartData.addChild(EntityModelPartNames.RIGHT_ARM, ModelPartBuilder.create().uv(0, 0).cuboid(-6F, 116F, -6F, 12F, 10F, 12F), ModelTransform.pivot(0F, 0F, 0F));
-        modelPartData.addChild(EntityModelPartNames.LEFT_ARM, ModelPartBuilder.create().uv(0, 0).cuboid(-6F, 116F, -6F, 12F, 10F, 12F), ModelTransform.pivot(0F, 0F, 0F));
-        return TexturedModelData.of(modelData, 128, 128);
+        modelPartData = modelData.getRoot();
+        // negative Z-Achse ist vorne, rechts = positive X-Achse
+        float witdh = 6, height = 12, armeVonDerMitte = -6, beineVonMitte = 7.0F;
+        modelPartData.addChild(EntityModelPartNames.HEAD, ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -4.0F, -6.0F, 8.0F, 8.0F, 6.0F).uv(22, 0), ModelTransform.pivot(0.0F, 4.0F, -8.0F));
+        modelPartData.addChild(EntityModelPartNames.BODY, ModelPartBuilder.create().uv(18, 4).cuboid(-8.0F, -10.0F, -beineVonMitte, 16.0F, 18.0F, 10.0F).uv(52, 0).cuboid(-2.0F, 2.0F, -8.0F, 4.0F, 6.0F, 1.0F), ModelTransform.of(0.0F, 5.0F, 2.0F, 1.5707964F, 0.0F, 0.0F));
+        ModelPartBuilder modelPartBuilder = ModelPartBuilder.create().uv(0, 16).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, height, 4.0F);
+        modelPartData.addChild(EntityModelPartNames.RIGHT_HIND_LEG, modelPartBuilder, ModelTransform.pivot(witdh, 16, beineVonMitte));
+        modelPartData.addChild(EntityModelPartNames.RIGHT_HIND_LEG, modelPartBuilder, ModelTransform.pivot(witdh, height, beineVonMitte));
+        modelPartData.addChild(EntityModelPartNames.LEFT_HIND_LEG, modelPartBuilder, ModelTransform.pivot(-witdh, height, beineVonMitte));
+        modelPartData.addChild(EntityModelPartNames.RIGHT_FRONT_LEG, modelPartBuilder, ModelTransform.pivot(witdh, height, armeVonDerMitte));
+        modelPartData.addChild(EntityModelPartNames.LEFT_FRONT_LEG, modelPartBuilder, ModelTransform.pivot(-witdh, height, armeVonDerMitte));
+        modelPartData.addChild(EntityModelPartNames.TAIL, modelPartBuilder, ModelTransform.pivot(0, height, 4));
+        return TexturedModelData.of(modelData, 64, 32);
     }
- 
-    @Override
-    public void setAngles(Monkey entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
-    }
- 
-    @Override
-    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {
-        ImmutableList.of(this.base).forEach((modelRenderer) -> {
-            modelRenderer.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-        });
-        ImmutableList.of(this.head).forEach((modelRenderer) -> {
-            modelRenderer.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-        });
-        ImmutableList.of(this.right_leg).forEach((modelRenderer) -> {
-            modelRenderer.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-        });
-        ImmutableList.of(this.left_leg).forEach((modelRenderer) -> {
-            modelRenderer.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-        });
-        ImmutableList.of(this.right_arm).forEach((modelRenderer) -> {
-            modelRenderer.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-        });
-        ImmutableList.of(this.left_arm).forEach((modelRenderer) -> {
-            modelRenderer.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-        });
-        
-    }
-} 
+}
