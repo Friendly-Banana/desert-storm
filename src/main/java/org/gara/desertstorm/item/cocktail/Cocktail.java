@@ -20,6 +20,6 @@ public class Cocktail extends Potion {
 
     @Override
     public String finishTranslationKey(String prefix) {
-        return prefix + (name == null ? DesertStorm.COCKTAIL_REGISTRY.getId(this).getPath() : name);
+        return prefix + "." + name;
     }
 }

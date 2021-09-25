@@ -20,7 +20,9 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import org.gara.desertstorm.block.*;
+import org.gara.desertstorm.entity.RollingBarrel;
 import org.gara.desertstorm.entity.SandWither;
 import org.gara.desertstorm.entity.Sandstorm;
 import org.gara.desertstorm.entity.Tornado;
@@ -48,6 +50,8 @@ public class DesertStorm implements ModInitializer {
     public static final BatteryItem BATTERY_ITEM;
     public static final BananaItem BANANA_ITEM;
 
+    public static final SpawnEggItem SAND_WITHER_SPAWN_EGG;
+
     // Cocktails
     public static final CocktailItem COCKTAIL;
 
@@ -68,15 +72,12 @@ public class DesertStorm implements ModInitializer {
 
     // Entities
     public static final EntityType<SandWither> SAND_WITHER;
-
-    public static final SpawnEggItem SAND_WITHER_SPAWN_EGG;
-
+    public static final EntityType<RollingBarrel> ROLLING_BARREL;
     public static final EntityType<Sandstorm> SANDSTORM;
-
     public static final EntityType<Tornado> TORNADO;
 
     public static final ItemGroup ITEM_TAB;
-    private static List<ItemStack> items = new ArrayList<ItemStack>();
+    private static final List<ItemStack> items = new ArrayList<>();
 
     static {
         COCKTAIL_REGISTRY = PublicRegistry.createDefaulted(RegistryKey.ofRegistry(Utils.NewIdentifier("cocktail_registry")), "desertstorm:empty", () -> Cocktails.EMPTY);
@@ -121,9 +122,12 @@ public class DesertStorm implements ModInitializer {
                         .spawnGroup(SpawnGroup.CREATURE).entityFactory(SandWither::new)
                         .dimensions(EntityDimensions.fixed(1f, 3.5f)).build());
 
-        // #FFE900, #000000 in decimal
         SAND_WITHER_SPAWN_EGG = registerItem("sand_wither_spawn_egg",
-                new SpawnEggItem(SAND_WITHER, 16771328, 0, new FabricItemSettings().group(ItemGroup.MISC)));
+                new SpawnEggItem(SAND_WITHER, 0xffe900, 0, new FabricItemSettings().group(ItemGroup.MISC)));
+
+        ROLLING_BARREL = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("rolling_barrel"), FabricEntityTypeBuilder
+                .createLiving().defaultAttributes(RollingBarrel::createBarrelAttributes).spawnGroup(SpawnGroup.MONSTER).entityFactory((EntityType.EntityFactory<RollingBarrel>) RollingBarrel::new).
+                dimensions(EntityDimensions.fixed(3, 2)).fireImmune().build());
 
         SANDSTORM = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("sandstorm"), FabricEntityTypeBuilder
                 .create(SpawnGroup.MISC, Sandstorm::new).dimensions(EntityDimensions.fixed(1, 1)).fireImmune().build());
@@ -134,10 +138,8 @@ public class DesertStorm implements ModInitializer {
         TORNADO = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("tornado"),
                 tornadoBuilder.dimensions(Tornado.dimensions).fireImmune().build());
 
-        ITEM_TAB = FabricItemGroupBuilder.create(Utils.NewIdentifier("items")).icon(() -> new ItemStack(Items.SAND))
-                .appendItems(stacks -> {
-                    stacks.addAll(items);
-                }).build();
+        ITEM_TAB = FabricItemGroupBuilder.create(Utils.NewIdentifier("item_tab")).icon(() -> new ItemStack(Items.SAND))
+                .appendItems(stacks -> stacks.addAll(items)).build();
     }
 
     private static <T extends CustomItem> T registerCustomItem(T item) {

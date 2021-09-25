@@ -22,7 +22,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.gara.desertstorm.DesertStorm;
-import org.gara.desertstorm.damage.TornadoDamage;
+import org.gara.desertstorm.DamageSources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,6 @@ public class Tornado extends Entity {
     public static final EntityDimensions dimensions = EntityDimensions.fixed(3, 5);
     private static final ParticleEffect particleOptions = new BlockStateParticleEffect(ParticleTypes.FALLING_DUST,
             Blocks.SAND.getDefaultState());
-    private static final TornadoDamage damageSource = new TornadoDamage();
     private final ServerBossBar bossEvent;
     private final List<FallingBlockEntity> flyingBlocks;
     private int duration;
@@ -133,7 +132,7 @@ public class Tornado extends Entity {
     @Override
     public void onPlayerCollision(PlayerEntity player) {
         super.onPlayerCollision(player);
-        player.damage(damageSource, 1.5f);
+        player.damage(DamageSources.TORNADO, 1.5f);
     }
 
     @Override

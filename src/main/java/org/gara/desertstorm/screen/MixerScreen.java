@@ -35,7 +35,6 @@ public class MixerScreen extends HandledScreen<ScreenHandler> {
                 this.drawTexture(matrices, width / 2 + 39, topY + 30, 177, 0, 7, n);
             }
         }
-        this.drawTexture(matrices, leftX + 127, topY + 30, 176, 0, 7, 28);
     }
 
     @Override

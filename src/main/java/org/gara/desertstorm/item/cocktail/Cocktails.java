@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.Utils;
-import org.gara.desertstorm.damage.MolotovDamage;
+import org.gara.desertstorm.DamageSources;
 import org.jetbrains.annotations.Nullable;
 
 public final class Cocktails {
@@ -51,7 +51,7 @@ public final class Cocktails {
         DISLOCATOR = registerCocktail(
                 new Cocktail("dislocator", new StatusEffectInstance(TELEPORTER, 1)));
         ICED = registerCocktail(
-                new Cocktail("icecold", new StatusEffectInstance(FREEZING, 170)));
+                new Cocktail("iced", new StatusEffectInstance(FREEZING, 170)));
         MIDAS_SPECIAL = registerCocktail(new Cocktail("midas_special",
                 new StatusEffectInstance(MIDAS_TOUCH, 600)));
         MOLOTOV = registerCocktail(new Cocktail("molotov",
@@ -67,7 +67,7 @@ public final class Cocktails {
                 new StatusEffectInstance(StatusEffects.HASTE, 600)));
         HEALTHY_SMOOTHIE = registerCocktail(new Cocktail("healthy_smoothie",
                 new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 10, 5)));
-        MULTIVITAMIN = registerCocktail(new Cocktail("multivitamine",
+        MULTIVITAMIN = registerCocktail(new Cocktail("multivitamin",
                 new StatusEffectInstance(StatusEffects.NIGHT_VISION, 3600),
                 new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 10, 5)));
     }
@@ -138,7 +138,7 @@ public final class Cocktails {
     private static class Molotov extends InstantStatusEffect {
 
         public Molotov() {
-            super(StatusEffectCategory.NEUTRAL, 0);
+            super(StatusEffectCategory.NEUTRAL, 0xFF0000);
         }
 
         @Override
@@ -146,7 +146,7 @@ public final class Cocktails {
                                        int amplifier, double proximity) {
             if (!target.isSpectator()) {
                 World world = target.getEntityWorld();
-                world.createExplosion(attacker, new MolotovDamage(), null, target.getX(), target.getY(), target.getZ(), 1.5F, true, Explosion.DestructionType.NONE);
+                world.createExplosion(attacker, DamageSources.MOLOTOV, null, target.getX(), target.getY(), target.getZ(), 1.5F, true, Explosion.DestructionType.NONE);
             }
         }
     }
@@ -171,6 +171,7 @@ public final class Cocktails {
         @Override
         public void applyInstantEffect(@Nullable Entity source, @Nullable Entity attacker, LivingEntity target,
                                        int amplifier, double proximity) {
+            Utils.Debug();
             if (!target.isSpectator()) {
                 Utils.Debug();
                 int i = 0;

@@ -12,8 +12,8 @@ import org.gara.desertstorm.DesertStorm;
 
 public class SandWither extends WitherEntity {
 
-    public SandWither(EntityType<? extends WitherEntity> entityType, World level) {
-        super(entityType, level);
+    public SandWither(EntityType<? extends SandWither> entityType, World world) {
+        super(entityType, world);
     }
 
     @Override
