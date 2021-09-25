@@ -2,7 +2,7 @@ package org.gara.desertstorm;
 
 import org.gara.desertstorm.blocks.*;
 import org.gara.desertstorm.client.MixerScreenHandler;
-import org.gara.desertstorm.entities.Monkey;
+import org.gara.desertstorm.entities.MonkeyEntity;
 import org.gara.desertstorm.entities.SandWither;
 import org.gara.desertstorm.entities.Sandstorm;
 import org.gara.desertstorm.entities.Tornado;
@@ -59,7 +59,7 @@ public class DesertStorm implements ModInitializer {
         public static BlockEntityType<LightningTrapBlockEntity> TRAP_BLOCK_ENTITY;
 
         // Entities
-        public static final EntityType<Monkey> MONKEY;
+        public static final EntityType<MonkeyEntity> MONKEY;
 
         public static final SpawnEggItem MONKEY_SPAWN_EGG;
 
@@ -93,7 +93,7 @@ public class DesertStorm implements ModInitializer {
                 CocktailRecipeRegistry.registerDefaults();
 
                 FabricDefaultAttributeRegistry.register(SAND_WITHER, SandWither.createWitherAttributes());
-                FabricDefaultAttributeRegistry.register(MONKEY, Monkey.createMonkeyAttributes());
+                FabricDefaultAttributeRegistry.register(MONKEY, MonkeyEntity.createMonkeyAttributes());
         }
 
         static {
@@ -131,8 +131,8 @@ public class DesertStorm implements ModInitializer {
                                                 .create(LightningTrapBlockEntity::new, LIGHTNING_TRAP_BLOCK).build());
 
                 MONKEY = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("monkey"),
-                                FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, Monkey::new)
-                                                .dimensions(EntityDimensions.fixed(0.75f, 0.75f)).build());
+                                FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, MonkeyEntity::new)
+                                                .dimensions(EntityDimensions.fixed(1.0f, 1.0f)).build());
                 MONKEY_SPAWN_EGG = registerItem("monkey_spawn_egg", new SpawnEggItem(MONKEY, 10107904, 0,
                                 new FabricItemSettings().group(ItemGroup.MISC)));
 

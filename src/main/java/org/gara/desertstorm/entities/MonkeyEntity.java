@@ -3,37 +3,87 @@ package org.gara.desertstorm.entities;
 import java.util.EnumSet;
 
 import org.gara.desertstorm.DesertStorm;
-import org.gara.desertstorm.Utils;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.NoPenaltyTargeting;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.NavigationType;
+import net.minecraft.entity.ai.pathing.SpiderNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-public class Monkey extends AnimalEntity {
+public class MonkeyEntity extends AnimalEntity {
+    private static final TrackedData<Byte> CLIMBING_FLAG;
+    private static final TrackedData<BlockPos> TREASURE_POS;
+    private static final TrackedData<Boolean> HAS_BANANA;
 
-    private BlockPos blockPos;
-    private boolean hasBanana;
+    static {
+        CLIMBING_FLAG = DataTracker.registerData(MonkeyEntity.class, TrackedDataHandlerRegistry.BYTE);
+        TREASURE_POS = DataTracker.registerData(MonkeyEntity.class, TrackedDataHandlerRegistry.BLOCK_POS);
+        HAS_BANANA = DataTracker.registerData(MonkeyEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    }
 
-    public Monkey(EntityType<? extends AnimalEntity> entityType, World world) {
+    public MonkeyEntity(EntityType<? extends AnimalEntity> entityType, World world) {
         super(entityType, world);
     }
 
     public static DefaultAttributeContainer.Builder createMonkeyAttributes() {
         return MobEntity.createMobAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2F);
+    }
+
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putInt("TreasurePosX", this.getTreasurePos().getX());
+        nbt.putInt("TreasurePosY", this.getTreasurePos().getY());
+        nbt.putInt("TreasurePosZ", this.getTreasurePos().getZ());
+        nbt.putBoolean("GotBanana", this.getHasBanana());
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        int i = nbt.getInt("TreasurePosX");
+        int j = nbt.getInt("TreasurePosY");
+        int k = nbt.getInt("TreasurePosZ");
+        this.setTreasurePos(new BlockPos(i, j, k));
+        super.readCustomDataFromNbt(nbt);
+        this.setHasBanana(nbt.getBoolean("GotBanana"));
+    }
+
+    @Override
+    public ActionResult interactMob(PlayerEntity player, Hand hand) {
+        ItemStack itemStack = player.getStackInHand(hand);
+        if (!itemStack.isEmpty() && itemStack.isOf(DesertStorm.COCONUT_ITEM)) {
+            if (!this.world.isClient) {
+                this.playSound(SoundEvents.ENTITY_LLAMA_EAT, 1.0F, 1.0F);
+            }
+            this.setHasBanana(true);
+            if (!player.getAbilities().creativeMode) {
+                itemStack.decrement(1);
+            }
+            return ActionResult.success(this.world.isClient);
+        } else {
+            return super.interactMob(player, hand);
+        }
     }
 
     @Override
@@ -50,6 +100,45 @@ public class Monkey extends AnimalEntity {
     }
 
     @Override
+    protected void initDataTracker() {
+        super.initDataTracker();
+        this.dataTracker.startTracking(CLIMBING_FLAG, (byte) 0);
+        this.dataTracker.startTracking(TREASURE_POS, BlockPos.ORIGIN);
+        this.dataTracker.startTracking(HAS_BANANA, true);
+    }
+
+    // #region climbing
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.world.isClient) {
+            this.setClimbingWall(this.horizontalCollision);
+        }
+    }
+    
+    @Override
+    public boolean isClimbing() {
+        return (this.dataTracker.get(CLIMBING_FLAG) & 1) != 0;
+    }
+
+    public void setClimbingWall(boolean climbing) {
+        byte b = this.dataTracker.get(CLIMBING_FLAG);
+        if (climbing) {
+            b = (byte) (b | 1);
+        } else {
+            b &= -2;
+        }
+        this.dataTracker.set(CLIMBING_FLAG, b);
+    }
+
+    @Override
+    protected EntityNavigation createNavigation(World world) {
+        return new SpiderNavigation(this, world);
+    }
+    // #endregion
+
+    // #region breeding
+    @Override
     public PassiveEntity createChild(ServerWorld world, PassiveEntity other) {
         return DesertStorm.MONKEY.create(world);
     }
@@ -58,6 +147,7 @@ public class Monkey extends AnimalEntity {
     public boolean isBreedingItem(ItemStack stack) {
         return stack.isOf(DesertStorm.BANANA_ITEM);
     }
+    // #endregion
 
     protected boolean isNearTarget() {
         BlockPos blockPos = this.getNavigation().getTargetPos();
@@ -65,49 +155,45 @@ public class Monkey extends AnimalEntity {
     }
 
     public boolean getHasBanana() {
-        return this.hasBanana;
+        return this.dataTracker.get(HAS_BANANA);
     }
 
     public void setHasBanana(boolean hasBanana) {
-        this.hasBanana = hasBanana;
+        this.dataTracker.set(HAS_BANANA, hasBanana);
     }
 
     public BlockPos getTreasurePos() {
-        return this.blockPos;
+        return this.dataTracker.get(TREASURE_POS);
     }
 
     public void setTreasurePos(BlockPos blockPos) {
-        this.blockPos = blockPos;
+        this.dataTracker.set(TREASURE_POS, blockPos);
     }
 
     static class LeadToNearbyTreasureGoal extends Goal {
-        private final Monkey monkey;
+        private final MonkeyEntity monkey;
         private boolean noPathToStructure;
 
-        LeadToNearbyTreasureGoal(Monkey monkey) {
+        LeadToNearbyTreasureGoal(MonkeyEntity monkey) {
             this.monkey = monkey;
             this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
         }
 
         public boolean canStop() {
-            Utils.Debug();
             return false;
         }
 
         public boolean canStart() {
-            Utils.Debug();
             return this.monkey.getHasBanana();
         }
 
         public boolean shouldContinue() {
-            Utils.Debug();
             BlockPos blockPos = this.monkey.getTreasurePos();
             return !(new BlockPos(blockPos.getX(), this.monkey.getY(), blockPos.getZ()))
                     .isWithinDistance(this.monkey.getPos(), 4.0D) && !this.noPathToStructure;
         }
 
         public void start() {
-            Utils.Debug();
             if (this.monkey.world instanceof ServerWorld serverWorld) {
                 this.noPathToStructure = false;
                 this.monkey.getNavigation().stop();
@@ -125,18 +211,16 @@ public class Monkey extends AnimalEntity {
         }
 
         public void stop() {
-            Utils.Debug();
             BlockPos blockPos = this.monkey.getTreasurePos();
             if ((new BlockPos((double) blockPos.getX(), this.monkey.getY(), (double) blockPos.getZ()))
                     .isWithinDistance(this.monkey.getPos(), 4.0D) || this.noPathToStructure) {
                 this.monkey.setHasBanana(false);
             }
-
         }
 
         public void tick() {
             World world = this.monkey.world;
-            if (true ||this.monkey.isNearTarget() || this.monkey.getNavigation().isIdle()) {
+            if (this.monkey.isNearTarget() || this.monkey.getNavigation().isIdle()) {
                 Vec3d vec3d = Vec3d.ofCenter(this.monkey.getTreasurePos());
                 Vec3d vec3d2 = NoPenaltyTargeting.find(this.monkey, 16, 1, vec3d, 0.39269909262657166D);
                 if (vec3d2 == null) {
@@ -155,8 +239,8 @@ public class Monkey extends AnimalEntity {
                     return;
                 }
 
-                this.monkey.getLookControl().lookAt(vec3d2.x, vec3d2.y, vec3d2.z,
-                        (this.monkey.getBodyYawSpeed() + 20), this.monkey.getLookPitchSpeed());
+                this.monkey.getLookControl().lookAt(vec3d2.x, vec3d2.y, vec3d2.z, (this.monkey.getBodyYawSpeed() + 20),
+                        this.monkey.getLookPitchSpeed());
                 this.monkey.getNavigation().startMovingTo(vec3d2.x, vec3d2.y, vec3d2.z, 1.3D);
                 if (world.random.nextInt(80) == 0) {
                     world.sendEntityStatus(this.monkey, (byte) 38);
