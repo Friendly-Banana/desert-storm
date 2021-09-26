@@ -1,5 +1,16 @@
 package org.gara.desertstorm;
 
+import org.gara.desertstorm.blocks.*;
+import org.gara.desertstorm.client.MixerScreenHandler;
+import org.gara.desertstorm.entities.MonkeyEntity;
+import org.gara.desertstorm.entities.SandWither;
+import org.gara.desertstorm.entities.Sandstorm;
+import org.gara.desertstorm.entities.Tornado;
+import org.gara.desertstorm.items.*;
+import org.gara.desertstorm.items.cocktails.CocktailItem;
+import org.gara.desertstorm.items.cocktails.CocktailRecipeRegistry;
+import org.gara.desertstorm.items.cocktails.Cocktails;
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -38,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DesertStorm implements ModInitializer {
-    public static final DefaultedRegistry<Cocktail> COCKTAIL_REGISTRY;
+        public static final DefaultedRegistry<Cocktail> COCKTAIL_REGISTRY;
 
     public static final ScreenHandlerType<MixerScreenHandler> MIXER_SCREEN_HANDLER;
 
@@ -50,21 +61,21 @@ public class DesertStorm implements ModInitializer {
     public static final BatteryItem BATTERY_ITEM;
     public static final BananaItem BANANA_ITEM;
 
-    public static final SpawnEggItem SAND_WITHER_SPAWN_EGG;
+        public static final SpawnEggItem SAND_WITHER_SPAWN_EGG;
 
     // Cocktails
     public static final CocktailItem COCKTAIL;
 
-    // Blocks
-    public static final CoconutBlock COCONUT_BLOCK;
-    public static final BlockItem COCONUT_ITEM;
+        // Blocks
+        public static final CoconutBlock COCONUT_BLOCK;
+        public static final BlockItem COCONUT_ITEM;
     public static final BlockItem END_GATEWAY_ITEM;
     public static final BlockItem END_PORTAL_ITEM;
     public static final BlockItem NETHER_PORTAL_ITEM;
 
-    public static final MixerBlock MIXER_BLOCK;
-    public static final BlockItem MIXER_ITEM;
-    public static final BlockEntityType<MixerBlockEntity> MIXER_BLOCK_ENTITY;
+        public static final MixerBlock MIXER_BLOCK;
+        public static final BlockItem MIXER_ITEM;
+        public static final BlockEntityType<MixerBlockEntity> MIXER_BLOCK_ENTITY;
 
     public static final LightningTrapBlock LIGHTNING_TRAP_BLOCK;
     public static final BlockItem LIGHTNING_TRAP_ITEM;
@@ -116,6 +127,12 @@ public class DesertStorm implements ModInitializer {
                 new BlockItem(LIGHTNING_TRAP_BLOCK, new FabricItemSettings().group(ItemGroup.COMBAT)));
         TRAP_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Utils.NewIdentifier("lightning_trap_block_entity"),
                 FabricBlockEntityTypeBuilder.create(LightningTrapBlockEntity::new, LIGHTNING_TRAP_BLOCK).build());
+        MONKEY = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("monkey"),
+                FabricEntityTypeBuilder.createLiving().defaultAttributes(MonkeyEntity::createWitherAttributes)
+                        .spawnGroup(SpawnGroup.CREATURE).entityFactory(MonkeyEntity::new)
+                        .dimensions(EntityDimensions.fixed(1.0f, 1.0f)).build());
+        MONKEY_SPAWN_EGG = registerItem("monkey_spawn_egg", new SpawnEggItem(MONKEY, 10107904, 0,
+                new FabricItemSettings().group(ItemGroup.MISC)));
 
         SAND_WITHER = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("sand_wither"),
                 FabricEntityTypeBuilder.createLiving().defaultAttributes(SandWither::createWitherAttributes)
