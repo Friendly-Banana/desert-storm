@@ -21,8 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.DamageSources;
+import org.gara.desertstorm.DesertStorm;
 
 import java.util.ArrayList;
 import java.util.List;

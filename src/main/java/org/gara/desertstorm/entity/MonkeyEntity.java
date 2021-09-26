@@ -1,8 +1,4 @@
-package org.gara.desertstorm.entities;
-
-import java.util.EnumSet;
-
-import org.gara.desertstorm.DesertStorm;
+package org.gara.desertstorm.entity;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.NoPenaltyTargeting;
@@ -30,6 +26,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.StructureFeature;
+import org.gara.desertstorm.DesertStorm;
+
+import java.util.EnumSet;
 
 public class MonkeyEntity extends AnimalEntity {
     private static final TrackedData<Byte> CLIMBING_FLAG;
@@ -115,7 +114,7 @@ public class MonkeyEntity extends AnimalEntity {
             this.setClimbingWall(this.horizontalCollision);
         }
     }
-    
+
     @Override
     public boolean isClimbing() {
         return (this.dataTracker.get(CLIMBING_FLAG) & 1) != 0;
@@ -135,11 +134,8 @@ public class MonkeyEntity extends AnimalEntity {
     protected EntityNavigation createNavigation(World world) {
         return new SpiderNavigation(this, world);
     }
-    // #endregion
 
-    // #region breeding
-    @Override
-    public PassiveEntity createChild(ServerWorld world, PassiveEntity other) {
+    public MonkeyEntity createChild(ServerWorld world, PassiveEntity other) {
         return DesertStorm.MONKEY.create(world);
     }
 
@@ -147,11 +143,10 @@ public class MonkeyEntity extends AnimalEntity {
     public boolean isBreedingItem(ItemStack stack) {
         return stack.isOf(DesertStorm.BANANA_ITEM);
     }
-    // #endregion
 
     protected boolean isNearTarget() {
         BlockPos blockPos = this.getNavigation().getTargetPos();
-        return blockPos != null ? blockPos.isWithinDistance(this.getPos(), 12.0D) : false;
+        return blockPos != null && blockPos.isWithinDistance(this.getPos(), 12.0D);
     }
 
     public boolean getHasBanana() {
@@ -212,7 +207,7 @@ public class MonkeyEntity extends AnimalEntity {
 
         public void stop() {
             BlockPos blockPos = this.monkey.getTreasurePos();
-            if ((new BlockPos((double) blockPos.getX(), this.monkey.getY(), (double) blockPos.getZ()))
+            if ((new BlockPos(blockPos.getX(), this.monkey.getY(), blockPos.getZ()))
                     .isWithinDistance(this.monkey.getPos(), 4.0D) || this.noPathToStructure) {
                 this.monkey.setHasBanana(false);
             }

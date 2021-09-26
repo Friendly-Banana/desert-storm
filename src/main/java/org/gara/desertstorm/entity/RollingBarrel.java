@@ -9,8 +9,8 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
-import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.DamageSources;
+import org.gara.desertstorm.DesertStorm;
 import org.jetbrains.annotations.Nullable;
 
 public class RollingBarrel extends HostileEntity {

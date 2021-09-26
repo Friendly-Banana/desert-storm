@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Sandstorm extends AreaEffectCloudEntity {
-    private final ServerBossBar bossEvent;
     final List<FallingBlockEntity> flyingBlocks;
+    private final ServerBossBar bossEvent;
 
     public Sandstorm(EntityType<? extends Sandstorm> entityType, World level) {
         super(entityType, level);
@@ -37,6 +37,7 @@ public class Sandstorm extends AreaEffectCloudEntity {
         flyingBlocks = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             FallingBlockEntity sandEntity = FabricEntityType.FALLING_BLOCK.create(level);
+            assert sandEntity != null;
             sandEntity.timeFalling = 1;
             sandEntity.setPosition(this.getLerpedPos(0.1F));
             sandEntity.setNoGravity(true);

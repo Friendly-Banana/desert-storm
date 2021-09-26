@@ -13,9 +13,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
+import org.gara.desertstorm.DamageSources;
 import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.Utils;
-import org.gara.desertstorm.DamageSources;
 import org.jetbrains.annotations.Nullable;
 
 public final class Cocktails {
