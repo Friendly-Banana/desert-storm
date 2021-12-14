@@ -1,4 +1,4 @@
-package org.gara.desertstorm.item.cocktail;
+package org.gara.desertstorm;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -7,29 +7,26 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.potion.Potion;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
-import org.gara.desertstorm.DamageSources;
-import org.gara.desertstorm.DesertStorm;
-import org.gara.desertstorm.Utils;
 import org.jetbrains.annotations.Nullable;
 
 public final class Cocktails {
-    public static final Cocktail EMPTY;
-    public static final Cocktail RADIOACTIVE_COCKTAIL;
-    public static final Cocktail DISLOCATOR;
-    public static final Cocktail SUNRISE;
-    public static final Cocktail SUNSET;
-    public static final Cocktail ICED;
-    public static final Cocktail HOT_COCOA;
-    public static final Cocktail HEALTHY_SMOOTHIE;
-    public static final Cocktail MULTIVITAMIN;
-    public static final Cocktail MIDAS_SPECIAL;
-    public static final Cocktail MOLOTOV;
+    public static final Potion RADIOACTIVE;
+    public static final Potion DISLOCATOR;
+    public static final Potion SUNRISE;
+    public static final Potion SUNSET;
+    public static final Potion ICED;
+    public static final Potion HOT_COCOA;
+    public static final Potion HEALTHY_SMOOTHIE;
+    public static final Potion MULTIVITAMIN;
+    public static final Potion MIDAS_SPECIAL;
+    public static final Potion MOLOTOV;
     public static final StatusEffect MIDAS_TOUCH;
     public static final StatusEffect MOLOTOV_THROWN;
     public static final StatusEffect TELEPORTER;
@@ -43,41 +40,28 @@ public final class Cocktails {
         TELEPORTER = registerEffect("teleporter", new Teleporter());
         FREEZING = registerEffect("freezing", new Freezing());
         RANDOM = registerEffect("random", new Random());
-        // Cocktails
-        EMPTY = registerCocktail(new Cocktail("empty"));
-        // Special Effects
-        RADIOACTIVE_COCKTAIL = registerCocktail(
-                new Cocktail("radioactive", new StatusEffectInstance(RANDOM, 1)));
-        DISLOCATOR = registerCocktail(
-                new Cocktail("dislocator", new StatusEffectInstance(TELEPORTER, 1)));
-        ICED = registerCocktail(
-                new Cocktail("iced", new StatusEffectInstance(FREEZING, 170)));
-        MIDAS_SPECIAL = registerCocktail(new Cocktail("midas_special",
-                new StatusEffectInstance(MIDAS_TOUCH, 600)));
-        MOLOTOV = registerCocktail(new Cocktail("molotov",
-                new StatusEffectInstance(MOLOTOV_THROWN, 1)));
+        RADIOACTIVE = registerPotion("radioactive", new StatusEffectInstance(RANDOM, 1));
+        DISLOCATOR = registerPotion("dislocator", new StatusEffectInstance(TELEPORTER, 1));
+        ICED = registerPotion("iced", new StatusEffectInstance(FREEZING, 170));
+        MIDAS_SPECIAL = registerPotion("midas_special", new StatusEffectInstance(MIDAS_TOUCH, 600));
+        MOLOTOV = registerPotion("molotov", new StatusEffectInstance(MOLOTOV_THROWN, 1));
         // Minecraft Effects
-        SUNRISE = registerCocktail(new Cocktail("sunrise",
-                new StatusEffectInstance(StatusEffects.GLOWING, 1800)));
-        SUNSET = registerCocktail(new Cocktail("sunset",
-                new StatusEffectInstance(StatusEffects.ABSORPTION, 3600),
-                new StatusEffectInstance(StatusEffects.REGENERATION, 1800)));
-        HOT_COCOA = registerCocktail(new Cocktail("hot_cocoa",
-                new StatusEffectInstance(StatusEffects.SPEED, 600),
-                new StatusEffectInstance(StatusEffects.HASTE, 600)));
-        HEALTHY_SMOOTHIE = registerCocktail(new Cocktail("healthy_smoothie",
-                new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 10, 5)));
-        MULTIVITAMIN = registerCocktail(new Cocktail("multivitamin",
-                new StatusEffectInstance(StatusEffects.NIGHT_VISION, 3600),
-                new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 10, 5)));
+        SUNRISE = registerPotion("sunrise", new StatusEffectInstance(StatusEffects.GLOWING, 1800));
+        SUNSET = registerPotion("sunset", new StatusEffectInstance(StatusEffects.ABSORPTION, 3600),
+                new StatusEffectInstance(StatusEffects.REGENERATION, 1800));
+        HOT_COCOA = registerPotion("hot_cocoa", new StatusEffectInstance(StatusEffects.SPEED, 600),
+                new StatusEffectInstance(StatusEffects.HASTE, 600));
+        HEALTHY_SMOOTHIE = registerPotion("healthy_smoothie", new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 10, 5));
+        MULTIVITAMIN = registerPotion("multivitamin", new StatusEffectInstance(StatusEffects.NIGHT_VISION, 3600),
+                new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 10, 5));
     }
 
     private static <T extends StatusEffect> T registerEffect(String id, T entry) {
         return Registry.register(Registry.STATUS_EFFECT, Utils.NewIdentifier(id), entry);
     }
 
-    private static Cocktail registerCocktail(Cocktail cocktail) {
-        return Registry.register(DesertStorm.COCKTAIL_REGISTRY, Utils.NewIdentifier(cocktail.name), cocktail);
+    private static Potion registerPotion(String name, StatusEffectInstance... effects) {
+        return Registry.register(Registry.POTION, name, new Potion(effects));
     }
 
     private static class CustomStatusEffect extends StatusEffect {
@@ -123,7 +107,7 @@ public final class Cocktails {
         private int freezingCounter = 30;
 
         public Freezing() {
-            super(StatusEffectCategory.HARMFUL, Utils.GOLD);
+            super(StatusEffectCategory.HARMFUL, Utils.ICE);
         }
 
         @Override
@@ -136,7 +120,6 @@ public final class Cocktails {
     }
 
     private static class Molotov extends InstantStatusEffect {
-
         public Molotov() {
             super(StatusEffectCategory.NEUTRAL, 0xFF0000);
         }
@@ -146,7 +129,7 @@ public final class Cocktails {
                                        int amplifier, double proximity) {
             if (!target.isSpectator()) {
                 World world = target.getEntityWorld();
-                world.createExplosion(attacker, DamageSources.MOLOTOV, null, target.getX(), target.getY(), target.getZ(), 1.5F, true, Explosion.DestructionType.NONE);
+                world.createExplosion(attacker, DamageSources.MOLOTOV, null, target.getX(), target.getY(), target.getZ(), 3F, true, Explosion.DestructionType.BREAK);
             }
         }
     }
@@ -171,17 +154,14 @@ public final class Cocktails {
         @Override
         public void applyInstantEffect(@Nullable Entity source, @Nullable Entity attacker, LivingEntity target,
                                        int amplifier, double proximity) {
-            Utils.Debug();
             if (!target.isSpectator()) {
-                Utils.Debug();
                 int i = 0;
                 StatusEffect statusEffect;
                 do {
-                    Utils.Log(i);
                     ++i;
                     statusEffect = Registry.STATUS_EFFECT.get(target.getRandom().nextInt());
-                } while (i < 30 && target.hasStatusEffect(statusEffect) && !target.addStatusEffect(new StatusEffectInstance(statusEffect, 30 * 20), attacker));
-                Utils.Log(i);
+                    Utils.Log(statusEffect);
+                } while (i < 5 && target.hasStatusEffect(statusEffect) && !target.addStatusEffect(new StatusEffectInstance(statusEffect, 30 * 20), attacker));
             }
         }
     }

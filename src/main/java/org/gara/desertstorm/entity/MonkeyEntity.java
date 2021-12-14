@@ -31,14 +31,14 @@ import org.gara.desertstorm.DesertStorm;
 import java.util.EnumSet;
 
 public class MonkeyEntity extends AnimalEntity {
-    private static final TrackedData<Byte> CLIMBING_FLAG;
-    private static final TrackedData<BlockPos> TREASURE_POS;
-    private static final TrackedData<Boolean> HAS_BANANA;
+    protected static final TrackedData<Byte> CLIMBING_FLAG;
+    protected static final TrackedData<BlockPos> TREASURE_POS;
+    protected static final TrackedData<Boolean> HAS_FOOD;
 
     static {
         CLIMBING_FLAG = DataTracker.registerData(MonkeyEntity.class, TrackedDataHandlerRegistry.BYTE);
         TREASURE_POS = DataTracker.registerData(MonkeyEntity.class, TrackedDataHandlerRegistry.BLOCK_POS);
-        HAS_BANANA = DataTracker.registerData(MonkeyEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        HAS_FOOD = DataTracker.registerData(MonkeyEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     }
 
     public MonkeyEntity(EntityType<? extends AnimalEntity> entityType, World world) {
@@ -55,7 +55,7 @@ public class MonkeyEntity extends AnimalEntity {
         nbt.putInt("TreasurePosX", this.getTreasurePos().getX());
         nbt.putInt("TreasurePosY", this.getTreasurePos().getY());
         nbt.putInt("TreasurePosZ", this.getTreasurePos().getZ());
-        nbt.putBoolean("GotBanana", this.getHasBanana());
+        nbt.putBoolean("GotBanana", this.getHasFood());
     }
 
     @Override
@@ -65,7 +65,7 @@ public class MonkeyEntity extends AnimalEntity {
         int k = nbt.getInt("TreasurePosZ");
         this.setTreasurePos(new BlockPos(i, j, k));
         super.readCustomDataFromNbt(nbt);
-        this.setHasBanana(nbt.getBoolean("GotBanana"));
+        this.setHasFood(nbt.getBoolean("GotBanana"));
     }
 
     @Override
@@ -75,7 +75,7 @@ public class MonkeyEntity extends AnimalEntity {
             if (!this.world.isClient) {
                 this.playSound(SoundEvents.ENTITY_LLAMA_EAT, 1.0F, 1.0F);
             }
-            this.setHasBanana(true);
+            this.setHasFood(true);
             if (!player.getAbilities().creativeMode) {
                 itemStack.decrement(1);
             }
@@ -103,10 +103,9 @@ public class MonkeyEntity extends AnimalEntity {
         super.initDataTracker();
         this.dataTracker.startTracking(CLIMBING_FLAG, (byte) 0);
         this.dataTracker.startTracking(TREASURE_POS, BlockPos.ORIGIN);
-        this.dataTracker.startTracking(HAS_BANANA, true);
+        this.dataTracker.startTracking(HAS_FOOD, true);
     }
 
-    // #region climbing
     @Override
     public void tick() {
         super.tick();
@@ -149,12 +148,12 @@ public class MonkeyEntity extends AnimalEntity {
         return blockPos != null && blockPos.isWithinDistance(this.getPos(), 12.0D);
     }
 
-    public boolean getHasBanana() {
-        return this.dataTracker.get(HAS_BANANA);
+    public boolean getHasFood() {
+        return this.dataTracker.get(HAS_FOOD);
     }
 
-    public void setHasBanana(boolean hasBanana) {
-        this.dataTracker.set(HAS_BANANA, hasBanana);
+    public void setHasFood(boolean hasFood) {
+        this.dataTracker.set(HAS_FOOD, hasFood);
     }
 
     public BlockPos getTreasurePos() {
@@ -179,7 +178,7 @@ public class MonkeyEntity extends AnimalEntity {
         }
 
         public boolean canStart() {
-            return this.monkey.getHasBanana();
+            return this.monkey.getHasFood();
         }
 
         public boolean shouldContinue() {
@@ -209,7 +208,7 @@ public class MonkeyEntity extends AnimalEntity {
             BlockPos blockPos = this.monkey.getTreasurePos();
             if ((new BlockPos(blockPos.getX(), this.monkey.getY(), blockPos.getZ()))
                     .isWithinDistance(this.monkey.getPos(), 4.0D) || this.noPathToStructure) {
-                this.monkey.setHasBanana(false);
+                this.monkey.setHasFood(false);
             }
         }
 

@@ -132,7 +132,8 @@ public class Tornado extends Entity {
     @Override
     public void onPlayerCollision(PlayerEntity player) {
         super.onPlayerCollision(player);
-        player.damage(DamageSources.TORNADO, 1.5f);
+        player.damage(DamageSources.TORNADO, 1.0f);
+        player.setVelocity(player.getVelocity().add(0, 1, 0));
     }
 
     @Override

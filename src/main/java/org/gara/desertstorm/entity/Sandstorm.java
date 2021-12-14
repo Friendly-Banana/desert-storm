@@ -21,12 +21,9 @@ import java.util.List;
 
 public class Sandstorm extends AreaEffectCloudEntity {
     final List<FallingBlockEntity> flyingBlocks;
-    private final ServerBossBar bossEvent;
 
-    public Sandstorm(EntityType<? extends Sandstorm> entityType, World level) {
-        super(entityType, level);
-        this.bossEvent = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.YELLOW,
-                BossBar.Style.PROGRESS)).setDarkenSky(true);
+    public Sandstorm(EntityType<? extends Sandstorm> entityType, World world) {
+        super(entityType, world);
         this.setDuration(3 * 60 * 20);
         this.setRadius(5.0F);
         this.setParticleType(ParticleTypes.DRAGON_BREATH);
@@ -36,13 +33,14 @@ public class Sandstorm extends AreaEffectCloudEntity {
 
         flyingBlocks = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            FallingBlockEntity sandEntity = FabricEntityType.FALLING_BLOCK.create(level);
+            FallingBlockEntity sandEntity = FabricEntityType.FALLING_BLOCK.create(world);
             assert sandEntity != null;
             sandEntity.timeFalling = 1;
+            sandEntity.dropItem = false;
             sandEntity.setPosition(this.getLerpedPos(0.1F));
             sandEntity.setNoGravity(true);
             sandEntity.startRiding(this);
-            level.spawnEntity(sandEntity);
+            world.spawnEntity(sandEntity);
             flyingBlocks.add(sandEntity);
         }
     }
@@ -50,35 +48,10 @@ public class Sandstorm extends AreaEffectCloudEntity {
     @Override
     public void tick() {
         super.tick();
-        this.bossEvent.setPercent(1 - (float) age / this.getDuration());
-    }
-
-    @Override
-    public void readCustomDataFromNbt(NbtCompound compoundTag) {
-        super.readCustomDataFromNbt(compoundTag);
-        if (this.getDuration() <= 0) {
-            setDuration((random.nextInt(150) + 30) * 20);
+        // keep sand blocks from despawning
+        for (FallingBlockEntity block :  flyingBlocks)
+        {
+            block.timeFalling = 1;
         }
-        if (this.hasCustomName()) {
-            this.bossEvent.setName(this.getDisplayName());
-        }
-    }
-
-    @Override
-    public void setCustomName(@Nullable Text component) {
-        super.setCustomName(component);
-        this.bossEvent.setName(this.getDisplayName());
-    }
-
-    @Override
-    public void onStartedTrackingBy(ServerPlayerEntity serverPlayer) {
-        super.onStartedTrackingBy(serverPlayer);
-        this.bossEvent.addPlayer(serverPlayer);
-    }
-
-    @Override
-    public void onStoppedTrackingBy(ServerPlayerEntity serverPlayer) {
-        super.onStoppedTrackingBy(serverPlayer);
-        this.bossEvent.removePlayer(serverPlayer);
     }
 }

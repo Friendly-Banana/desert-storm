@@ -26,7 +26,7 @@ public class SandblasterItem extends CustomTool {
             sandEntity.setPosition(player.getEyePos());
             level.spawnEntity(sandEntity);
             sandEntity.timeFalling = 1;
-            sandEntity.setVelocity(player.getRotationVector().add(0, 1, 0));
+            sandEntity.setVelocity(player.getRotationVector());
             player.getItemCooldownManager().set(this, 10);
             if (!(player.isCreative() || EnchantmentHelper.getLevel(Enchantments.INFINITY,
                     player.getStackInHand(interactionHand)) >= 0)) {

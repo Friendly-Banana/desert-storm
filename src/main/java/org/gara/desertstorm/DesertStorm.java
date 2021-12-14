@@ -1,43 +1,31 @@
 package org.gara.desertstorm;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.item.*;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Rarity;
-import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import org.gara.desertstorm.block.*;
+import net.minecraft.world.biome.Biome;
+import org.gara.desertstorm.block.CoconutBlock;
+import org.gara.desertstorm.block.LightningTrapBlock;
+import org.gara.desertstorm.block.LightningTrapBlockEntity;
 import org.gara.desertstorm.entity.*;
 import org.gara.desertstorm.item.*;
-import org.gara.desertstorm.item.cocktail.Cocktail;
-import org.gara.desertstorm.item.cocktail.CocktailItem;
-import org.gara.desertstorm.item.cocktail.CocktailRecipeRegistry;
-import org.gara.desertstorm.item.cocktail.Cocktails;
-import org.gara.desertstorm.mixin.PublicRegistry;
-import org.gara.desertstorm.screen.MixerScreenHandler;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.gara.desertstorm.structures.DSStructures;
 
 public class DesertStorm implements ModInitializer {
-    public static final DefaultedRegistry<Cocktail> COCKTAIL_REGISTRY;
-
-    public static final ScreenHandlerType<MixerScreenHandler> MIXER_SCREEN_HANDLER;
-
     // Items
     public static final SandblasterItem SANDBLASTER_ITEM;
 
@@ -47,10 +35,8 @@ public class DesertStorm implements ModInitializer {
     public static final BananaItem BANANA_ITEM;
 
     public static final SpawnEggItem MONKEY_SPAWN_EGG;
+    public static final SpawnEggItem MONKEY_KING_SPAWN_EGG;
     public static final SpawnEggItem SAND_WITHER_SPAWN_EGG;
-
-    // Cocktails
-    public static final CocktailItem COCKTAIL;
 
     // Blocks
     public static final CoconutBlock COCONUT_BLOCK;
@@ -59,79 +45,69 @@ public class DesertStorm implements ModInitializer {
     public static final BlockItem END_PORTAL_ITEM;
     public static final BlockItem NETHER_PORTAL_ITEM;
 
-    public static final MixerBlock MIXER_BLOCK;
-    public static final BlockItem MIXER_ITEM;
-    public static final BlockEntityType<MixerBlockEntity> MIXER_BLOCK_ENTITY;
-
     public static final LightningTrapBlock LIGHTNING_TRAP_BLOCK;
     public static final BlockItem LIGHTNING_TRAP_ITEM;
     public static final BlockEntityType<LightningTrapBlockEntity> TRAP_BLOCK_ENTITY;
 
     // Entities
     public static final EntityType<MonkeyEntity> MONKEY;
+    public static final EntityType<MonkeyKingEntity> MONKEY_KING;
     public static final EntityType<SandWither> SAND_WITHER;
     public static final EntityType<RollingBarrel> ROLLING_BARREL;
     public static final EntityType<Sandstorm> SANDSTORM;
     public static final EntityType<Tornado> TORNADO;
 
     public static final ItemGroup ITEM_TAB;
-    private static final List<ItemStack> items = new ArrayList<>();
 
     static {
-        COCKTAIL_REGISTRY = PublicRegistry.createDefaulted(RegistryKey.ofRegistry(Utils.NewIdentifier("cocktail_registry")), "desertstorm:empty", () -> Cocktails.EMPTY);
+        ITEM_TAB = FabricItemGroupBuilder.create(Utils.NewIdentifier("item_tab")).icon(() -> new ItemStack(Items.SAND)).build();
 
-        MIXER_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(Utils.NewIdentifier("mixer"),
-                MixerScreenHandler::new);
-
-        BATTERY_ITEM = registerCustomItem(new BatteryItem(new FabricItemSettings().group(ItemGroup.MISC)));
+        BATTERY_ITEM = registerCustomItem(new BatteryItem(new FabricItemSettings().group(ITEM_TAB)));
         BANANA_ITEM = registerCustomItem(
-                new BananaItem(new FabricItemSettings().group(ItemGroup.MISC).food(BananaItem.FOOD_PROPERTIES)));
+                new BananaItem(new FabricItemSettings().group(ITEM_TAB).food(BananaItem.FOOD_PROPERTIES)));
         SANDSTAR_ITEM = registerCustomItem(
-                new SandstarItem(new FabricItemSettings().group(ItemGroup.MISC).fireproof().rarity(Rarity.UNCOMMON)));
-        SANDBLASTER_ITEM = registerItem("sandblaster",
-                new SandblasterItem(new FabricItemSettings().group(ItemGroup.COMBAT)));
+                new SandstarItem(new FabricItemSettings().group(ITEM_TAB).fireproof().rarity(Rarity.UNCOMMON)));
+        SANDBLASTER_ITEM = registerItem("sandblaster", new SandblasterItem(new FabricItemSettings().group(ITEM_TAB)));
 
-        COCKTAIL = registerItem("cocktail",
-                new CocktailItem("cocktail", new FabricItemSettings().group(ItemGroup.BREWING)));
 
-        NETHER_PORTAL_ITEM = registerItem("nether_portal", new BlockItem(Blocks.NETHER_PORTAL, new FabricItemSettings().group(ItemGroup.DECORATIONS)));
-        END_PORTAL_ITEM = registerItem("end_portal", new BlockItem(Blocks.END_PORTAL, new FabricItemSettings().group(ItemGroup.DECORATIONS)));
-        END_GATEWAY_ITEM = registerItem("end_gateway", new BlockItem(Blocks.END_GATEWAY, new FabricItemSettings().group(ItemGroup.DECORATIONS)));
+        NETHER_PORTAL_ITEM = registerItem("nether_portal", new BlockItem(Blocks.NETHER_PORTAL, new FabricItemSettings().group(ITEM_TAB)));
+        END_PORTAL_ITEM = registerItem("end_portal", new BlockItem(Blocks.END_PORTAL, new FabricItemSettings().group(ITEM_TAB)));
+        END_GATEWAY_ITEM = registerItem("end_gateway", new BlockItem(Blocks.END_GATEWAY, new FabricItemSettings().group(ITEM_TAB)));
 
         COCONUT_BLOCK = registerBlock("coconut", new CoconutBlock());
         COCONUT_ITEM = registerItem("coconut",
-                new BlockItem(COCONUT_BLOCK, new FabricItemSettings().group(ItemGroup.DECORATIONS)));
-
-        MIXER_BLOCK = Registry.register(Registry.BLOCK, Utils.NewIdentifier("mixer"),
-                new MixerBlock(FabricBlockSettings.of(Material.METAL)));
-        MIXER_ITEM = registerItem("mixer",
-                new BlockItem(MIXER_BLOCK, new FabricItemSettings().group(ItemGroup.BREWING)));
-        MIXER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, "desertstorm:mixer_block_entity",
-                FabricBlockEntityTypeBuilder.create(MixerBlockEntity::new, MIXER_BLOCK).build());
+                new BlockItem(COCONUT_BLOCK, new FabricItemSettings().group(ITEM_TAB)));
 
         LIGHTNING_TRAP_BLOCK = registerBlock("lightning_trap", new LightningTrapBlock());
         LIGHTNING_TRAP_ITEM = registerItem("lightning_trap",
-                new BlockItem(LIGHTNING_TRAP_BLOCK, new FabricItemSettings().group(ItemGroup.COMBAT)));
+                new BlockItem(LIGHTNING_TRAP_BLOCK, new FabricItemSettings().group(ITEM_TAB)));
         TRAP_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Utils.NewIdentifier("lightning_trap_block_entity"),
                 FabricBlockEntityTypeBuilder.create(LightningTrapBlockEntity::new, LIGHTNING_TRAP_BLOCK).build());
 
         MONKEY = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("monkey"),
                 FabricEntityTypeBuilder.createLiving().defaultAttributes(MonkeyEntity::createMonkeyAttributes)
-                        .spawnGroup(SpawnGroup.AMBIENT).entityFactory(MonkeyEntity::new)
-                        .dimensions(EntityDimensions.fixed(1.0f, 1.0f)).build());
-        MONKEY_SPAWN_EGG = registerItem("monkey_spawn_egg", new SpawnEggItem(MONKEY, 10107904, 0,
-                new FabricItemSettings().group(ItemGroup.MISC)));
+                        .entityFactory(MonkeyEntity::new).dimensions(EntityDimensions.fixed(1.5f, 1.0f)).build());
+        MONKEY_SPAWN_EGG = registerItem("monkey_spawn_egg", new SpawnEggItem(MONKEY, 0x9a3c00, 0,
+                new FabricItemSettings().group(ITEM_TAB)));
+
+        MONKEY_KING = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("monkey_king"),
+                FabricEntityTypeBuilder.createLiving().defaultAttributes(MonkeyKingEntity::createMonkeyKingAttributes)
+                        .spawnGroup(SpawnGroup.MONSTER).entityFactory(MonkeyKingEntity::new).fireImmune()
+                        .dimensions(EntityDimensions.fixed(1.5f, 1.0f)).build());
+        MONKEY_KING_SPAWN_EGG = registerItem("monkey_king_spawn_egg", new SpawnEggItem(MONKEY_KING, 0x5a1c00, 0x000000,
+                new FabricItemSettings().group(ITEM_TAB)));
 
         SAND_WITHER = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("sand_wither"),
                 FabricEntityTypeBuilder.createLiving().defaultAttributes(SandWither::createWitherAttributes)
                         .spawnGroup(SpawnGroup.CREATURE).entityFactory(SandWither::new)
                         .dimensions(EntityDimensions.fixed(1f, 3.5f)).build());
         SAND_WITHER_SPAWN_EGG = registerItem("sand_wither_spawn_egg",
-                new SpawnEggItem(SAND_WITHER, 0xffe900, 0, new FabricItemSettings().group(ItemGroup.MISC)));
+                new SpawnEggItem(SAND_WITHER, 0xffe900, 0, new FabricItemSettings().group(ITEM_TAB)));
 
         ROLLING_BARREL = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("rolling_barrel"), FabricEntityTypeBuilder
-                .createLiving().defaultAttributes(RollingBarrel::createBarrelAttributes).spawnGroup(SpawnGroup.MONSTER).entityFactory((EntityType.EntityFactory<RollingBarrel>) RollingBarrel::new).
-                dimensions(EntityDimensions.fixed(3, 2)).fireImmune().build());
+                .createLiving().defaultAttributes(RollingBarrel::createBarrelAttributes).spawnGroup(SpawnGroup.MONSTER)
+                .entityFactory((EntityType.EntityFactory<RollingBarrel>) RollingBarrel::new)
+                .dimensions(EntityDimensions.fixed(1, 1)).fireImmune().build());
 
         SANDSTORM = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("sandstorm"), FabricEntityTypeBuilder
                 .create(SpawnGroup.MISC, Sandstorm::new).dimensions(EntityDimensions.fixed(1, 1)).fireImmune().build());
@@ -141,9 +117,6 @@ public class DesertStorm implements ModInitializer {
                 Tornado::new));
         TORNADO = Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier("tornado"),
                 tornadoBuilder.dimensions(Tornado.dimensions).fireImmune().build());
-
-        ITEM_TAB = FabricItemGroupBuilder.create(Utils.NewIdentifier("item_tab")).icon(() -> new ItemStack(Items.SAND))
-                .appendItems(stacks -> stacks.addAll(items)).build();
     }
 
     private static <T extends CustomItem> T registerCustomItem(T item) {
@@ -151,7 +124,6 @@ public class DesertStorm implements ModInitializer {
     }
 
     private static <T extends Item> T registerItem(String id, T item) {
-        items.add(new ItemStack(item));
         return Registry.register(Registry.ITEM, Utils.NewIdentifier(id), item);
     }
 
@@ -164,6 +136,32 @@ public class DesertStorm implements ModInitializer {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
-        CocktailRecipeRegistry.registerDefaults();
+
+        /*
+         * We set up and register our structures here.
+         * You should always register your stuff to prevent mod compatibility issue down the line.
+         */
+        DSStructures.registerStructures();
+
+        /*
+         * This is the API you will use to add anything to any biome.
+         * This includes spawns, changing the biome's looks, messing with its surfacebuilders,
+         * adding carvers, spawning new features... etc
+         *
+         * Make sure you give this an identifier to make it clear later what mod did a change and why.
+         * It'll help people look to see if your mod was removing something from biomes.
+         * The biome modifier identifier might also be used by modpacks to disable mod's modifiers too for customization.
+         */
+        BiomeModifications.create(Utils.NewIdentifier("run_down_house_addition"))
+                .add(// Describes what we are doing. Since we are adding a structure, we choose ADDITIONS.
+                        ModificationPhase.ADDITIONS,
+                        // Add our structure to all biomes including other modded biomes.
+                        // You can filter to certain biomes based on stuff like temperature, scale, precipitation, mod id.
+                        BiomeSelectors.all(),
+                        // context is basically the biome itself. This is where you do the changes to the biome.
+                        // Here, we will add our ConfiguredStructureFeature to the biome.
+                        context -> context.getGenerationSettings().addBuiltInStructure(DSStructures.CONFIGURED_RUN_DOWN_HOUSE));
+        BiomeModifications.create(Utils.NewIdentifier("kong_level")).add(ModificationPhase.ADDITIONS, BiomeSelectors.categories(Biome.Category.JUNGLE),
+                context -> context.getGenerationSettings().addBuiltInStructure(DSStructures.CONFIGURED_KONG_LEVEL));
     }
 }

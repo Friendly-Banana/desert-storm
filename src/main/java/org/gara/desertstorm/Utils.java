@@ -6,7 +6,7 @@ import net.minecraft.util.Identifier;
 
 public class Utils {
     public static final String MOD_ID = "desertstorm";
-    public static final int GOLD = 0xffd700, SAND = 0xffe11f;
+    public static final int GOLD = 0xffd700, SAND = 0xffe11f, ICE = 0x80e5ef;
 
     private static int counter = 0;
 
@@ -18,7 +18,7 @@ public class Utils {
     public static void Log(Object... objects) {
         StringBuilder str = new StringBuilder();
         for (Object object : objects) {
-            str.append(object.toString());
+            str.append(object == null ? "null" : object.toString());
             str.append(", ");
         }
         System.out.println(str.substring(0, str.length() - 2));

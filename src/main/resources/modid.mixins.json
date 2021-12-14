@@ -4,10 +4,8 @@
   "package": "org.gara.desertstorm.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "CoconutTrees",
-    "PublicRegistry",
-    "PublicTreeDecoratorType",
-    "VillagerFollow"
+    "CoconutTrees","CocktailRegistry","NoiseChunkGeneratorMixin","PublicTreeDecoratorType",
+    "StructuresConfigAccessor","VillagerFollow"
   ],
   "injectors": {
     "defaultRequire": 1

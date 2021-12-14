@@ -1,17 +1,18 @@
 package org.gara.desertstorm.entity;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.gara.desertstorm.DamageSources;
 import org.gara.desertstorm.DesertStorm;
-import org.jetbrains.annotations.Nullable;
+import org.gara.desertstorm.Utils;
 
 public class RollingBarrel extends HostileEntity {
     LivingEntity owner;
@@ -20,19 +21,47 @@ public class RollingBarrel extends HostileEntity {
         super(entityType, world);
     }
 
-    public RollingBarrel(@Nullable LivingEntity owner, World world, Vec3d pos) {
+    public RollingBarrel(LivingEntity owner, World world, Vec3d pos) {
         this(DesertStorm.ROLLING_BARREL, world);
-        this.refreshPositionAfterTeleport(pos);
+        this.setPosition(pos);
         this.owner = owner;
     }
 
     public static DefaultAttributeContainer.Builder createBarrelAttributes() {
-        return createHostileAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 2.5);
+        return createHostileAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.5).add(EntityAttributes.GENERIC_MAX_HEALTH, 5);
     }
 
     @Override
-    protected void onBlockCollision(BlockState state) {
-        super.onBlockCollision(state);
-        world.createExplosion(owner, DamageSources.BARREL, null, this.getX(), this.getY(), this.getZ(), 1.5F, true, Explosion.DestructionType.NONE);
+    protected void initGoals() {
+        this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(1, new MeleeAttackGoal(this, 0.5D, false));
+        this.goalSelector.add(3, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+        this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true, true));
+    }
+
+    @Override
+    public void onPlayerCollision(PlayerEntity player) {
+        super.onPlayerCollision(player);
+        if (Utils.IsSurvival(player)) {
+            Explode();
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (horizontalCollision) {
+            Explode();
+        }
+    }
+
+    private void Explode() {
+        this.world.createExplosion(owner, DamageSources.BARREL, null, this.getX(), this.getY(), this.getZ(), 1.5F, true, Explosion.DestructionType.NONE);
+        this.discard();
+    }
+
+    @Override
+    public boolean isOnFire() {
+        return true;
     }
 }
