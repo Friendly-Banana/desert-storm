@@ -1,5 +1,5 @@
 # Desert Storm
-A Minecraft mod I made to better understand Minecraft and train my Java skills.
+A Minecraft mod I made to better understand Minecraft, train my Java skills and fix annoying things.
 ## Install
 - Download and execute [Fabric Installer](https://www.fabricmc.net/use/installer/)
 - Put [Fabric Api](https://www.curseforge.com/minecraft/mc-mods/fabric-api) in your mod folder
