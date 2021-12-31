@@ -1,7 +1,7 @@
 package org.gara.desertstorm.mixin;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.world.gen.feature.ConfiguredFeatures;
+import net.minecraft.world.gen.feature.TreeConfiguredFeatures;
 import net.minecraft.world.gen.treedecorator.TreeDecorator;
 import org.gara.desertstorm.CoconutDecorator;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Slice;
 
 import java.util.List;
 
-@Mixin(ConfiguredFeatures.class)
+@Mixin(TreeConfiguredFeatures.class)
 public class CoconutTrees {
     // JUNGLE_TREE
     @ModifyArg(method = "<clinit>", slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=jungle_tree")), at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/feature/TreeFeatureConfig$Builder;decorators(Ljava/util/List;)Lnet/minecraft/world/gen/feature/TreeFeatureConfig$Builder;", ordinal = 0))

@@ -216,15 +216,15 @@ public class MonkeyEntity extends AnimalEntity {
             World world = this.monkey.world;
             if (this.monkey.isNearTarget() || this.monkey.getNavigation().isIdle()) {
                 Vec3d vec3d = Vec3d.ofCenter(this.monkey.getTreasurePos());
-                Vec3d vec3d2 = NoPenaltyTargeting.find(this.monkey, 16, 1, vec3d, 0.39269909262657166D);
+                Vec3d vec3d2 = NoPenaltyTargeting.findTo(this.monkey, 16, 1, vec3d, 0.39269909262657166D);
                 if (vec3d2 == null) {
-                    vec3d2 = NoPenaltyTargeting.find(this.monkey, 8, 4, vec3d, 1.5707963705062866D);
+                    vec3d2 = NoPenaltyTargeting.findTo(this.monkey, 8, 4, vec3d, 1.5707963705062866D);
                 }
 
                 if (vec3d2 != null) {
                     BlockPos blockPos = new BlockPos(vec3d2);
                     if (!world.getBlockState(blockPos).canPathfindThrough(world, blockPos, NavigationType.LAND)) {
-                        vec3d2 = NoPenaltyTargeting.find(this.monkey, 8, 5, vec3d, 1.5707963705062866D);
+                        vec3d2 = NoPenaltyTargeting.findTo(this.monkey, 8, 5, vec3d, 1.5707963705062866D);
                     }
                 }
 
@@ -233,8 +233,8 @@ public class MonkeyEntity extends AnimalEntity {
                     return;
                 }
 
-                this.monkey.getLookControl().lookAt(vec3d2.x, vec3d2.y, vec3d2.z, (this.monkey.getBodyYawSpeed() + 20),
-                        this.monkey.getLookPitchSpeed());
+                this.monkey.getLookControl().lookAt(vec3d2.x, vec3d2.y, vec3d2.z, (this.monkey.getMaxHeadRotation() + 20),
+                        this.monkey.getMaxLookPitchChange());
                 this.monkey.getNavigation().startMovingTo(vec3d2.x, vec3d2.y, vec3d2.z, 1.3D);
                 if (world.random.nextInt(80) == 0) {
                     world.sendEntityStatus(this.monkey, (byte) 38);

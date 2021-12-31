@@ -3,6 +3,7 @@ package org.gara.desertstorm.mixin;
 import net.minecraft.entity.ai.goal.GoalSelector;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
@@ -14,15 +15,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(MobEntity.class)
+@Mixin(PigEntity.class)
 @SuppressWarnings({"ConstantConditions"})
-public class VillagerFollow {
+public class FlyingPigs {
     @Final
     @Shadow
     protected GoalSelector goalSelector;
 
     @Inject(method = "initGoals", at = @At(value = "HEAD"))
     private void addEmeraldTempt(CallbackInfo ci) {
+        PigEntity pig =PigEntity
         if ((MobEntity) (Object) this instanceof VillagerEntity) {
             VillagerEntity villagerEntity = (VillagerEntity) (Object) this;
             float villagerRunSpeed = 0.5F;

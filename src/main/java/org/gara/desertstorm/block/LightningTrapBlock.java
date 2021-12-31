@@ -1,7 +1,6 @@
 package org.gara.desertstorm.block;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -30,13 +29,13 @@ public class LightningTrapBlock extends Block implements BlockEntityProvider {
     public static final BooleanProperty CHARGED = BooleanProperty.of("charged");
 
     public LightningTrapBlock() {
-        super(FabricBlockSettings.of(Material.STONE).strength(4.0f).breakByTool(FabricToolTags.PICKAXES));
+        super(FabricBlockSettings.of(Material.STONE).strength(4.0f));
         setDefaultState(getDefaultState().with(CHARGED, false));
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos arg0, BlockState arg1) {
-        return new LightningTrapBlockEntity(arg0, arg1);
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new LightningTrapBlockEntity(pos, state);
     }
 
     @Override
@@ -51,13 +50,14 @@ public class LightningTrapBlock extends Block implements BlockEntityProvider {
                 player.getStackInHand(interactionHand).decrement(1);
             }
             player.incrementStat(Stats.USED.getOrCreateStat(DesertStorm.LIGHTNING_TRAP_ITEM));
+            player.incrementStat(Stats.USED.getOrCreateStat(DesertStorm.BATTERY_ITEM));
             return ActionResult.CONSUME;
         }
         return ActionResult.PASS;
     }
 
     @Override
-    public void onSteppedOn(World level, BlockPos blockPos, BlockState blockState, Entity entity) {
+    public void onSteppedOn(World world, BlockPos blockPos, BlockState blockState, Entity entity) {
         if (blockState.get(CHARGED)) {
             // Only react for survival
             if (entity instanceof PlayerEntity) {
@@ -65,10 +65,10 @@ public class LightningTrapBlock extends Block implements BlockEntityProvider {
                     return;
             }
             // Summoning the Lighting Bolt at the block
-            LightningEntity lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
-            lightningBolt.refreshPositionAfterTeleport(entity.getLerpedPos(0));
-            level.spawnEntity(lightningBolt);
-            level.setBlockState(blockPos, blockState.with(CHARGED, false));
+            LightningEntity lightningBolt = EntityType.LIGHTNING_BOLT.create(world);
+            lightningBolt.refreshPositionAfterTeleport(entity.getPos());
+            world.spawnEntity(lightningBolt);
+            world.setBlockState(blockPos, blockState.with(CHARGED, false));
         }
     }
 

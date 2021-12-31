@@ -1,8 +1,6 @@
 {
-  "parent": "minecraft:block/end_portal",
-  "display": {
-    "firstperson_righthand": {
-      "rotation": [90, 90, 0]
-    }
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "entity/end_portal"
   }
 }

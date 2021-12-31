@@ -3,6 +3,7 @@ package org.gara.desertstorm;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 public class Utils {
     public static final String MOD_ID = "desertstorm";
@@ -22,6 +23,10 @@ public class Utils {
             str.append(", ");
         }
         System.out.println(str.substring(0, str.length() - 2));
+    }
+
+    public static <T> T NotNull(@Nullable T one, T fallback) {
+        return one != null ? one : fallback;
     }
 
     public static TranslatableText GetTooltip(String itemName, Object... objects) {

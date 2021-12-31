@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(BrewingRecipeRegistry.class)
-public class CocktailRegistry {
+public class AddCocktailsToRegistry {
     @Inject(method = "registerDefaults", at = @At(value = "TAIL"))
     private static void registerCocktails(CallbackInfo ci) {
         registerPotionRecipe(Potions.MUNDANE, Items.RABBIT_FOOT, Potions.LUCK);

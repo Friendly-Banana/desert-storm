@@ -2,7 +2,10 @@ package org.gara.desertstorm.entity;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.HostileEntity;
@@ -23,7 +26,7 @@ public class RollingBarrel extends HostileEntity {
 
     public RollingBarrel(LivingEntity owner, World world, Vec3d pos) {
         this(DesertStorm.ROLLING_BARREL, world);
-        this.setPosition(pos);
+        this.refreshPositionAfterTeleport(pos);
         this.owner = owner;
     }
 
@@ -36,28 +39,17 @@ public class RollingBarrel extends HostileEntity {
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(1, new MeleeAttackGoal(this, 0.5D, false));
         this.goalSelector.add(3, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-        this.targetSelector.add(2, new FollowTargetGoal<>(this, PlayerEntity.class, true, true));
+        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true, true));
     }
 
     @Override
     public void onPlayerCollision(PlayerEntity player) {
         super.onPlayerCollision(player);
         if (Utils.IsSurvival(player)) {
-            Explode();
+            player.damage(DamageSources.BARREL, world.getDifficulty().getId() * 1.5f);
+            this.world.createExplosion(owner, DamageSources.BARREL, null, this.getX(), this.getY(), this.getZ(), 5F, true, Explosion.DestructionType.NONE);
+            this.discard();
         }
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (horizontalCollision) {
-            Explode();
-        }
-    }
-
-    private void Explode() {
-        this.world.createExplosion(owner, DamageSources.BARREL, null, this.getX(), this.getY(), this.getZ(), 1.5F, true, Explosion.DestructionType.NONE);
-        this.discard();
     }
 
     @Override

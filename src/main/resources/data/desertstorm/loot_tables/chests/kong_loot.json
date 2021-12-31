@@ -2,8 +2,8 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "rolls": 1.0,
-      "bonus_rolls": 0.0,
+      "rolls": 5,
+      "bonus_rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
@@ -39,10 +39,6 @@
           "type": "minecraft:item",
           "weight": 1,
           "name": "desertstorm:sandblaster"
-        },
-        {
-          "type": "minecraft:empty",
-          "weight": 1
         }
       ]
     }

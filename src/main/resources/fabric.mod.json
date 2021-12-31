@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "desertstorm",
   "version": "${version}",
-
   "name": "Desert Storm",
   "description": "Adds a Desert Boss, Sandstorms, dangerous Tornadoes, Monkeys, funky Cocktails and more",
   "authors": [
@@ -12,10 +11,8 @@
     "homepage": "https://fabricmc.net/",
     "sources": "https://github.com/Just-Learned-It/desert-storm"
   },
-
   "license": "",
   "icon": "assets/desertstorm/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -31,11 +28,10 @@
   "mixins": [
     "modid.mixins.json"
   ],
-
   "depends": {
-    "fabricloader": ">=0.11.6",
+    "fabricloader": ">=0.12.0",
     "fabric": "*",
-    "minecraft": "1.17.1",
-    "java": ">=16"
+    "minecraft": "1.18.1",
+    "java": ">=17"
   }
 }
