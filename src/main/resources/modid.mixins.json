@@ -4,8 +4,10 @@
   "package": "org.gara.desertstorm.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "AddCocktailsToRegistry","AnimalEntityMixin","CoconutTrees","EvokerSpawnRabbits","LivingEntityMixin","NoiseChunkGeneratorMixin",
-    "PickableEndGateway","PickableEndPortal","PickableNetherPortal","PublicTreeDecoratorType","VillagerFollow"
+    "AddCocktailsToRegistry","AnimalEntityMixin","CoconutTrees","EvokerSpawnRabbits","FlyingPigs","LivingEntityMixin",
+    "NoiseChunkGeneratorMixin","PickableEndGateway","PickableEndPortal","PickableNetherPortal","PlayerEntityMixin",
+    "PublicTreeDecoratorType",
+    "VillagerFollow"
   ],
   "injectors": {
     "defaultRequire": 1

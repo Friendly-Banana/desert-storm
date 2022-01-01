@@ -23,8 +23,7 @@ public class VillagerFollow {
 
     @Inject(method = "initGoals", at = @At(value = "HEAD"))
     private void addEmeraldTempt(CallbackInfo ci) {
-        if ((MobEntity) (Object) this instanceof VillagerEntity) {
-            VillagerEntity villagerEntity = (VillagerEntity) (Object) this;
+        if ((Object) this instanceof VillagerEntity villagerEntity) {
             float villagerRunSpeed = 0.5F;
             goalSelector.add(0, new TemptGoal(villagerEntity, villagerRunSpeed, Ingredient.ofItems(Items.EMERALD), false));
             goalSelector.add(0, new TemptGoal(villagerEntity, villagerRunSpeed, Ingredient.fromTag(ItemTags.BEDS), false));

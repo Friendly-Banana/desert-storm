@@ -1,35 +1,46 @@
 package org.gara.desertstorm.mixin;
 
-import net.minecraft.entity.ai.goal.GoalSelector;
-import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.input.Input;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.tag.ItemTags;
-import org.spongepowered.asm.mixin.Final;
+import net.minecraft.util.math.Vec3d;
+import org.gara.desertstorm.DesertStorm;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PigEntity.class)
-@SuppressWarnings({"ConstantConditions"})
 public class FlyingPigs {
-    @Final
-    @Shadow
-    protected GoalSelector goalSelector;
+    private static Input input;
 
-    @Inject(method = "initGoals", at = @At(value = "HEAD"))
-    private void addEmeraldTempt(CallbackInfo ci) {
-        PigEntity pig =PigEntity
-        if ((MobEntity) (Object) this instanceof VillagerEntity) {
-            VillagerEntity villagerEntity = (VillagerEntity) (Object) this;
-            float villagerRunSpeed = 0.5F;
-            goalSelector.add(0, new TemptGoal(villagerEntity, villagerRunSpeed, Ingredient.ofItems(Items.EMERALD), false));
-            goalSelector.add(0, new TemptGoal(villagerEntity, villagerRunSpeed, Ingredient.fromTag(ItemTags.BEDS), false));
+    @Inject(method = "travel", at = @At(value = "TAIL"), cancellable = true)
+    private void controlFlyingPig(Vec3d movementInput, CallbackInfo ci) {
+        if (input == null) {
+            ClientPlayerEntity clientPlayer = MinecraftClient.getInstance().player;
+            if (clientPlayer != null) input = clientPlayer.input;
+        }
+        if (input == null) {
+            ci.cancel();
+            return;
+        }
+        PigEntity pig = (PigEntity) (Object) this;
+        pig.setNoGravity(false);
+        if (pig.world.getGameRules().getBoolean(DesertStorm.FLYING_PIGS) && pig.canBeControlledByRider()) {
+            if (input.jumping) pig.addVelocity(0, 0.05, 0);
+            if (input.sneaking) pig.addVelocity(0, -0.05, 0);
+            pig.setNoGravity(!pig.isOnGround());
+        }
+    }
+
+    @Inject(method = "getSaddledSpeed", at = @At(value = "HEAD"), cancellable = true)
+    private void flySpeed(CallbackInfoReturnable<Float> cir) {
+        PigEntity pig = (PigEntity) (Object) this;
+        if (pig.world.getGameRules().getBoolean(DesertStorm.FLYING_PIGS) && (!pig.isOnGround() || pig.hasNoGravity())) {
+            cir.setReturnValue((float) pig.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 4);
         }
     }
 }

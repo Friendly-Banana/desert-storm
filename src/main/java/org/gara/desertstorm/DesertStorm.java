@@ -96,12 +96,12 @@ public class DesertStorm implements ModInitializer {
     public static final SpawnEggItem ILLUSIONER_SPAWN_EGG = registerItem("illusioner_spawn_egg",
             new SpawnEggItem(EntityType.ILLUSIONER, 0x125A96, 0, new FabricItemSettings().group(ITEM_TAB)));
     // Gamerules
-    public static final GameRules.Key<GameRules.BooleanRule> FLYING_PIGS =
-            GameRuleRegistry.register("whenPigsFly", GameRules.Category.MOBS, GameRuleFactory.createBooleanRule(true));
     public static final GameRules.Key<GameRules.BooleanRule> DROP_PLAYER_HEADS =
             GameRuleRegistry.register("dropPlayerHeads", GameRules.Category.DROPS, GameRuleFactory.createBooleanRule(true));
     public static final GameRules.Key<GameRules.IntRule> EVOKER_RABBIT_CHANCE =
             GameRuleRegistry.register("evokerRabbitChance", GameRules.Category.MOBS, GameRuleFactory.createIntRule(1, 0, 100));
+    public static final GameRules.Key<GameRules.BooleanRule> FLYING_PIGS =
+            GameRuleRegistry.register("flyingPigs", GameRules.Category.MOBS, GameRuleFactory.createBooleanRule(true));
 
     private static <T extends CustomItem> T registerCustomItem(T item) {
         return registerItem(item.identifier, item);

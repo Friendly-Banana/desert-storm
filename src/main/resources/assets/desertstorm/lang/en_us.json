@@ -32,7 +32,7 @@
   "death.desertstorm.tornado": "%1$s was blown away by a Tornado",
   "death.desertstorm.molotov": "%1$s experienced fiery vodka",
   "death.desertstorm.barrel": "%1$s played with the Monkey King",
-  "gamerule.desertstorm.whenPigsFly": "Enable flying pigs",
+  "gamerule.desertstorm.flyingPigs": "Enable flying pigs",
   "gamerule.desertstorm.dropPlayerHeads": "Drop player heads when killed",
   "gamerule.desertstorm.evokerRabbitChance": "Evokers' chance to spawn a killer bunny instead of three vexes",
   // cocktail effects on all the random shit
