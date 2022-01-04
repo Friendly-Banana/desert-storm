@@ -12,15 +12,19 @@ import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.Utils;
 import org.gara.desertstorm.client.model.BarrelModel;
 import org.gara.desertstorm.client.model.MonkeyModel;
-import org.gara.desertstorm.client.renderer.BarrelRenderer;
-import org.gara.desertstorm.client.renderer.MonkeyRenderer;
-import org.gara.desertstorm.client.renderer.SandWitherRenderer;
-import org.gara.desertstorm.client.renderer.TornadoRenderer;
+import org.gara.desertstorm.client.model.TornadoModel;
+import org.gara.desertstorm.client.renderer.*;
 
 @Environment(EnvType.CLIENT)
 public class DesertStormClient implements ClientModInitializer {
-    public static final EntityModelLayer MONKEY_MODEL_LAYER = new EntityModelLayer(Utils.NewIdentifier("monkey"), "main");
-    public static final EntityModelLayer BARREL_MODEL_LAYER = new EntityModelLayer(Utils.NewIdentifier("barrel"), "main");
+    public static final EntityModelLayer MONKEY_MODEL_LAYER = registerMain("monkey");
+    public static final EntityModelLayer BARREL_MODEL_LAYER = registerMain("barrel");
+    public static final EntityModelLayer TORNADO_INNER_MODEL_LAYER = registerMain("tornado");
+    public static final EntityModelLayer TORNADO_OUTER_MODEL_LAYER = new EntityModelLayer(Utils.NewIdentifier("tornado"), "outer");
+
+    public static EntityModelLayer registerMain(String name) {
+        return new EntityModelLayer(Utils.NewIdentifier(name), "main");
+    }
 
     @Override
     public void onInitializeClient() {
@@ -33,12 +37,15 @@ public class DesertStormClient implements ClientModInitializer {
          */
         EntityModelLayerRegistry.registerModelLayer(MONKEY_MODEL_LAYER, MonkeyModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(BARREL_MODEL_LAYER, BarrelModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(TORNADO_INNER_MODEL_LAYER, TornadoModel::getInnerTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(TORNADO_OUTER_MODEL_LAYER, TornadoModel::getOuterTexturedModelData);
 
         EntityRendererRegistry.register(DesertStorm.MONKEY, MonkeyRenderer::new);
         EntityRendererRegistry.register(DesertStorm.MONKEY_KING, MonkeyRenderer::new);
         EntityRendererRegistry.register(DesertStorm.ROLLING_BARREL, BarrelRenderer::new);
         EntityRendererRegistry.register(DesertStorm.SAND_WITHER, SandWitherRenderer::new);
         EntityRendererRegistry.register(DesertStorm.TORNADO, TornadoRenderer::new);
+        EntityRendererRegistry.register(DesertStorm.SANDSTORM, SandstormRenderer::new);
 
         BlockRenderLayerMap.INSTANCE.putBlock(DesertStorm.COCONUT_BLOCK, RenderLayer.getCutout());
     }

@@ -1,7 +1,6 @@
 package org.gara.desertstorm.item;
 
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterial;
@@ -9,22 +8,17 @@ import net.minecraft.item.Vanishable;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.gara.desertstorm.Utils;
 
 import java.util.List;
 
-public class CustomTool extends ToolItem implements Vanishable/* , AttackAction */ {
+public class CustomTool extends ToolItem implements Vanishable {
     public final String identifier;
 
     public CustomTool(String id, ToolMaterial tier, Settings properties) {
         super(tier, properties);
         identifier = id;
-    }
-
-    public void OnLeftClick(PlayerEntity player, Hand hand) {
-        Utils.Log("OnLeftClick: " + identifier);
     }
 
     @Override

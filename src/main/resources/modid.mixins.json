@@ -6,8 +6,7 @@
   "mixins": [
     "AddCocktailsToRegistry","AnimalEntityMixin","CoconutTrees","EvokerSpawnRabbits","FlyingPigs","LivingEntityMixin",
     "NoiseChunkGeneratorMixin","PickableEndGateway","PickableEndPortal","PickableNetherPortal","PlayerEntityMixin",
-    "PublicTreeDecoratorType",
-    "VillagerFollow"
+    "PublicTreeDecoratorType","ServerWorldMixin","VillagerFollow"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -35,6 +35,15 @@ public class RollingBarrel extends HostileEntity {
     }
 
     @Override
+    public void tick() {
+        if (!this.world.isClient && age >= 5 * 20) {
+            this.discard();
+            return;
+        }
+        super.tick();
+    }
+
+    @Override
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(1, new MeleeAttackGoal(this, 0.5D, false));
@@ -46,7 +55,7 @@ public class RollingBarrel extends HostileEntity {
     public void onPlayerCollision(PlayerEntity player) {
         super.onPlayerCollision(player);
         if (Utils.IsSurvival(player)) {
-            player.damage(DamageSources.BARREL, world.getDifficulty().getId() * 1.5f);
+            player.damage(DamageSources.BARREL, world.getDifficulty().getId() * 0.5f);
             this.world.createExplosion(owner, DamageSources.BARREL, null, this.getX(), this.getY(), this.getZ(), 5F, true, Explosion.DestructionType.NONE);
             this.discard();
         }

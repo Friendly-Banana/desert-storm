@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AnimalEntity.class)
+@SuppressWarnings({"ConstantConditions"})
 public class RabbitImmuneToIllager {
     @Inject(method = "damage", at = @At("HEAD"), cancellable = true)
     private void dontTakeDamageFromIllagers(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {

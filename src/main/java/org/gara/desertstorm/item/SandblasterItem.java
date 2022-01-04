@@ -1,6 +1,7 @@
 package org.gara.desertstorm.item;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.FallingBlockEntity;
@@ -8,13 +9,19 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.stat.Stats;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
+import org.gara.desertstorm.Utils;
+
+import java.util.List;
 
 public class SandblasterItem extends CustomTool {
-    public SandblasterItem(Settings properties) {
-        super("sandblaster", SandblasterMaterial.INSTANCE, properties);
+    public SandblasterItem(Settings settings) {
+        super("sandblaster", SandblasterMaterial.INSTANCE, settings);
     }
 
     @Override
@@ -37,5 +44,14 @@ public class SandblasterItem extends CustomTool {
         }
 
         return TypedActionResult.success(player.getStackInHand(interactionHand), level.isClient());
+    }
+
+    @Override
+    public void appendTooltip(ItemStack itemStack, World level, List<Text> list, TooltipContext tooltipFlag) {
+        // default white text
+        TranslatableText tip = Utils.GetTooltip(this.identifier);
+        if (!tip.getString().isEmpty()) {
+            list.add(tip.formatted(Formatting.WHITE));
+        }
     }
 }
