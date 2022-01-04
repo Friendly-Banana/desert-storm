@@ -83,23 +83,7 @@ public class Tornado extends HostileEntity {
 
     @Override
     public void tick() {
-        if (this.world.isClient) {
-            double lastZ = this.getX();
-            double lastX = this.getZ();
-            for (int y = 0; y < dimensions.height; y++) {
-                float radius = dimensions.width - y;
-                for (float angle = 0; angle < 360; angle += 30) {
-                    // calculate points on circle
-                    double radians = Math.toRadians(angle);
-                    double x = this.getX() + radius * Math.cos(radians);
-                    double z = this.getZ() + radius * Math.sin(radians);
-                    this.world.addImportantParticle(particleOptions, x, y, z, x - lastX, 0.3, z - lastZ);
-                    lastX = x;
-                    lastZ = z;
-                }
-            }
-        } // Server
-        else {
+        if (!this.world.isClient) {
             if (age >= duration) {
                 while (getFirstPassenger() instanceof FallingBlockEntity) {
                     DropBlock();
