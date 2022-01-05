@@ -107,7 +107,7 @@ public class DesertStorm implements ModInitializer {
                     .defaultAttributes(Tornado::createTornadoAttributes).build());
     public static final EntityType<Sandstorm> SANDSTORM = Registry.register(Registry.ENTITY_TYPE,
             Utils.NewIdentifier("sandstorm"), FabricEntityTypeBuilder
-                    .create(SpawnGroup.MISC, Sandstorm::new).dimensions(EntityDimensions.fixed(1, 1)).fireImmune()
+                    .create(SpawnGroup.MISC, Sandstorm::new).dimensions(Sandstorm.dimensions).fireImmune()
                     .build());
     // Spawneggs
     public static final SpawnEggItem MONKEY_SPAWN_EGG = registerItem("monkey_spawn_egg",

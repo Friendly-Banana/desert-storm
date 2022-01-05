@@ -23,7 +23,7 @@ public class TornadoFeatureRenderer extends FeatureRenderer<Tornado, TornadoMode
 
     public TornadoFeatureRenderer(FeatureRendererContext<Tornado, TornadoModel> context, EntityModelLoader loader) {
         super(context);
-        this.model = new TornadoModel(loader.getModelPart(DesertStormClient.TORNADO_OUTER_MODEL_LAYER));
+        this.model = new TornadoModel(loader.getModelPart(DesertStormClient.TORNADO_OUTER_MODEL_LAYER), false);
     }
 
     @Override

@@ -10,10 +10,16 @@ import org.gara.desertstorm.entity.Tornado;
 public class TornadoModel extends SinglePartEntityModel<Tornado> {
     public static final String EYE_OF_THE_STORM = "eye_of_the_storm";
     private static final int SLICES_COUNT = 10;
+    /**
+     * pixel for full block / amount of slices
+     */
+    public static final float PIXELS_PER_SLICE = 16f / SLICES_COUNT;
     private final ModelPart root;
+    private final boolean innerModel;
 
-    public TornadoModel(ModelPart root) {
+    public TornadoModel(ModelPart root, boolean innerModel) {
         this.root = root;
+        this.innerModel = innerModel;
     }
 
     private static String getSliceName(int index) {
@@ -36,9 +42,7 @@ public class TornadoModel extends SinglePartEntityModel<Tornado> {
         ModelData modelData = new ModelData();
         ModelPartData modelPartData = modelData.getRoot();
         for (int i = 0; i < SLICES_COUNT; ++i) {
-            // pixel per block * percent of full size
-            modelPartData.addChild(getSliceName(i), quadraticCentered(16f * (SLICES_COUNT - i) / SLICES_COUNT, 16f / SLICES_COUNT,
-                    16f * i / SLICES_COUNT + 8, ModelPartBuilder.create().uv(0, 0)), ModelTransform.rotation(0, i * 360f / SLICES_COUNT, 0));
+            modelPartData.addChild(getSliceName(i), quadraticCentered(PIXELS_PER_SLICE * (SLICES_COUNT - i), PIXELS_PER_SLICE, PIXELS_PER_SLICE * i + 8, ModelPartBuilder.create().uv(0, 0)), ModelTransform.rotation(0, i * 360f / SLICES_COUNT, 0));
         }
         return TexturedModelData.of(modelData, 64, 32);
     }
@@ -50,6 +54,8 @@ public class TornadoModel extends SinglePartEntityModel<Tornado> {
 
     @Override
     public void setAngles(Tornado entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
+        if (innerModel)
+            this.root.getChild(EYE_OF_THE_STORM).setAngles(headPitch, headYaw, 0);
     }
 
     @Override

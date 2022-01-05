@@ -18,7 +18,7 @@ import org.gara.desertstorm.entity.Tornado;
 public class TornadoRenderer extends MobEntityRenderer<Tornado, TornadoModel> {
 
     public TornadoRenderer(Context context) {
-        super(context, new TornadoModel(context.getPart(DesertStormClient.TORNADO_INNER_MODEL_LAYER)), 1.5f);
+        super(context, new TornadoModel(context.getPart(DesertStormClient.TORNADO_INNER_MODEL_LAYER), true), 1.5f);
         this.addFeature(new TornadoFeatureRenderer(this, context.getModelLoader()));
     }
 
