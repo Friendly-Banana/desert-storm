@@ -5,6 +5,7 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.boss.ServerBossBar;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -23,13 +24,18 @@ public class MonkeyKingEntity extends MonkeyEntity {
     }
 
     @Override
+    public void onDeath(DamageSource source) {
+        super.onDeath(source);
+    }
+
+    @Override
     public void tick() {
         super.tick();
         this.bossEvent.setPercent(this.getHealth() / maxHealth);
         if (age % (3 * 20) == 0) {
             PlayerEntity player = this.world.getClosestPlayer(this, 12);
             if (player != null) {
-                RollingBarrel barrel = new RollingBarrel(this, this.world, this.getPos().lerp(player.getPos(), 0.1D));
+                RollingBarrel barrel = new RollingBarrel(this, this.world, this.getPos().lerp(player.getPos(), 0.1));
                 this.world.spawnEntity(barrel);
             }
         }

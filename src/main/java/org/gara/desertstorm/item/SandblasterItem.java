@@ -25,15 +25,14 @@ public class SandblasterItem extends CustomTool {
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World level, PlayerEntity player, Hand interactionHand) {
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand interactionHand) {
         int slot = player.getInventory().getSlotWithStack(new ItemStack(Items.SAND));
         // Creative, Infinity or Sand
         if (player.isCreative() || slot != -1) {
-            FallingBlockEntity sandEntity = FabricEntityType.FALLING_BLOCK.create(level);
-            sandEntity.setPosition(player.getEyePos());
-            level.spawnEntity(sandEntity);
-            sandEntity.timeFalling = 1;
+            FallingBlockEntity sandEntity = Utils.CreateAndTeleport(FabricEntityType.FALLING_BLOCK, world, player.getEyePos());
+            Utils.SetTimeFallingToMax(sandEntity);
             sandEntity.setVelocity(player.getRotationVector());
+            world.spawnEntity(sandEntity);
             player.getItemCooldownManager().set(this, 10);
             if (!(player.isCreative() || EnchantmentHelper.getLevel(Enchantments.INFINITY,
                     player.getStackInHand(interactionHand)) >= 0)) {
@@ -43,7 +42,7 @@ public class SandblasterItem extends CustomTool {
             player.incrementStat(Stats.USED.getOrCreateStat(this));
         }
 
-        return TypedActionResult.success(player.getStackInHand(interactionHand), level.isClient());
+        return TypedActionResult.success(player.getStackInHand(interactionHand), world.isClient());
     }
 
     @Override

@@ -32,9 +32,9 @@ public final class Cocktails {
     public static final Potion ICED = registerPotion("iced", new StatusEffectInstance(FREEZING, 170));
     public static final Potion HOT_COCOA = registerPotion("hot_cocoa", new StatusEffectInstance(StatusEffects.SPEED, 600),
             new StatusEffectInstance(StatusEffects.HASTE, 600));
-    public static final Potion HEALTHY_SMOOTHIE = registerPotion("healthy_smoothie", new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 10, 5));
+    public static final Potion HEALTHY_SMOOTHIE = registerPotion("healthy_smoothie", new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 10), new StatusEffectInstance(StatusEffects.JUMP_BOOST, 1800));
     public static final Potion MULTIVITAMIN = registerPotion("multivitamin", new StatusEffectInstance(StatusEffects.NIGHT_VISION, 3600),
-            new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 10, 5));
+            new StatusEffectInstance(StatusEffects.LUCK, 3600), new StatusEffectInstance(StatusEffects.INVISIBILITY, 600));
     public static final Potion MIDAS_SPECIAL = registerPotion("midas_special", new StatusEffectInstance(MIDAS_TOUCH, 600));
     public static final Potion MOLOTOV = registerPotion("molotov", new StatusEffectInstance(MOLOTOV_THROWN, 1));
 

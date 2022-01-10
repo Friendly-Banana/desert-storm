@@ -25,7 +25,9 @@
           "weight": 1,
           "functions": [
             {
-              "function": "minecraft:enchant_randomly"
+                "function": "minecraft:enchant_with_levels",
+                "levels": 30.0,
+                "treasure": true
             }
           ],
           "name": "minecraft:book"

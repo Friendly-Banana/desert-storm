@@ -16,8 +16,7 @@ import java.util.function.BiConsumer;
 public class CoconutDecorator extends TreeDecorator {
     public static final CoconutDecorator INSTANCE = new CoconutDecorator();
     public static final Codec<CoconutDecorator> CODEC = Codec.unit(() -> INSTANCE);
-    public static final TreeDecoratorType<CoconutDecorator> DECORATOR_TYPE = PublicTreeDecoratorType
-            .invokeRegister("coconut", CODEC);
+    public static final TreeDecoratorType<CoconutDecorator> DECORATOR_TYPE = PublicTreeDecoratorType.invokeRegister("coconut", CODEC);
 
     protected TreeDecoratorType<?> getType() {
         return DECORATOR_TYPE;
@@ -26,7 +25,7 @@ public class CoconutDecorator extends TreeDecorator {
     public void generate(TestableWorld world, BiConsumer<BlockPos, BlockState> replacer, Random random,
                          List<BlockPos> logPositions, List<BlockPos> leavesPositions) {
         leavesPositions.forEach((blockPos) -> {
-            if (random.nextInt(10) == 0) {
+            if (random.nextInt(50) == 0) {
                 blockPos = blockPos.down();
                 if (Feature.isAir(world, blockPos)) {
                     replacer.accept(blockPos, DesertStorm.COCONUT_BLOCK.getDefaultState());

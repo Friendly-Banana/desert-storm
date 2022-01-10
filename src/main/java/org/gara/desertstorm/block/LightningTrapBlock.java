@@ -64,9 +64,8 @@ public class LightningTrapBlock extends Block implements BlockEntityProvider {
                 if (!Utils.IsSurvival((PlayerEntity) entity))
                     return;
             }
-            // Summoning the Lighting Bolt at the block
-            LightningEntity lightningBolt = EntityType.LIGHTNING_BOLT.create(world);
-            lightningBolt.refreshPositionAfterTeleport(entity.getPos());
+            // Summon the Lighting Bolt at the block
+            LightningEntity lightningBolt = Utils.CreateAndTeleport(EntityType.LIGHTNING_BOLT, world, entity.getEyePos());
             world.spawnEntity(lightningBolt);
             world.setBlockState(blockPos, blockState.with(CHARGED, false));
         }

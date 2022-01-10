@@ -18,6 +18,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.gara.desertstorm.DamageSources;
 import org.gara.desertstorm.DesertStorm;
+import org.gara.desertstorm.Utils;
 
 import static net.minecraft.world.GameRules.DO_MOB_GRIEFING;
 
@@ -53,8 +54,7 @@ public class Tornado extends HostileEntity {
         } while (blockState.isAir() || blockState.hasBlockEntity() || blockState.getBlock().getBlastResistance() > 30);
         this.world.removeBlock(randomPos, false);
         FallingBlockEntity fallingBlock = new FallingBlockEntity(this.world, this.getX(), this.getEyeY(), this.getZ(), blockState);
-        // prevent dropping and despawning
-        fallingBlock.timeFalling = -2147483648;
+        Utils.SetTimeFallingToMax(fallingBlock);
         fallingBlock.startRiding(this, true);
         this.world.spawnEntity(fallingBlock);
     }

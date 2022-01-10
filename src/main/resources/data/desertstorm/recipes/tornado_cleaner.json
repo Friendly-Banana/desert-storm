@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "iii",
+        "#h#",
+        " # "
+    ],
+    "key": {
+        "#": {
+            "item": "desertstorm:coconut"
+        },
+        "i": {
+            "item": "minecraft:iron_ingot"
+        },
+        "h": {
+            "item": "minecraft:hopper"
+        }
+    },
+    "result": {
+        "item": "desertstorm:tornado_cleaner"
+    }
+}

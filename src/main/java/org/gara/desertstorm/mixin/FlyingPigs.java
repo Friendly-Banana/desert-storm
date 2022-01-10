@@ -40,7 +40,7 @@ public class FlyingPigs {
     private void flySpeed(CallbackInfoReturnable<Float> cir) {
         PigEntity pig = (PigEntity) (Object) this;
         if (pig.world.getGameRules().getBoolean(DesertStorm.FLYING_PIGS) && (!pig.isOnGround() || pig.hasNoGravity())) {
-            cir.setReturnValue((float) pig.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 4);
+            cir.setReturnValue((float) pig.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 2);
         }
     }
 }
