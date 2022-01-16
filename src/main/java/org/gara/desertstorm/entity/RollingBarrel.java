@@ -55,7 +55,7 @@ public class RollingBarrel extends HostileEntity {
     public void onPlayerCollision(PlayerEntity player) {
         super.onPlayerCollision(player);
         if (Utils.IsSurvival(player)) {
-            player.damage(DamageSources.BARREL, world.getDifficulty().getId() * 0.5f);
+            player.damage(DamageSources.BARREL, 0.5f);
             this.world.createExplosion(owner, DamageSources.BARREL, null, this.getX(), this.getY(), this.getZ(), 5F, true, Explosion.DestructionType.NONE);
             this.discard();
         }

@@ -24,7 +24,6 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.biome.Biome;
@@ -39,12 +38,14 @@ import org.gara.desertstorm.structures.DSStructures;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class DesertStorm implements ModInitializer {
     // all custom items
-    private static final List<Item> items = new ArrayList<>();
-    public static final ItemGroup ITEM_TAB = FabricItemGroupBuilder.create(Utils.NewIdentifier("item_tab")).icon(Items.SAND::getDefaultStack).build();
+    private static final List<Item> items = new ArrayList<>(List.of(Items.BARRIER, Items.DEBUG_STICK, Items.COMMAND_BLOCK, Items.COMMAND_BLOCK_MINECART, Items.STRUCTURE_BLOCK, Items.JIGSAW));
+    public static final ItemGroup ITEM_TAB;
+
     // Blocks
     public static final AetherPortalBlock AETHER_PORTAL_BLOCK = registerBlock("aether_portal", new AetherPortalBlock());
     public static final CoconutBlock COCONUT_BLOCK = registerBlock("coconut", new CoconutBlock());
@@ -84,7 +85,7 @@ public class DesertStorm implements ModInitializer {
     public static final GameRules.Key<GameRules.BooleanRule> FLYING_PIGS = GameRuleRegistry.register("flyingPigs",
             GameRules.Category.MOBS, GameRuleFactory.createBooleanRule(true));
     public static final GameRules.Key<GameRules.IntRule> EVOKER_RABBIT_CHANCE = GameRuleRegistry
-            .register("evokerRabbitChance", GameRules.Category.MOBS, GameRuleFactory.createIntRule(1, 0, 100));
+            .register("evokerRabbitChance", GameRules.Category.MOBS, GameRuleFactory.createIntRule(30, 0, 100));
     // Items
     public static final Item SANDBLASTER_ITEM = registerItem("sandblaster",
             new SandblasterItem(new FabricItemSettings().group(ItemGroup.COMBAT)));
@@ -127,8 +128,8 @@ public class DesertStorm implements ModInitializer {
     private static final Identifier LARGE_FERN_LOOT_TABLE_ID = Blocks.LARGE_FERN.getLootTableId();
 
     static {
-        items.addAll(List.of(Items.BARRIER, Items.DEBUG_STICK, Items.COMMAND_BLOCK, Items.COMMAND_BLOCK_MINECART, Items.STRUCTURE_BLOCK, Items.JIGSAW));
-        ITEM_TAB.appendStacks(DefaultedList.copyOf(null, items.stream().map(Item::getDefaultStack).toArray(ItemStack[]::new)));
+        // do as last thing so every item is in the list
+        ITEM_TAB = FabricItemGroupBuilder.create(Utils.NewIdentifier("item_tab")).icon(Items.SAND::getDefaultStack).appendItems(itemStacks -> itemStacks.addAll(items.stream().map(Item::getDefaultStack).collect(Collectors.toList()))).build();
     }
 
     private static <T extends CustomItem> T registerCustomItem(T item) {

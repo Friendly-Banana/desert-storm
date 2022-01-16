@@ -29,6 +29,9 @@ public class Sandstorm extends AreaEffectCloudEntity {
         this.setColor(Utils.SAND);
         this.addEffect(new StatusEffectInstance(StatusEffects.INSTANT_DAMAGE, 1, 1));
         this.addEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 10));
+        Utils.Log(getDuration());
+        this.setDuration(3 * 60 * 20);
+        Utils.Log(getDuration());
     }
 
     @Override

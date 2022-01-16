@@ -23,8 +23,8 @@ public class EvokerSpawnRabbits {
     /**
      * this goal's {@link EvokerEntity}
      */
-    @Shadow
     @Final
+    @Shadow
     EvokerEntity field_7267;
 
     @Inject(method = "castSpell", at = @At("HEAD"), cancellable = true)

@@ -14,7 +14,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.gara.desertstorm.DamageSources;
 import org.gara.desertstorm.DesertStorm;
@@ -24,8 +23,9 @@ import static net.minecraft.world.GameRules.DO_MOB_GRIEFING;
 
 public class Tornado extends HostileEntity {
     public static final EntityDimensions dimensions = EntityDimensions.fixed(3, 5);
+    public static final double YEET_VELOCITY = 1;
     private final ServerBossBar bossEvent;
-    private int duration;
+    private int duration = 600;
 
     public Tornado(EntityType<? extends Tornado> entityType, World level) {
         super(entityType, level);
@@ -90,14 +90,13 @@ public class Tornado extends HostileEntity {
 
     @Override
     public void pushAwayFrom(Entity entity) {
-        Vec3d diff = entity.getPos().subtract(this.getPos()).multiply(0.5f);
-        entity.setVelocity(diff.add(0, 0.7, 0));
+        entity.setVelocity(entity.getVelocity().add(0, YEET_VELOCITY, 0));
     }
 
     @Override
     public void onPlayerCollision(PlayerEntity player) {
         player.damage(DamageSources.TORNADO, 0.5f);
-        super.onPlayerCollision(player);
+        player.setVelocity(player.getVelocity().add(0, YEET_VELOCITY, 0));
     }
 
     @Override

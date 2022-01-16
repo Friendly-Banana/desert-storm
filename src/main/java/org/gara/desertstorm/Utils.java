@@ -9,26 +9,27 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class Utils {
     public static final String MOD_ID = "desertstorm";
     public static final int GOLD = 0xffd700, SAND = 0xffe11f, ICE = 0x80e5ef;
+    public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
     private static int counter = 0;
 
     public static void Debug() {
-        ++counter;
-        System.out.println(StackWalker.getInstance().walk(stream -> stream.skip(1).findFirst().get()).getMethodName() + ": " + counter);
+        counter++;
+        LOGGER.debug(StackWalker.getInstance().walk(stream -> stream.skip(1).findFirst().get()).getMethodName() + ": " + counter);
     }
 
     public static void Log(Object... objects) {
-        StringBuilder str = new StringBuilder();
-        for (Object object : objects) {
-            str.append(object == null ? "null" : object.toString());
-            str.append(", ");
-        }
-        System.out.println(str.substring(0, str.length() - 2));
+        LOGGER.info(Arrays.stream(objects).map(Object::toString).collect(Collectors.joining(", ")));
     }
 
     public static <T> T NotNull(@Nullable T one, T fallback) {

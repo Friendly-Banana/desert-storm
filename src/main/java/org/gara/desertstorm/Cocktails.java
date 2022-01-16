@@ -113,7 +113,7 @@ public final class Cocktails {
             if (!target.isSpectator()) {
                 World world = target.getEntityWorld();
                 world.createExplosion(attacker == null ? source : attacker, DamageSources.MOLOTOV, null, target.getX(), target.getY(), target.getZ(), 3F, true, Explosion.DestructionType.BREAK);
-                target.damage(DamageSources.MOLOTOV, world.getDifficulty().getId() * 1.5f);
+                target.damage(DamageSources.MOLOTOV, 1.0f);
             }
         }
     }
