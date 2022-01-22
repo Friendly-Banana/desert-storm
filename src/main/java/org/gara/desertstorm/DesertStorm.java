@@ -12,6 +12,8 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.kyrptonaught.customportalapi.CustomPortalBlock;
+import net.kyrptonaught.customportalapi.CustomPortalsMod;
 import net.kyrptonaught.customportalapi.api.CustomPortalBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -28,7 +30,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
-import org.gara.desertstorm.block.AetherPortalBlock;
 import org.gara.desertstorm.block.CoconutBlock;
 import org.gara.desertstorm.block.LightningTrapBlock;
 import org.gara.desertstorm.block.LightningTrapBlockEntity;
@@ -42,12 +43,9 @@ import java.util.stream.Collectors;
 
 
 public class DesertStorm implements ModInitializer {
-    // all custom items
-    private static final List<Item> items = new ArrayList<>(List.of(Items.BARRIER, Items.DEBUG_STICK, Items.COMMAND_BLOCK, Items.COMMAND_BLOCK_MINECART, Items.STRUCTURE_BLOCK, Items.JIGSAW));
     public static final ItemGroup ITEM_TAB;
-
     // Blocks
-    public static final AetherPortalBlock AETHER_PORTAL_BLOCK = registerBlock("aether_portal", new AetherPortalBlock());
+    public static final CustomPortalBlock AETHER_PORTAL_BLOCK = CustomPortalsMod.portalBlock;
     public static final CoconutBlock COCONUT_BLOCK = registerBlock("coconut", new CoconutBlock());
     public static final LightningTrapBlock LIGHTNING_TRAP_BLOCK = registerBlock("lightning_trap",
             new LightningTrapBlock());
@@ -86,6 +84,8 @@ public class DesertStorm implements ModInitializer {
             GameRules.Category.MOBS, GameRuleFactory.createBooleanRule(true));
     public static final GameRules.Key<GameRules.IntRule> EVOKER_RABBIT_CHANCE = GameRuleRegistry
             .register("evokerRabbitChance", GameRules.Category.MOBS, GameRuleFactory.createIntRule(30, 0, 100));
+    // all custom items
+    private static final List<Item> items = new ArrayList<>(List.of(Items.BARRIER, Items.DEBUG_STICK, Items.COMMAND_BLOCK, Items.COMMAND_BLOCK_MINECART, Items.STRUCTURE_BLOCK, Items.JIGSAW));
     // Items
     public static final Item SANDBLASTER_ITEM = registerItem("sandblaster",
             new SandblasterItem(new FabricItemSettings().group(ItemGroup.COMBAT)));
@@ -112,11 +112,11 @@ public class DesertStorm implements ModInitializer {
 
     public static final BlockItem LIGHTNING_TRAP_ITEM = registerItem("lightning_trap",
             new BlockItem(LIGHTNING_TRAP_BLOCK, new FabricItemSettings().group(ItemGroup.COMBAT)));
-    public static final BlockEntityType<LightningTrapBlockEntity> TRAP_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Utils.NewIdentifier("lightning_trap_block_entity"), FabricBlockEntityTypeBuilder.create(LightningTrapBlockEntity::new, LIGHTNING_TRAP_BLOCK).build());
     // Spawneggs
     public static final SpawnEggItem MONKEY_SPAWN_EGG = registerItem("monkey_spawn_egg",
             new SpawnEggItem(MONKEY, 0x9a3c00, 0,
                     new FabricItemSettings()));
+    public static final BlockEntityType<LightningTrapBlockEntity> TRAP_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, Utils.NewIdentifier("lightning_trap_block_entity"), FabricBlockEntityTypeBuilder.create(LightningTrapBlockEntity::new, LIGHTNING_TRAP_BLOCK).build());
     public static final SpawnEggItem MONKEY_KING_SPAWN_EGG = registerItem("monkey_king_spawn_egg",
             new SpawnEggItem(MONKEY_KING, 0x5a1c00, 0,
                     new FabricItemSettings()));
@@ -203,7 +203,6 @@ public class DesertStorm implements ModInitializer {
                 .lightWithWater()
                 .destDimID(new Identifier("the_nether"))
                 .returnDim(new Identifier("the_end"), false)
-                .customPortalBlock(AETHER_PORTAL_BLOCK)
                 .tintColor(18, 90, 150)
                 .registerPortal();
     }

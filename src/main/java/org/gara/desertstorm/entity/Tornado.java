@@ -1,5 +1,6 @@
 package org.gara.desertstorm.entity;
 
+import com.chocohead.mm.api.ClassTinkerers;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
@@ -25,13 +26,12 @@ public class Tornado extends HostileEntity {
     public static final EntityDimensions dimensions = EntityDimensions.fixed(3, 5);
     public static final double YEET_VELOCITY = 1;
     private final ServerBossBar bossEvent;
-    private int duration = 600;
+    private int duration;
 
     public Tornado(EntityType<? extends Tornado> entityType, World level) {
         super(entityType, level);
         duration = (random.nextInt(60) + 60) * 20;
-        //                                                                        new BossBar.Color("gold", Formatting.GOLD)
-        this.bossEvent = (ServerBossBar) new ServerBossBar(this.getDisplayName(), BossBar.Color.YELLOW, BossBar.Style.PROGRESS).setDarkenSky(true);
+        this.bossEvent = (ServerBossBar) new ServerBossBar(this.getDisplayName(), ClassTinkerers.getEnum(BossBar.Color.class, "GOLD"), BossBar.Style.PROGRESS).setDarkenSky(true);
     }
 
     public static DefaultAttributeContainer.Builder createTornadoAttributes() {

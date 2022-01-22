@@ -1,37 +1,40 @@
 {
-  "schemaVersion": 1,
-  "id": "desertstorm",
-  "version": "${version}",
-  "name": "Desert Storm",
-  "description": "Adds a Desert Boss, Sandstorms, dangerous Tornadoes, Monkeys, funky Cocktails and more",
-  "authors": [
-    "Me!"
-  ],
-  "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/Just-Learned-It/desert-storm"
-  },
-  "license": "",
-  "icon": "assets/desertstorm/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "org.gara.desertstorm.DesertStorm"
+    "schemaVersion": 1,
+    "id": "desertstorm",
+    "version": "$version",
+    "name": "Desert Storm",
+    "description": "Adds a Desert Boss, Sandstorms, dangerous Tornadoes, Monkeys, funky Cocktails and more",
+    "authors": [
+        "Me!"
     ],
-    "server": [
-      "org.gara.desertstorm.server.DesertStormServer"
+    "contact": {
+        "homepage": "https://fabricmc.net/",
+        "sources": "https://github.com/Just-Learned-It/desert-storm"
+    },
+    "license": "",
+    "icon": "assets/desertstorm/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "org.gara.desertstorm.DesertStorm"
+        ],
+        "server": [
+            "org.gara.desertstorm.server.DesertStormServer"
+        ],
+        "client": [
+            "org.gara.desertstorm.client.DesertStormClient"
+        ],
+        "mm:early_risers": [
+            "org.gara.desertstorm.EarlyRiser"
+        ]
+    },
+    "mixins": [
+        "modid.mixins.json"
     ],
-    "client": [
-      "org.gara.desertstorm.client.DesertStormClient"
-    ]
-  },
-  "mixins": [
-    "modid.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.12.0",
-    "fabric": "*",
-    "minecraft": "1.18.1",
-    "java": ">=17"
-  }
+    "depends": {
+        "fabricloader": ">=0.12.12",
+        "fabric": "*",
+        "minecraft": "1.18.1",
+        "java": ">=17"
+    }
 }
