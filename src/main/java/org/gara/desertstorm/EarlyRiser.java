@@ -12,7 +12,6 @@ public class EarlyRiser implements Runnable {
 
         String formattingClass = remapper.mapClassName("intermediary", "net.minecraft.class_124");
         String bossbarColorClass = remapper.mapClassName("intermediary", "net.minecraft.class_1259$class_1260");
-        ClassTinkerers.enumBuilder(bossbarColorClass, String.class, formattingClass).addEnum("GOLD", () -> new Object[]{"gold", Formatting.GOLD}).build();
+        ClassTinkerers.enumBuilder(bossbarColorClass, String.class, "L" + formattingClass + ";").addEnum("GOLD", () -> new Object[]{"gold", Formatting.GOLD}).build();
     }
-
 }

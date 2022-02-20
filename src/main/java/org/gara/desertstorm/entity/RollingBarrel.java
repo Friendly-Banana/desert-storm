@@ -14,7 +14,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.gara.desertstorm.DamageSources;
-import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.Utils;
 
 public class RollingBarrel extends HostileEntity {
@@ -25,7 +24,7 @@ public class RollingBarrel extends HostileEntity {
     }
 
     public RollingBarrel(LivingEntity owner, World world, Vec3d pos) {
-        this(DesertStorm.ROLLING_BARREL, world);
+        this(DSEntities.ROLLING_BARREL, world);
         this.refreshPositionAfterTeleport(pos);
         this.owner = owner;
     }

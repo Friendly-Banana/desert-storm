@@ -7,6 +7,7 @@ import net.minecraft.world.TestableWorld;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.treedecorator.TreeDecorator;
 import net.minecraft.world.gen.treedecorator.TreeDecoratorType;
+import org.gara.desertstorm.block.DSBlocks;
 import org.gara.desertstorm.mixin.PublicTreeDecoratorType;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class CoconutDecorator extends TreeDecorator {
             if (random.nextInt(50) == 0) {
                 blockPos = blockPos.down();
                 if (Feature.isAir(world, blockPos)) {
-                    replacer.accept(blockPos, DesertStorm.COCONUT_BLOCK.getDefaultState());
+                    replacer.accept(blockPos, DSBlocks.COCONUT_BLOCK.getDefaultState());
                 }
             }
         });

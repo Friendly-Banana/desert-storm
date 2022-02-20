@@ -1,9 +1,14 @@
 package org.gara.desertstorm.structures;
 
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.structure.PlainsVillageData;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
@@ -26,8 +31,8 @@ public class DSStructures {
     /**
      * Static instance of our configured structure, so we can reference it and add it to biomes easily.
      */
-    public static ConfiguredStructureFeature<?, ?> CONFIGURED_RUN_DOWN_HOUSE;
-    public static ConfiguredStructureFeature<?, ?> CONFIGURED_KONG_LEVEL;
+    public static ConfiguredStructureFeature<?, ?> CONFIGURED_RUN_DOWN_HOUSE = registerStructure("run_down_house", RUN_DOWN_HOUSE, 10, 5, 399117345);
+    public static ConfiguredStructureFeature<?, ?> CONFIGURED_KONG_LEVEL = registerStructure("kong_level", KONG_LEVEL, 50, 10, 123456789);
 
     /**
      * @param spacing    average distance apart in chunks between spawn attempts
@@ -73,8 +78,34 @@ public class DSStructures {
         return conf_structure;
     }
 
-    public static void registerStructures() {
-        CONFIGURED_RUN_DOWN_HOUSE = registerStructure("run_down_house", RUN_DOWN_HOUSE, 10, 5, 399117345);
-        CONFIGURED_KONG_LEVEL = registerStructure("kong_level", KONG_LEVEL, 50, 10, 123456789);
+    public static void addStructuresToBiomes() {
+        /*
+         * This is the API you will use to add anything to any biome.
+         * This includes spawns, changing the biome's looks, messing with its
+         * surfacebuilders,
+         * adding carvers, spawning new features... etc
+         *
+         * Make sure you give this an identifier to make it clear later what mod did a
+         * change and why.
+         * It'll help people look to see if your mod was removing something from biomes.
+         * The biome modifier identifier might also be used by modpacks to disable mod's
+         * modifiers too for customization.
+         */
+        BiomeModifications.create(Utils.NewIdentifier("run_down_house_addition"))
+                .add(// Describes what we are doing. Since we are adding a structure, we choose
+                        // ADDITIONS.
+                        ModificationPhase.ADDITIONS,
+                        // Add our structure to all biomes including other modded biomes.
+                        // You can filter to certain biomes based on stuff like temperature, scale,
+                        // precipitation, mod id.
+                        BiomeSelectors.includeByKey(BiomeKeys.BIRCH_FOREST, BiomeKeys.OLD_GROWTH_BIRCH_FOREST),
+                        // context is basically the biome itself. This is where you do the changes to
+                        // the biome.
+                        // Here, we will add our ConfiguredStructureFeature to the biome.
+                        context -> context.getGenerationSettings()
+                                .addBuiltInStructure(DSStructures.CONFIGURED_RUN_DOWN_HOUSE));
+        BiomeModifications.create(Utils.NewIdentifier("kong_level_addition")).add(ModificationPhase.ADDITIONS,
+                BiomeSelectors.categories(Biome.Category.JUNGLE),
+                context -> context.getGenerationSettings().addBuiltInStructure(DSStructures.CONFIGURED_KONG_LEVEL));
     }
 }

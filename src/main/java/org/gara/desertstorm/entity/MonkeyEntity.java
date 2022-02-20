@@ -135,7 +135,7 @@ public class MonkeyEntity extends AnimalEntity {
     }
 
     public MonkeyEntity createChild(ServerWorld world, PassiveEntity other) {
-        return DesertStorm.MONKEY.create(world);
+        return DSEntities.MONKEY.create(world);
     }
 
     @Override

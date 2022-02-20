@@ -18,6 +18,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
+import org.gara.desertstorm.entity.DSEntities;
 import org.gara.desertstorm.entity.SandWither;
 
 import java.util.function.Predicate;
@@ -59,7 +60,7 @@ public class SandWitherThings {
                 world.syncWorldEvent(WorldEvents.BLOCK_BROKEN, cachedBlockPosition.getBlockPos(), Block.getRawIdFromState(cachedBlockPosition.getBlockState()));
             }
         }
-        SandWither wither = DesertStorm.SAND_WITHER.create(world);
+        SandWither wither = DSEntities.SAND_WITHER.create(world);
         BlockPos bottomBlock = result.translate(1, 2, 0).getBlockPos();
         wither.refreshPositionAndAngles(bottomBlock.getX() + 0.5, bottomBlock.getY() + 0.55, bottomBlock.getZ() + 0.5, result.getForwards().getAxis() == Direction.Axis.X ? 0.0f : 90.0f, 0.0f);
         wither.bodyYaw = result.getForwards().getAxis() == Direction.Axis.X ? 0.0f : 90.0f;

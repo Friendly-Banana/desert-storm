@@ -8,12 +8,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
-import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.Utils;
+import org.gara.desertstorm.block.DSBlocks;
 import org.gara.desertstorm.client.model.BarrelModel;
 import org.gara.desertstorm.client.model.MonkeyModel;
 import org.gara.desertstorm.client.model.TornadoModel;
 import org.gara.desertstorm.client.renderer.*;
+import org.gara.desertstorm.entity.DSEntities;
 
 @Environment(EnvType.CLIENT)
 public class DesertStormClient implements ClientModInitializer {
@@ -40,13 +41,13 @@ public class DesertStormClient implements ClientModInitializer {
         EntityModelLayerRegistry.registerModelLayer(TORNADO_INNER_MODEL_LAYER, TornadoModel::getInnerTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(TORNADO_OUTER_MODEL_LAYER, TornadoModel::getOuterTexturedModelData);
 
-        EntityRendererRegistry.register(DesertStorm.MONKEY, MonkeyRenderer::new);
-        EntityRendererRegistry.register(DesertStorm.MONKEY_KING, MonkeyRenderer::new);
-        EntityRendererRegistry.register(DesertStorm.ROLLING_BARREL, BarrelRenderer::new);
-        EntityRendererRegistry.register(DesertStorm.SAND_WITHER, SandWitherRenderer::new);
-        EntityRendererRegistry.register(DesertStorm.TORNADO, TornadoRenderer::new);
-        EntityRendererRegistry.register(DesertStorm.SANDSTORM, SandstormRenderer::new);
+        EntityRendererRegistry.register(DSEntities.MONKEY, MonkeyRenderer::new);
+        EntityRendererRegistry.register(DSEntities.MONKEY_KING, MonkeyRenderer::new);
+        EntityRendererRegistry.register(DSEntities.ROLLING_BARREL, BarrelRenderer::new);
+        EntityRendererRegistry.register(DSEntities.SAND_WITHER, SandWitherRenderer::new);
+        EntityRendererRegistry.register(DSEntities.TORNADO, TornadoRenderer::new);
+        EntityRendererRegistry.register(DSEntities.SANDSTORM, SandstormRenderer::new);
 
-        BlockRenderLayerMap.INSTANCE.putBlock(DesertStorm.COCONUT_BLOCK, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(DSBlocks.COCONUT_BLOCK, RenderLayer.getCutout());
     }
 }

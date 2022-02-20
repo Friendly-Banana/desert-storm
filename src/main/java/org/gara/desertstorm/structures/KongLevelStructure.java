@@ -16,8 +16,8 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
-import org.gara.desertstorm.DesertStorm;
 import org.gara.desertstorm.Utils;
+import org.gara.desertstorm.entity.DSEntities;
 
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ public class KongLevelStructure extends StructureFeature<StructurePoolFeatureCon
             new SpawnSettings.SpawnEntry(EntityType.ZOMBIE, 100, 2, 5)
     );
     public static final Pool<SpawnSettings.SpawnEntry> STRUCTURE_CREATURES = Pool.of(
-            new SpawnSettings.SpawnEntry(DesertStorm.MONKEY, 50, 3, 7),
+            new SpawnSettings.SpawnEntry(DSEntities.MONKEY, 50, 3, 7),
             new SpawnSettings.SpawnEntry(EntityType.BAT, 10, 2, 15)
     );
 
