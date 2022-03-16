@@ -62,6 +62,10 @@ public class DesertStorm implements ModInitializer {
     public static final SpawnEggItem MONKEY_KING_SPAWN_EGG = registerItem("monkey_king_spawn_egg",
             new SpawnEggItem(DSEntities.MONKEY_KING, 0x5a1c00, 0,
                     new FabricItemSettings()));
+    public static final SpawnEggItem BARREL_SPAWN_EGG = registerItem("barrel_spawn_egg",
+            new SpawnEggItem(DSEntities.ROLLING_BARREL, 0xfc0000, 0, new FabricItemSettings()));
+    public static final SpawnEggItem SANDWORM_SPAWN_EGG = registerItem("sandworm_spawn_egg",
+            new SpawnEggItem(DSEntities.ROLLING_BARREL, 0xEDEBCB, 0, new FabricItemSettings()));
     public static final SpawnEggItem SAND_WITHER_SPAWN_EGG = registerItem("sand_wither_spawn_egg",
             new SpawnEggItem(DSEntities.SAND_WITHER, 0xffe900, 0, new FabricItemSettings()));
     public static final SpawnEggItem ILLUSIONER_SPAWN_EGG = registerItem("illusioner_spawn_egg",

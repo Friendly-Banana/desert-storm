@@ -4,20 +4,30 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.structure.PlainsVillageData;
+import net.minecraft.structure.StructurePiecesList;
+import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 import org.gara.desertstorm.Utils;
 
-public class DSStructures {
+import java.util.Random;
 
+public class DSStructures {
     private static final Registry<ConfiguredStructureFeature<?, ?>> registry = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE;
     /**
      * Registers the structure itself and sets what its path is. In this case, the
@@ -28,11 +38,13 @@ public class DSStructures {
      */
     public static StructureFeature<StructurePoolFeatureConfig> RUN_DOWN_HOUSE = new RunDownHouseStructure(StructurePoolFeatureConfig.CODEC);
     public static StructureFeature<StructurePoolFeatureConfig> KONG_LEVEL = new KongLevelStructure(StructurePoolFeatureConfig.CODEC);
+    public static StructureFeature<StructurePoolFeatureConfig> TOMB = new TombStructure(StructurePoolFeatureConfig.CODEC);
     /**
      * Static instance of our configured structure, so we can reference it and add it to biomes easily.
      */
     public static ConfiguredStructureFeature<?, ?> CONFIGURED_RUN_DOWN_HOUSE = registerStructure("run_down_house", RUN_DOWN_HOUSE, 10, 5, 399117345);
     public static ConfiguredStructureFeature<?, ?> CONFIGURED_KONG_LEVEL = registerStructure("kong_level", KONG_LEVEL, 50, 10, 123456789);
+    public static ConfiguredStructureFeature<?, ?> CONFIGURED_TOMB = registerStructure("tomb", TOMB, 30, 7, 456456);
 
     /**
      * @param spacing    average distance apart in chunks between spawn attempts
@@ -99,13 +111,29 @@ public class DSStructures {
                         // You can filter to certain biomes based on stuff like temperature, scale,
                         // precipitation, mod id.
                         BiomeSelectors.includeByKey(BiomeKeys.BIRCH_FOREST, BiomeKeys.OLD_GROWTH_BIRCH_FOREST),
-                        // context is basically the biome itself. This is where you do the changes to
-                        // the biome.
+                        // context is basically the biome itself. This is where you do the changes to the biome.
                         // Here, we will add our ConfiguredStructureFeature to the biome.
                         context -> context.getGenerationSettings()
                                 .addBuiltInStructure(DSStructures.CONFIGURED_RUN_DOWN_HOUSE));
         BiomeModifications.create(Utils.NewIdentifier("kong_level_addition")).add(ModificationPhase.ADDITIONS,
                 BiomeSelectors.categories(Biome.Category.JUNGLE),
                 context -> context.getGenerationSettings().addBuiltInStructure(DSStructures.CONFIGURED_KONG_LEVEL));
+        BiomeModifications.create(Utils.NewIdentifier("tomb_addition")).add(ModificationPhase.ADDITIONS,
+                BiomeSelectors.categories(Biome.Category.DESERT),
+                context -> context.getGenerationSettings().addBuiltInStructure(DSStructures.CONFIGURED_TOMB));
+    }
+
+    public static void mossyCobblePostPlacement(StructureWorldAccess world, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockBox chunkBox, ChunkPos chunkPos, StructurePiecesList children) {
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockBox blockBox = children.getBoundingBox();
+        for (int x = blockBox.getMinX(); x <= blockBox.getMaxX(); ++x) {
+            for (int z = blockBox.getMinZ(); z <= blockBox.getMaxZ(); ++z) {
+                for (int y = blockBox.getMinY(); y <= blockBox.getMaxY(); ++y) {
+                    mutable.set(x, y, z);
+                    if (world.getBlockState(mutable).isOf(Blocks.COBBLESTONE) && random.nextFloat() < 0.4f)
+                        world.setBlockState(mutable, Blocks.MOSSY_COBBLESTONE.getDefaultState(), Block.NOTIFY_LISTENERS);
+                }
+            }
+        }
     }
 }

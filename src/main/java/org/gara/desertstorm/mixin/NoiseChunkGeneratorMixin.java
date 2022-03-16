@@ -11,6 +11,7 @@ import net.minecraft.world.gen.chunk.NoiseChunkGenerator;
 import org.gara.desertstorm.structures.DSStructures;
 import org.gara.desertstorm.structures.KongLevelStructure;
 import org.gara.desertstorm.structures.RunDownHouseStructure;
+import org.gara.desertstorm.structures.TombStructure;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,6 +32,8 @@ public class NoiseChunkGeneratorMixin {
                 return RunDownHouseStructure.STRUCTURE_MONSTERS;
             } else if (accessor.getStructureAt(pos, DSStructures.KONG_LEVEL).hasChildren()) {
                 return KongLevelStructure.STRUCTURE_MONSTERS;
+            } else if (accessor.getStructureAt(pos, DSStructures.TOMB).hasChildren()) {
+                return TombStructure.STRUCTURE_MONSTERS;
             }
         } else if (group == SpawnGroup.CREATURE) {
             if (accessor.getStructureAt(pos, DSStructures.RUN_DOWN_HOUSE).hasChildren()) {
@@ -39,17 +42,11 @@ public class NoiseChunkGeneratorMixin {
                 return KongLevelStructure.STRUCTURE_CREATURES;
             }
         }
-
         return null;
     }
 
-    @Inject(
-            method = "getEntitySpawnList(Lnet/minecraft/world/biome/Biome;Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/entity/SpawnGroup;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/collection/Pool;",
-            at = @At(value = "HEAD"),
-            cancellable = true
-    )
+    @Inject(method = "getEntitySpawnList(Lnet/minecraft/world/biome/Biome;Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/entity/SpawnGroup;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/collection/Pool;", at = @At(value = "HEAD"), cancellable = true)
     private void structureMobs(Biome biome, StructureAccessor accessor, SpawnGroup group, BlockPos pos, CallbackInfoReturnable<Pool<SpawnSettings.SpawnEntry>> cir) {
-
         // Check if in our structure and grab mob list if so
         Pool<SpawnSettings.SpawnEntry> pool = getStructureSpawns(biome, accessor, group, pos);
 

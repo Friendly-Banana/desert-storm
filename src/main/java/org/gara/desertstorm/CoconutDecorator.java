@@ -26,7 +26,7 @@ public class CoconutDecorator extends TreeDecorator {
     public void generate(TestableWorld world, BiConsumer<BlockPos, BlockState> replacer, Random random,
                          List<BlockPos> logPositions, List<BlockPos> leavesPositions) {
         leavesPositions.forEach((blockPos) -> {
-            if (random.nextInt(50) == 0) {
+            if (random.nextInt(150) == 0) {
                 blockPos = blockPos.down();
                 if (Feature.isAir(world, blockPos)) {
                     replacer.accept(blockPos, DSBlocks.COCONUT_BLOCK.getDefaultState());

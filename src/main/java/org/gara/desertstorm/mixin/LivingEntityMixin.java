@@ -15,7 +15,6 @@ import net.minecraft.item.Items;
 import net.minecraft.item.SkullItem;
 import net.minecraft.util.math.BlockPos;
 import org.gara.desertstorm.DesertStorm;
-import org.gara.desertstorm.Utils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,21 +35,20 @@ public abstract class LivingEntityMixin {
     private void dropPlayerHeads(LivingEntity adversary, CallbackInfo ci) {
         if ((Object) this instanceof PlayerEntity entity && entity.world.getGameRules().getBoolean(DesertStorm.DROP_PLAYER_HEADS)) {
             if (adversary instanceof PlayerEntity) {
-                boolean headAsBlock = false;
+                boolean couldPlaceAsBlock = false;
                 BlockPos blockPos = entity.getBlockPos();
                 BlockState blockState = Blocks.PLAYER_HEAD.getDefaultState();
                 if (entity.world.getBlockState(blockPos).isAir() && blockState.canPlaceAt(entity.world, blockPos)) {
-                    Utils.Debug();
                     entity.world.setBlockState(blockPos, blockState, Block.NOTIFY_ALL);
                     // set block entity owner
                     if (entity.world.getBlockEntity(blockPos) instanceof SkullBlockEntity skullBlockEntity) {
-                        skullBlockEntity.setOwner(new GameProfile(null, entity.getEntityName()));
-                        headAsBlock = true;
+                        skullBlockEntity.setOwner(new GameProfile(entity.getUuid(), entity.getEntityName()));
+                        couldPlaceAsBlock = true;
                     } else {
                         entity.world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
                     }
                 }
-                if (!headAsBlock) {
+                if (!couldPlaceAsBlock) {
                     ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
                     stack.getOrCreateNbt().putString(SkullItem.SKULL_OWNER_KEY, entity.getEntityName());
                     entity.world.spawnEntity(new ItemEntity(entity.world, entity.getX(), entity.getY(), entity.getZ(), stack));

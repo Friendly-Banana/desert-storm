@@ -16,34 +16,17 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 import org.gara.desertstorm.Utils;
-import org.gara.desertstorm.entity.DSEntities;
 
 import java.util.Optional;
 
-public class KongLevelStructure extends StructureFeature<StructurePoolFeatureConfig> {
-    /**
-     * This method allows us to have mobs that spawn naturally over time in our structure.
-     * No other mobs will spawn in the structure of the same entity classification.
-     * The reason you want to match the classifications is so that your structure's mob
-     * will contribute to that classification's cap. Otherwise, it may cause a runaway
-     * spawning of the mob that will never stop.
-     * <p>
-     * NOTE: getDefaultSpawnList is for monsters only and getDefaultCreatureSpawnList is
-     * for creatures only. If you want to add entities of another classification,
-     * use the StructureSpawnListGatherEvent to add water_creatures, water_ambient,
-     * ambient, or misc mobs. Use that event to add/remove mobs from structures
-     * that are not your own.
-     */
+public class TombStructure extends StructureFeature<StructurePoolFeatureConfig> {
     public static final Pool<SpawnSettings.SpawnEntry> STRUCTURE_MONSTERS = Pool.of(
-            new SpawnSettings.SpawnEntry(EntityType.ZOMBIE, 100, 2, 5)
-    );
-    public static final Pool<SpawnSettings.SpawnEntry> STRUCTURE_CREATURES = Pool.of(
-            new SpawnSettings.SpawnEntry(DSEntities.MONKEY, 50, 3, 7),
-            new SpawnSettings.SpawnEntry(EntityType.BAT, 10, 2, 15)
+            new SpawnSettings.SpawnEntry(EntityType.HUSK, 10, 2, 5),
+            new SpawnSettings.SpawnEntry(EntityType.SKELETON, 100, 2, 7)
     );
 
-    public KongLevelStructure(Codec<StructurePoolFeatureConfig> configCodec) {
-        super(configCodec, KongLevelStructure::createPiecesGenerator, DSStructures::mossyCobblePostPlacement);
+    public TombStructure(Codec<StructurePoolFeatureConfig> codec) {
+        super(codec, TombStructure::createPiecesGenerator);
     }
 
     private static boolean isFeatureChunk(StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context) {
@@ -59,7 +42,7 @@ public class KongLevelStructure extends StructureFeature<StructurePoolFeatureCon
             return Optional.empty();
         }
         StructurePoolFeatureConfig newConfig = new StructurePoolFeatureConfig(() -> context.registryManager().get(Registry.STRUCTURE_POOL_KEY)
-                .get(Utils.NewIdentifier("kong/start_pool")), 5);
+                .get(Utils.NewIdentifier("tomb")), 5);
 
         StructureGeneratorFactory.Context<StructurePoolFeatureConfig> newContext = new StructureGeneratorFactory.Context<>(
                 context.chunkGenerator(),
@@ -81,7 +64,7 @@ public class KongLevelStructure extends StructureFeature<StructurePoolFeatureCon
         // I used to debug and quickly find out if the structure is spawning or not and where it is.
         // This is returning the coordinates of the center starting piece.
         if (structurePiecesGenerator.isPresent()) {
-            Utils.Log("Kong Level " + blockpos);
+            Utils.Log("Tomb " + blockpos);
         }
         return structurePiecesGenerator;
     }

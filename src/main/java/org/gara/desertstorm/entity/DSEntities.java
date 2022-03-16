@@ -28,11 +28,10 @@ public class DSEntities {
             .createMob().entityFactory(Tornado::new)
             .dimensions(Tornado.dimensions).fireImmune()
             .defaultAttributes(Tornado::createTornadoAttributes).build());
-    public static final EntityType<Sandstorm> SANDSTORM = registerEntity("sandstorm", FabricEntityTypeBuilder.create(SpawnGroup.MISC, Sandstorm::new).dimensions(Sandstorm.dimensions)
-            .fireImmune().build());
+    public static final EntityType<Sandstorm> SANDSTORM = registerEntity("sandstorm", FabricEntityTypeBuilder.create(SpawnGroup.MISC, Sandstorm::new).dimensions(Sandstorm.dimensions).fireImmune().build());
+    public static final EntityType<Sandworm> SANDWORM = registerEntity("sandworm", FabricEntityTypeBuilder.createMob().entityFactory(Sandworm::new).dimensions(EntityDimensions.fixed(0.8f, 0.3f)).defaultAttributes(Sandworm::createAttributes).build());
 
     private static <T extends Entity> EntityType<T> registerEntity(String name, EntityType<T> entity) {
-        return Registry.register(Registry.ENTITY_TYPE,
-                Utils.NewIdentifier(name), entity);
+        return Registry.register(Registry.ENTITY_TYPE, Utils.NewIdentifier(name), entity);
     }
 }

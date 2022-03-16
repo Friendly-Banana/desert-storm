@@ -113,7 +113,7 @@ public final class Cocktails {
             if (!target.isSpectator()) {
                 World world = target.getEntityWorld();
                 world.createExplosion(attacker == null ? source : attacker, DamageSources.MOLOTOV, null, target.getX(), target.getY(), target.getZ(), 3F, true, Explosion.DestructionType.BREAK);
-                target.damage(DamageSources.MOLOTOV, 1.0f);
+                target.damage(DamageSources.MOLOTOV, (float) proximity);
             }
         }
     }
@@ -139,12 +139,10 @@ public final class Cocktails {
         public void applyInstantEffect(@Nullable Entity source, @Nullable Entity attacker, LivingEntity target,
                                        int amplifier, double proximity) {
             if (!target.isSpectator()) {
-                int i = 0;
-                StatusEffect statusEffect;
-                do {
-                    ++i;
-                    statusEffect = Registry.STATUS_EFFECT.getRandom(target.getRandom());
-                } while (i < 25 && target.hasStatusEffect(statusEffect) && !target.addStatusEffect(new StatusEffectInstance(statusEffect, 30 * 20), source));
+                for (StatusEffect statusEffect : Registry.STATUS_EFFECT) {
+                    if (target.addStatusEffect(new StatusEffectInstance(statusEffect, 30 * 20, amplifier), source))
+                        return;
+                }
             }
         }
     }
