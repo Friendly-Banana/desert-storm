@@ -10,6 +10,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Linter
-        uses: github/super-linter@v4.8.5
+        uses: github/super-linter@latest
         env: 
             VALIDATE_ALL_CODEBASE: false
