@@ -5,9 +5,9 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AddCocktailsToRegistry","AnimalEntityMixin","BlockMixin","CoconutTrees","DefaultBiomeFeaturesMixin","DispenserBehaviorMixin",
-    "EvokerSpawnRabbits","FlyingPigs","LivingEntityMixin","NetherPortalMixin","NoiseChunkGeneratorMixin","PickableEndGateway",
-    "PickableEndPortal","PigEntityRendererMixin","PublicTreeDecoratorType","RabbitImmuneToIllager","ServerWorldMixin","SkullBlockMixin",
-    "SpiderMixin","VillagerFollow"
+    "EvokerSpawnRabbits","FeatureTagMixin","FlyingPigs","LivingEntityMixin","NetherPortalMixin","PickableEndGateway","PickableEndPortal",
+    "PigEntityRendererMixin","PublicTreeDecoratorType","RabbitImmuneToIllager","ServerWorldMixin","SkullBlockMixin","SpiderMixin",
+    "VillagerFollow"
   ],
   "injectors": {
     "defaultRequire": 1

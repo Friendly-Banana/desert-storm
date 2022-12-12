@@ -47,6 +47,7 @@ public class DesertStormClient implements ClientModInitializer {
         EntityRendererRegistry.register(DSEntities.SAND_WITHER, SandWitherRenderer::new);
         EntityRendererRegistry.register(DSEntities.TORNADO, TornadoRenderer::new);
         EntityRendererRegistry.register(DSEntities.SANDSTORM, SandstormRenderer::new);
+		EntityRendererRegistry.register(DSEntities.SANDWORM, SandwormRenderer::new);
 
         BlockRenderLayerMap.INSTANCE.putBlock(DSBlocks.COCONUT_BLOCK, RenderLayer.getCutout());
     }

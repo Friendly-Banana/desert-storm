@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "desertstorm:run_down_house",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 10,
+    "separation": 5,
+    "salt": 30084232
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:village",
+  "config": {
+    "start_pool": "desertstorm:tomb",
+    "size": 1
+  },
+  "adapt_noise": true,
+  "biomes": "minecraft:desert",
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "full",
+      "spawns": [
+        {
+          "type": "minecraft:husk",
+          "weight": 3,
+          "minCount": 2,
+          "maxCount": 7
+        },
+        {
+          "type": "minecraft:skeleton",
+          "weight": 5,
+          "minCount": 2,
+          "maxCount": 5
+        }
+      ]
+    }
+  }
+}

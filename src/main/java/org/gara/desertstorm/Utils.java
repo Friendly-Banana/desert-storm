@@ -52,7 +52,7 @@ public class Utils {
      * prevent dropping at 1 and despawning at 0
      */
     public static void SetTimeFallingToMax(FallingBlockEntity fallingBlockEntity) {
-        fallingBlockEntity.timeFalling = -2147483648;
+        fallingBlockEntity.timeFalling = Integer.MIN_VALUE;
     }
 
     public static <T extends Entity> T CreateAndTeleport(EntityType<T> entityType, World world, Vec3i pos) {
