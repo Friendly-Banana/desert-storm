@@ -32,11 +32,18 @@ public class CoconutBlock extends FallingBlock {
 	}
 
 	@Override
+	public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+		if (random.nextDouble() <= (world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), 10, true) == null ? fallChance : fallChanceNearPlayer)) {
+			super.scheduledTick(state, world, pos, random);
+		}
+	}
+
+	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		BlockState blockState = world.getBlockState(pos.up());
 		boolean hanging = blockState.isIn(BlockTags.LEAVES) || blockState.isOf(Blocks.CHAIN);
-		if (!hanging || random.nextDouble() <= (world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), 10, true) == null ? fallChance : fallChanceNearPlayer)) {
-			// check falling down
+		if (!hanging) {
+			// fall down
 			super.scheduledTick(state, world, pos, random);
 		}
 	}
