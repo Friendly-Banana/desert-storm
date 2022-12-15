@@ -52,24 +52,24 @@ public class Sandworm extends HostileEntity implements IAnimatable {
 }
 
 class DisappearIntoGround extends Goal {
-    private final Sandworm sandworm;
+	private final Sandworm sandworm;
 
-    public DisappearIntoGround(Sandworm sandworm) {
-        this.sandworm = sandworm;
-    }
+	public DisappearIntoGround(Sandworm sandworm) {
+		this.sandworm = sandworm;
+	}
 
-    @Override
-    public boolean canStart() {
-        if (this.sandworm.getTarget() != null) {
-            return false;
-        }
-        return this.sandworm.getRandom().nextInt(toGoalTicks(20)) <= this.sandworm.world.getDifficulty().getId();
-    }
+	@Override
+	public boolean canStart() {
+		if (this.sandworm.getTarget() != null) {
+			return false;
+		}
+		return this.sandworm.getRandom().nextInt(toGoalTicks(20)) <= this.sandworm.world.getDifficulty().getId();
+	}
 
-    @Override
-    public void tick() {
-        World world = this.sandworm.world;
-        if (this.sandworm.age % (3 * 20) == 0) {
-        }
-    }
+	@Override
+	public void tick() {
+		World world = this.sandworm.world;
+		if (this.sandworm.age % (3 * 20) == 0) {
+		}
+	}
 }

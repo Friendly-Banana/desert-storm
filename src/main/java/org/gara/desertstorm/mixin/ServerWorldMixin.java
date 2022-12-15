@@ -16,20 +16,19 @@ import java.util.function.BooleanSupplier;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin {
-    private static final int SPAWN_DISTANCE = 16;
+	private static final int SPAWN_DISTANCE = 16;
 
-    @Inject(method = "tick", at = @At(value = "HEAD"))
-    private void spawnTornadoes(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
-        ServerWorld world = (ServerWorld) (Object) this;
-        List<ServerPlayerEntity> players = world.getPlayers((player) -> player.isAlive() && !player.isSpectator());
-        if (!players.isEmpty()) {
-            Random random = world.random;
-            if (random.nextInt(50000) == 0) {
-                ServerPlayerEntity unluckyPlayer = players.get(random.nextInt(players.size()));
-                Tornado tornado = Utils.CreateAndTeleport(DSEntities.TORNADO, world, unluckyPlayer.getPos().add(random.nextInt(-SPAWN_DISTANCE, SPAWN_DISTANCE), 0,
-                        random.nextInt(-SPAWN_DISTANCE, SPAWN_DISTANCE)));
-                world.spawnEntity(tornado);
-            }
-        }
-    }
+	@Inject(method = "tick", at = @At(value = "HEAD"))
+	private void spawnTornadoes(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+		ServerWorld world = (ServerWorld) (Object) this;
+		List<ServerPlayerEntity> players = world.getPlayers((player) -> player.isAlive() && !player.isSpectator());
+		if (!players.isEmpty()) {
+			Random random = world.random;
+			if (random.nextInt(50000) == 0) {
+				ServerPlayerEntity unluckyPlayer = players.get(random.nextInt(players.size()));
+				Tornado tornado = Utils.CreateAndTeleport(DSEntities.TORNADO, world, unluckyPlayer.getPos().add(random.nextInt(-SPAWN_DISTANCE, SPAWN_DISTANCE), 0, random.nextInt(-SPAWN_DISTANCE, SPAWN_DISTANCE)));
+				world.spawnEntity(tornado);
+			}
+		}
+	}
 }

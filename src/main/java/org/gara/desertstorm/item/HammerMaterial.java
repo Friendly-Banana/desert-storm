@@ -1,15 +1,15 @@
 package org.gara.desertstorm.item;
 
+import net.minecraft.item.Items;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;
-import org.gara.desertstorm.DesertStorm;
 
-public class SandblasterMaterial implements ToolMaterial {
-	public static final SandblasterMaterial INSTANCE = new SandblasterMaterial();
+public class HammerMaterial implements ToolMaterial {
+	public static final HammerMaterial INSTANCE = new HammerMaterial();
 
 	@Override
 	public int getDurability() {
-		return 300;
+		return 500;
 	}
 
 	@Override
@@ -19,21 +19,21 @@ public class SandblasterMaterial implements ToolMaterial {
 
 	@Override
 	public float getAttackDamage() {
-		return 0;
-	}
-
-	@Override
-	public int getMiningLevel() {
 		return 2;
 	}
 
 	@Override
+	public int getMiningLevel() {
+		return 3;
+	}
+
+	@Override
 	public int getEnchantability() {
-		return 15;
+		return 30;
 	}
 
 	@Override
 	public Ingredient getRepairIngredient() {
-		return Ingredient.ofItems(DesertStorm.SANDSTAR_ITEM);
+		return Ingredient.ofItems(Items.IRON_INGOT);
 	}
 }

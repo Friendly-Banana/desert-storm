@@ -6,8 +6,8 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.SERVER)
 public class DesertStormServer implements DedicatedServerModInitializer {
-    @Override
-    public void onInitializeServer() {
+	@Override
+	public void onInitializeServer() {
 
-    }
+	}
 }

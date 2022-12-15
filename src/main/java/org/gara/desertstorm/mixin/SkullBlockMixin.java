@@ -15,15 +15,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractSkullBlock.class)
 public abstract class SkullBlockMixin extends BlockMixin {
-    @Shadow
-    public abstract SkullBlock.SkullType getSkullType();
+	@Shadow
+	public abstract SkullBlock.SkullType getSkullType();
 
-    @Override
-    void handeOnPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
-        if (getSkullType() == SkullBlock.Type.SKELETON) {
-            if (world.getBlockEntity(pos) instanceof SkullBlockEntity skullBlockEntity) {
-                SandWitherThings.onPlaced(world, pos, skullBlockEntity);
-            }
-        }
-    }
+	@Override
+	void handeOnPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
+		if (getSkullType() == SkullBlock.Type.SKELETON) {
+			if (world.getBlockEntity(pos) instanceof SkullBlockEntity skullBlockEntity) {
+				SandWitherThings.onPlaced(world, pos, skullBlockEntity);
+			}
+		}
+	}
 }

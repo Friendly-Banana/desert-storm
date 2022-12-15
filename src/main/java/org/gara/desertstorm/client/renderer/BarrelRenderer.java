@@ -15,15 +15,15 @@ import org.gara.desertstorm.entity.RollingBarrel;
  */
 @Environment(EnvType.CLIENT)
 public class BarrelRenderer extends MobEntityRenderer<RollingBarrel, BarrelModel> {
-    private static final Identifier TEXTURE_LOCATION = Utils.NewIdentifier("textures/entity/barrel.png");
+	private static final Identifier TEXTURE_LOCATION = Utils.NewIdentifier("textures/entity/barrel.png");
 
-    public BarrelRenderer(Context context) {
-        super(context, new BarrelModel(context.getPart(DesertStormClient.BARREL_MODEL_LAYER)), 0.5f);
-    }
+	public BarrelRenderer(Context context) {
+		super(context, new BarrelModel(context.getPart(DesertStormClient.BARREL_MODEL_LAYER)), 0.5f);
+	}
 
 
-    @Override
-    public Identifier getTexture(RollingBarrel entity) {
-        return TEXTURE_LOCATION;
-    }
+	@Override
+	public Identifier getTexture(RollingBarrel entity) {
+		return TEXTURE_LOCATION;
+	}
 }

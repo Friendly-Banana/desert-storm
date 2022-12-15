@@ -13,12 +13,12 @@ import org.gara.desertstorm.entity.MonkeyEntity;
 @Environment(EnvType.CLIENT)
 public class MonkeyRenderer extends MobEntityRenderer<MonkeyEntity, MonkeyModel> {
 
-    public MonkeyRenderer(EntityRendererFactory.Context context) {
-        super(context, new MonkeyModel(context.getPart(DesertStormClient.MONKEY_MODEL_LAYER)), 0.5f);
-    }
+	public MonkeyRenderer(EntityRendererFactory.Context context) {
+		super(context, new MonkeyModel(context.getPart(DesertStormClient.MONKEY_MODEL_LAYER)), 0.5f);
+	}
 
-    @Override
-    public Identifier getTexture(MonkeyEntity entity) {
-        return Utils.NewIdentifier("textures/entity/monkey.png");
-    }
+	@Override
+	public Identifier getTexture(MonkeyEntity entity) {
+		return Utils.NewIdentifier("textures/entity/monkey.png");
+	}
 }

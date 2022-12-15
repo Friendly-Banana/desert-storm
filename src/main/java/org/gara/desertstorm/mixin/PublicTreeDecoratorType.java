@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(TreeDecoratorType.class)
 public interface PublicTreeDecoratorType {
-    @Invoker("register")
-    static <P extends TreeDecorator> TreeDecoratorType<P> invokeRegister(String string, Codec<P> codec) {
-        throw new AssertionError();
-    }
+	@Invoker("register")
+	static <P extends TreeDecorator> TreeDecoratorType<P> invokeRegister(String string, Codec<P> codec) {
+		throw new AssertionError();
+	}
 }

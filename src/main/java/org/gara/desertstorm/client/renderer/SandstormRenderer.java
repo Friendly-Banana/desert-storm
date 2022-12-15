@@ -15,19 +15,18 @@ import org.gara.desertstorm.entity.Sandstorm;
  */
 @Environment(EnvType.CLIENT)
 public class SandstormRenderer extends EntityRenderer<Sandstorm> {
-    public SandstormRenderer(Context context) {
-        super(context);
-    }
+	public SandstormRenderer(Context context) {
+		super(context);
+	}
 
-    @Override
-    public void render(Sandstorm entity, float f, float g, MatrixStack poseStack,
-                       VertexConsumerProvider multiBufferSource, int i) {
-        // do nothing
-    }
+	@Override
+	public void render(Sandstorm entity, float f, float g, MatrixStack poseStack, VertexConsumerProvider multiBufferSource, int i) {
+		// do nothing
+	}
 
-    @Override
-    public Identifier getTexture(Sandstorm entity) {
-        return Utils.NewIdentifier("textures/entity/sandstorm.png");
-    }
+	@Override
+	public Identifier getTexture(Sandstorm entity) {
+		return Utils.NewIdentifier("textures/entity/sandstorm.png");
+	}
 
 }

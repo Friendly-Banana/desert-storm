@@ -15,14 +15,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(NetherPortalBlock.class)
 public abstract class NetherPortalMixin extends BlockMixin {
-    @Inject(method = "getPickStack", at = @At("HEAD"), cancellable = true)
-    private void pickItem(BlockView world, BlockPos pos, BlockState state, CallbackInfoReturnable<ItemStack> cir) {
-        cir.setReturnValue(DesertStorm.NETHER_PORTAL_ITEM.getDefaultStack());
-    }
+	@Inject(method = "getPickStack", at = @At("HEAD"), cancellable = true)
+	private void pickItem(BlockView world, BlockPos pos, BlockState state, CallbackInfoReturnable<ItemStack> cir) {
+		cir.setReturnValue(DesertStorm.NETHER_PORTAL_ITEM.getDefaultStack());
+	}
 
-    @Override
-    void handleGetPlacementState(ItemPlacementContext ctx, CallbackInfoReturnable<BlockState> cir) {
-        Direction.Axis axis = ctx.getPlayerLookDirection().getAxis();
-        cir.setReturnValue(this.getDefaultState().with(NetherPortalBlock.AXIS, axis.isHorizontal() ? axis : Direction.Axis.Z));
-    }
+	@Override
+	void handleGetPlacementState(ItemPlacementContext ctx, CallbackInfoReturnable<BlockState> cir) {
+		Direction.Axis axis = ctx.getPlayerLookDirection().getAxis();
+		cir.setReturnValue(this.getDefaultState().with(NetherPortalBlock.AXIS, axis.isHorizontal() ? axis : Direction.Axis.Z));
+	}
 }

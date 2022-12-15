@@ -32,6 +32,7 @@ public class DesertStorm implements ModInitializer {
 	public static final GameRules.Key<GameRules.BooleanRule> DROP_PLAYER_HEADS = GameRuleRegistry.register("dropPlayerHeads", GameRules.Category.DROPS, GameRuleFactory.createBooleanRule(true));
 	public static final GameRules.Key<GameRules.BooleanRule> FLYING_PIGS = GameRuleRegistry.register("flyingPigs", GameRules.Category.MOBS, GameRuleFactory.createBooleanRule(true));
 	public static final GameRules.Key<GameRules.IntRule> EVOKER_RABBIT_CHANCE = GameRuleRegistry.register("evokerRabbitChance", GameRules.Category.MOBS, GameRuleFactory.createIntRule(30, 0, 100));
+	public static final GameRules.Key<GameRules.IntRule> SANDBLASTER_COOLDOWN = GameRuleRegistry.register("sandblasterCooldown", GameRules.Category.PLAYER, GameRuleFactory.createIntRule(10, 0, 100));
 	// items
 	private static final List<Item> items = new ArrayList<>(List.of(Items.BARRIER, Items.DEBUG_STICK, Items.COMMAND_BLOCK, Items.COMMAND_BLOCK_MINECART, Items.STRUCTURE_BLOCK, Items.JIGSAW));
 	public static final Item SANDBLASTER_ITEM = registerItem("sandblaster", new SandblasterItem(new FabricItemSettings().group(ItemGroup.COMBAT)));

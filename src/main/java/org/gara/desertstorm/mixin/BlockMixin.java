@@ -16,14 +16,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Block.class)
 public abstract class BlockMixin {
-    @Shadow
-    public abstract BlockState getDefaultState();
+	@Shadow
+	public abstract BlockState getDefaultState();
 
-    @Inject(method = "onPlaced", at = @At(value = "TAIL"))
-    void handeOnPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
-    }
+	@Inject(method = "onPlaced", at = @At(value = "TAIL"))
+	void handeOnPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack, CallbackInfo ci) {
+	}
 
-    @Inject(method = "getPlacementState", cancellable = true, at = @At(value = "HEAD"))
-    void handleGetPlacementState(ItemPlacementContext ctx, CallbackInfoReturnable<BlockState> cir) {
-    }
+	@Inject(method = "getPlacementState", cancellable = true, at = @At(value = "HEAD"))
+	void handleGetPlacementState(ItemPlacementContext ctx, CallbackInfoReturnable<BlockState> cir) {
+	}
 }

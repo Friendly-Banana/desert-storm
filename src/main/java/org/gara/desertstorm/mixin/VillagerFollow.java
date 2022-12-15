@@ -17,16 +17,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MobEntity.class)
 @SuppressWarnings({"ConstantConditions"})
 public class VillagerFollow {
-    @Final
-    @Shadow
-    protected GoalSelector goalSelector;
+	@Final
+	@Shadow
+	protected GoalSelector goalSelector;
 
-    @Inject(method = "initGoals", at = @At(value = "HEAD"))
-    private void addEmeraldTempt(CallbackInfo ci) {
-        if ((Object) this instanceof VillagerEntity villagerEntity) {
-            float villagerRunSpeed = 0.5F;
-            goalSelector.add(0, new TemptGoal(villagerEntity, villagerRunSpeed, Ingredient.ofItems(Items.EMERALD), false));
-            goalSelector.add(0, new TemptGoal(villagerEntity, villagerRunSpeed, Ingredient.fromTag(ItemTags.BEDS), false));
-        }
-    }
+	@Inject(method = "initGoals", at = @At(value = "HEAD"))
+	private void addEmeraldTempt(CallbackInfo ci) {
+		if ((Object) this instanceof VillagerEntity villagerEntity) {
+			float villagerRunSpeed = 0.5F;
+			goalSelector.add(0, new TemptGoal(villagerEntity, villagerRunSpeed, Ingredient.ofItems(Items.EMERALD), false));
+			goalSelector.add(0, new TemptGoal(villagerEntity, villagerRunSpeed, Ingredient.fromTag(ItemTags.BEDS), false));
+		}
+	}
 }

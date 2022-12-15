@@ -12,19 +12,19 @@ import org.gara.desertstorm.Utils;
 import java.util.List;
 
 public class CustomItem extends Item {
-    public final String identifier;
+	public final String identifier;
 
-    public CustomItem(String id, Settings properties) {
-        super(properties);
-        identifier = id;
-    }
+	public CustomItem(String id, Settings properties) {
+		super(properties);
+		identifier = id;
+	}
 
-    @Override
-    public void appendTooltip(ItemStack itemStack, World level, List<Text> list, TooltipContext tooltipFlag) {
-        // default white text
-        TranslatableText tip = Utils.GetTooltip(this.identifier);
-        if (!tip.getString().isEmpty()) {
-            list.add(tip.formatted(Formatting.WHITE));
-        }
-    }
+	@Override
+	public void appendTooltip(ItemStack itemStack, World level, List<Text> list, TooltipContext tooltipFlag) {
+		// default white text
+		TranslatableText tip = Utils.GetTooltip(this.identifier);
+		if (!tip.getString().isEmpty()) {
+			list.add(tip.formatted(Formatting.WHITE));
+		}
+	}
 }

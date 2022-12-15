@@ -16,23 +16,23 @@ import net.minecraft.world.World;
 import org.gara.desertstorm.DesertStorm;
 
 public class AetherPortalBlock extends CustomPortalBlock {
-    public AetherPortalBlock() {
-        super(FabricBlockSettings.of(Material.PORTAL).noCollision().ticksRandomly().strength(-1.0f).sounds(BlockSoundGroup.GLASS).luminance(state -> 13));
-    }
+	public AetherPortalBlock() {
+		super(FabricBlockSettings.of(Material.PORTAL).noCollision().ticksRandomly().strength(-1.0f).sounds(BlockSoundGroup.GLASS).luminance(state -> 13));
+	}
 
-    @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
-        return DesertStorm.AETHER_PORTAL_ITEM.getDefaultStack();
-    }
+	@Override
+	public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+		return DesertStorm.AETHER_PORTAL_ITEM.getDefaultStack();
+	}
 
-    @Override
-    public Block getPortalBase(World world, BlockPos pos) {
-        return Blocks.GLOWSTONE;
-    }
+	@Override
+	public Block getPortalBase(World world, BlockPos pos) {
+		return Blocks.GLOWSTONE;
+	}
 
-    @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        Direction.Axis axis = ctx.getPlayerLookDirection().getAxis();
-        return this.getDefaultState().with(AXIS, axis.isHorizontal() ? axis : Direction.Axis.Z);
-    }
+	@Override
+	public BlockState getPlacementState(ItemPlacementContext ctx) {
+		Direction.Axis axis = ctx.getPlayerLookDirection().getAxis();
+		return this.getDefaultState().with(AXIS, axis.isHorizontal() ? axis : Direction.Axis.Z);
+	}
 }

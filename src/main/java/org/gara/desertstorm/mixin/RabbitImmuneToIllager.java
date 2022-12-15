@@ -13,18 +13,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RabbitEntity.class)
 public abstract class RabbitImmuneToIllager extends AnimalEntityMixin {
-    public RabbitImmuneToIllager(EntityType<? extends PassiveEntity> type, World world) {
-        super(type, world);
-    }
+	public RabbitImmuneToIllager(EntityType<? extends PassiveEntity> type, World world) {
+		super(type, world);
+	}
 
-    @Shadow
-    public abstract int getRabbitType();
+	@Shadow
+	public abstract int getRabbitType();
 
-    @Override
-    void handleDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (getRabbitType() == RabbitEntity.KILLER_BUNNY_TYPE) {
-            if (source.getAttacker() instanceof LivingEntity livingEntity && livingEntity.getGroup() == EntityGroup.ILLAGER)
-                cir.setReturnValue(false);
-        }
-    }
+	@Override
+	void handleDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+		if (getRabbitType() == RabbitEntity.KILLER_BUNNY_TYPE) {
+			if (source.getAttacker() instanceof LivingEntity livingEntity && livingEntity.getGroup() == EntityGroup.ILLAGER) {
+				cir.setReturnValue(false);
+			}
+		}
+	}
 }

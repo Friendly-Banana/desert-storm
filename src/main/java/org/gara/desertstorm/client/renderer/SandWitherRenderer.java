@@ -10,7 +10,7 @@ import net.minecraft.client.render.entity.WitherEntityRenderer;
  */
 @Environment(EnvType.CLIENT)
 public class SandWitherRenderer extends WitherEntityRenderer {
-    public SandWitherRenderer(Context context) {
-        super(context);
-    }
+	public SandWitherRenderer(Context context) {
+		super(context);
+	}
 }

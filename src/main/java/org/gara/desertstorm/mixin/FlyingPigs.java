@@ -24,54 +24,53 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PigEntity.class)
 public abstract class FlyingPigs extends AnimalEntityMixin {
-    private static Input input;
-    private boolean hasElytra;
+	private static Input input;
+	private boolean hasElytra;
 
-    protected FlyingPigs(EntityType<? extends PassiveEntity> entityType, World world) {
-        super(entityType, world);
-        throw new AssertionError();
-    }
+	protected FlyingPigs(EntityType<? extends PassiveEntity> entityType, World world) {
+		super(entityType, world);
+		throw new AssertionError();
+	}
 
-    @Shadow
-    public abstract boolean canBeControlledByRider();
+	@Shadow
+	public abstract boolean canBeControlledByRider();
 
-    @Inject(method = "travel", at = @At(value = "TAIL"))
-    private void controlFlyingPig(Vec3d movementInput, CallbackInfo ci) {
-        if (input == null) {
-            ClientPlayerEntity clientPlayer = MinecraftClient.getInstance().player;
-            if (clientPlayer != null) input = clientPlayer.input;
-        }
-        if (input == null) {
-            return;
-        }
-        if (world.getGameRules().getBoolean(DesertStorm.FLYING_PIGS) && canBeControlledByRider()) {
-            if (isOnGround()) {
-                if (hasElytra) {
-                    hasElytra = false;
-                    equipStack(EquipmentSlot.CHEST, ItemStack.EMPTY);
-                }
-            } else {
-                if (!hasElytra) {
-                    hasElytra = true;
-                    equipStack(EquipmentSlot.CHEST, Items.ELYTRA.getDefaultStack());
-                }
-            }
-            if (input.jumping) updateVelocity(0.5f, new Vec3d(0, 1, 0.5));
-            setFlag(Entity.FALL_FLYING_FLAG_INDEX, !isOnGround());
-        }
-    }
+	@Inject(method = "travel", at = @At(value = "TAIL"))
+	private void controlFlyingPig(Vec3d movementInput, CallbackInfo ci) {
+		if (input == null) {
+			ClientPlayerEntity clientPlayer = MinecraftClient.getInstance().player;
+			if (clientPlayer != null) input = clientPlayer.input;
+		}
+		if (input == null) {
+			return;
+		}
+		if (world.getGameRules().getBoolean(DesertStorm.FLYING_PIGS) && canBeControlledByRider()) {
+			if (isOnGround()) {
+				if (hasElytra) {
+					hasElytra = false;
+					equipStack(EquipmentSlot.CHEST, ItemStack.EMPTY);
+				}
+			} else {
+				if (!hasElytra) {
+					hasElytra = true;
+					equipStack(EquipmentSlot.CHEST, Items.ELYTRA.getDefaultStack());
+				}
+			}
+			if (input.jumping) updateVelocity(0.5f, new Vec3d(0, 1, 0.5));
+			setFlag(Entity.FALL_FLYING_FLAG_INDEX, !isOnGround());
+		}
+	}
 
-    @Inject(method = "getSaddledSpeed", at = @At(value = "HEAD"), cancellable = true)
-    private void flySpeed(CallbackInfoReturnable<Float> cir) {
-        PigEntity pig = (PigEntity) (Object) this;
-        if (world.getGameRules().getBoolean(DesertStorm.FLYING_PIGS) && (!isOnGround() || hasNoGravity())) {
-            cir.setReturnValue((float) pig.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 2.0f);
-        }
-    }
+	@Inject(method = "getSaddledSpeed", at = @At(value = "HEAD"), cancellable = true)
+	private void flySpeed(CallbackInfoReturnable<Float> cir) {
+		PigEntity pig = (PigEntity) (Object) this;
+		if (world.getGameRules().getBoolean(DesertStorm.FLYING_PIGS) && (!isOnGround() || hasNoGravity())) {
+			cir.setReturnValue((float) pig.getAttributeValue(EntityAttributes.GENERIC_MOVEMENT_SPEED) * 2.0f);
+		}
+	}
 
-    @Override
-    void handleDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (world.getGameRules().getBoolean(DesertStorm.FLYING_PIGS) && source.isFromFalling())
-            cir.setReturnValue(false);
-    }
+	@Override
+	void handleDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+		if (world.getGameRules().getBoolean(DesertStorm.FLYING_PIGS) && source.isFromFalling()) cir.setReturnValue(false);
+	}
 }

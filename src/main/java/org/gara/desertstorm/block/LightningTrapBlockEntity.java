@@ -6,7 +6,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class LightningTrapBlockEntity extends BlockEntity {
 
-    public LightningTrapBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(DSBlocks.TRAP_BLOCK_ENTITY, blockPos, blockState);
-    }
+	public LightningTrapBlockEntity(BlockPos blockPos, BlockState blockState) {
+		super(DSBlocks.TRAP_BLOCK_ENTITY, blockPos, blockState);
+	}
 }

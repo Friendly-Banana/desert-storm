@@ -37,9 +37,10 @@
   "death.desertstorm.tornado": "%1$s was blown away by a Tornado",
   "death.desertstorm.molotov": "%1$s experienced fiery vodka",
   "death.desertstorm.barrel": "%1$s played with the Monkey King",
-  "gamerule.desertstorm.flyingPigs": "Enable flying pigs",
+  "gamerule.desertstorm.flyingPigs": "Allow flying pigs",
   "gamerule.desertstorm.dropPlayerHeads": "Drop player heads when killed",
   "gamerule.desertstorm.evokerRabbitChance": "Evokers' chance to spawn a killer bunny instead of three vexes",
+  "gamerule.desertstorm.sandblasterCooldown": "Time you need to wait until you can use a sandblaster again",
   // cocktail effects on all the random shit
   "item.minecraft.tipped_arrow.effect.multivitamin": "Multivitamin Arrow",
   "item.minecraft.potion.effect.multivitamin": "Multivitamin",

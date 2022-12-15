@@ -19,24 +19,24 @@ import org.gara.desertstorm.entity.Tornado;
 
 @Environment(EnvType.CLIENT)
 public class TornadoFeatureRenderer extends FeatureRenderer<Tornado, TornadoModel> {
-    private final EntityModel<Tornado> model;
+	private final EntityModel<Tornado> model;
 
-    public TornadoFeatureRenderer(FeatureRendererContext<Tornado, TornadoModel> context, EntityModelLoader loader) {
-        super(context);
-        this.model = new TornadoModel(loader.getModelPart(DesertStormClient.TORNADO_OUTER_MODEL_LAYER), false);
-    }
+	public TornadoFeatureRenderer(FeatureRendererContext<Tornado, TornadoModel> context, EntityModelLoader loader) {
+		super(context);
+		this.model = new TornadoModel(loader.getModelPart(DesertStormClient.TORNADO_OUTER_MODEL_LAYER), false);
+	}
 
-    @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int light, Tornado tornado, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-        MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        if (tornado.isInvisible() && !minecraftClient.hasOutline(tornado)) {
-            return;
-        }
-        VertexConsumer vertexConsumer = minecraftClient.hasOutline(tornado) && tornado.isInvisible() ? vertexConsumerProvider.getBuffer(RenderLayer.getOutline(this.getTexture(tornado))) : vertexConsumerProvider.getBuffer(RenderLayer.getEntityTranslucent(this.getTexture(tornado)));
-        this.getContextModel().copyStateTo(this.model);
-        this.model.animateModel(tornado, limbAngle, limbDistance, tickDelta);
-        this.model.setAngles(tornado, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
-        this.model.render(matrices, vertexConsumer, light, LivingEntityRenderer.getOverlay(tornado, 0.0f), 1.0f, 1.0f, 1.0f, 1.0f);
+	@Override
+	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int light, Tornado tornado, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+		MinecraftClient minecraftClient = MinecraftClient.getInstance();
+		if (tornado.isInvisible() && !minecraftClient.hasOutline(tornado)) {
+			return;
+		}
+		VertexConsumer vertexConsumer = minecraftClient.hasOutline(tornado) && tornado.isInvisible() ? vertexConsumerProvider.getBuffer(RenderLayer.getOutline(this.getTexture(tornado))) : vertexConsumerProvider.getBuffer(RenderLayer.getEntityTranslucent(this.getTexture(tornado)));
+		this.getContextModel().copyStateTo(this.model);
+		this.model.animateModel(tornado, limbAngle, limbDistance, tickDelta);
+		this.model.setAngles(tornado, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
+		this.model.render(matrices, vertexConsumer, light, LivingEntityRenderer.getOverlay(tornado, 0.0f), 1.0f, 1.0f, 1.0f, 1.0f);
 
-    }
+	}
 }

@@ -17,51 +17,51 @@ import org.gara.desertstorm.DamageSources;
 import org.gara.desertstorm.Utils;
 
 public class RollingBarrel extends HostileEntity {
-    LivingEntity owner;
+	LivingEntity owner;
 
-    public RollingBarrel(EntityType<? extends RollingBarrel> entityType, World world) {
-        super(entityType, world);
-    }
+	public RollingBarrel(EntityType<? extends RollingBarrel> entityType, World world) {
+		super(entityType, world);
+	}
 
-    public RollingBarrel(LivingEntity owner, World world, Vec3d pos) {
-        this(DSEntities.ROLLING_BARREL, world);
-        this.refreshPositionAfterTeleport(pos);
-        this.owner = owner;
-    }
+	public RollingBarrel(LivingEntity owner, World world, Vec3d pos) {
+		this(DSEntities.ROLLING_BARREL, world);
+		this.refreshPositionAfterTeleport(pos);
+		this.owner = owner;
+	}
 
-    public static DefaultAttributeContainer.Builder createBarrelAttributes() {
-        return createHostileAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.5).add(EntityAttributes.GENERIC_MAX_HEALTH, 5);
-    }
+	public static DefaultAttributeContainer.Builder createBarrelAttributes() {
+		return createHostileAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.5).add(EntityAttributes.GENERIC_MAX_HEALTH, 5);
+	}
 
-    @Override
-    public void tick() {
-        if (!this.world.isClient && age >= 5 * 20) {
-            this.discard();
-            return;
-        }
-        super.tick();
-    }
+	@Override
+	protected void initGoals() {
+		this.goalSelector.add(0, new SwimGoal(this));
+		this.goalSelector.add(1, new MeleeAttackGoal(this, 0.5D, false));
+		this.goalSelector.add(3, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+		this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true, true));
+	}
 
-    @Override
-    protected void initGoals() {
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new MeleeAttackGoal(this, 0.5D, false));
-        this.goalSelector.add(3, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true, true));
-    }
+	@Override
+	public void tick() {
+		if (!this.world.isClient && age >= 5 * 20) {
+			this.discard();
+			return;
+		}
+		super.tick();
+	}
 
-    @Override
-    public void onPlayerCollision(PlayerEntity player) {
-        super.onPlayerCollision(player);
-        if (Utils.IsSurvival(player)) {
-            player.damage(DamageSources.BARREL, 0.5f);
-            this.world.createExplosion(owner, DamageSources.BARREL, null, this.getX(), this.getY(), this.getZ(), 5F, true, Explosion.DestructionType.NONE);
-            this.discard();
-        }
-    }
+	@Override
+	public void onPlayerCollision(PlayerEntity player) {
+		super.onPlayerCollision(player);
+		if (Utils.IsSurvival(player)) {
+			player.damage(DamageSources.BARREL, 0.5f);
+			this.world.createExplosion(owner, DamageSources.BARREL, null, this.getX(), this.getY(), this.getZ(), 5F, true, Explosion.DestructionType.NONE);
+			this.discard();
+		}
+	}
 
-    @Override
-    public boolean isOnFire() {
-        return true;
-    }
+	@Override
+	public boolean isOnFire() {
+		return true;
+	}
 }

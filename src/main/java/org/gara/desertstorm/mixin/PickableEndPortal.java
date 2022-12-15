@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EndPortalBlock.class)
 public class PickableEndPortal {
-    @Inject(method = "getPickStack", at = @At("HEAD"), cancellable = true)
-    private void pickItem(BlockView world, BlockPos pos, BlockState state, CallbackInfoReturnable<ItemStack> cir) {
-        cir.setReturnValue(DesertStorm.END_PORTAL_ITEM.getDefaultStack());
-    }
+	@Inject(method = "getPickStack", at = @At("HEAD"), cancellable = true)
+	private void pickItem(BlockView world, BlockPos pos, BlockState state, CallbackInfoReturnable<ItemStack> cir) {
+		cir.setReturnValue(DesertStorm.END_PORTAL_ITEM.getDefaultStack());
+	}
 }

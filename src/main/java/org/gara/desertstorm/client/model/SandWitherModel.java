@@ -8,7 +8,7 @@ import org.gara.desertstorm.entity.SandWither;
 
 @Environment(EnvType.CLIENT)
 public class SandWitherModel extends WitherEntityModel<SandWither> {
-    public SandWitherModel(ModelPart modelPart) {
-        super(modelPart);
-    }
+	public SandWitherModel(ModelPart modelPart) {
+		super(modelPart);
+	}
 }

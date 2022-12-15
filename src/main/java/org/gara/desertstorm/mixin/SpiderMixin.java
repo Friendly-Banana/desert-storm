@@ -12,13 +12,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SpiderEntity.class)
 public abstract class SpiderMixin extends HostileEntity {
-    protected SpiderMixin(EntityType<? extends HostileEntity> entityType, World world) {
-        super(entityType, world);
-        throw new AssertionError();
-    }
+	protected SpiderMixin(EntityType<? extends HostileEntity> entityType, World world) {
+		super(entityType, world);
+		throw new AssertionError();
+	}
 
-    @Inject(method = "initGoals", at = @At("TAIL"))
-    void placeCobwebs(CallbackInfo ci) {
-        this.goalSelector.add(5, new BuildNestGoal((SpiderEntity) (Object) this));
-    }
+	@Inject(method = "initGoals", at = @At("TAIL"))
+	void placeCobwebs(CallbackInfo ci) {
+		this.goalSelector.add(5, new BuildNestGoal((SpiderEntity) (Object) this));
+	}
 }
